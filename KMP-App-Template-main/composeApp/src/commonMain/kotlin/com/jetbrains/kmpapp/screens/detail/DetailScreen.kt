@@ -45,7 +45,7 @@ import kmp_app_template.composeapp.generated.resources.label_date
 import kmp_app_template.composeapp.generated.resources.label_department
 import kmp_app_template.composeapp.generated.resources.label_dimensions
 import kmp_app_template.composeapp.generated.resources.label_length
-import kmp_app_template.composeapp.generated.resources.label_medium
+import kmp_app_template.composeapp.generated.resources.label_type
 import kmp_app_template.composeapp.generated.resources.label_repository
 import kmp_app_template.composeapp.generated.resources.label_title
 import org.jetbrains.compose.resources.stringResource
@@ -110,7 +110,7 @@ private fun ObjectDetails(
                     LabeledInfo(stringResource(Res.string.label_artist), obj.artistDisplayName)
                     LabeledInfo(stringResource(Res.string.label_date), obj.objectDate)
                     LabeledInfo(stringResource(Res.string.label_dimensions), obj.dimensions)
-                    LabeledInfo(stringResource(Res.string.label_medium), obj.medium)
+                    LabeledInfo(stringResource(Res.string.label_type), obj.type)
                     LabeledInfo(stringResource(Res.string.label_department), obj.department)
                     LabeledInfo(stringResource(Res.string.label_repository), obj.repository)
                     LabeledInfo(stringResource(Res.string.label_length), obj.length)
