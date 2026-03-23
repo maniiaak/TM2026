@@ -7,7 +7,7 @@ data class MuseumObject(
     val objectID: Int,
     val title: String,
     val artistDisplayName: String,
-    val medium: String,
+    val type: String,
     val dimensions: String,
     val objectURL: String,
     val objectDate: String,
