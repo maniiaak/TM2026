@@ -40,11 +40,11 @@ import com.jetbrains.kmpapp.screens.EmptyScreenContent
 import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.back
 import kmp_app_template.composeapp.generated.resources.label_artist
-import kmp_app_template.composeapp.generated.resources.label_credits
+//import kmp_app_template.composeapp.generated.resources.label_credits
 import kmp_app_template.composeapp.generated.resources.label_date
 import kmp_app_template.composeapp.generated.resources.label_department
 import kmp_app_template.composeapp.generated.resources.label_dimensions
-//import kmp_app_template.composeapp.generated.resources.label_length
+import kmp_app_template.composeapp.generated.resources.label_length
 import kmp_app_template.composeapp.generated.resources.label_medium
 import kmp_app_template.composeapp.generated.resources.label_repository
 import kmp_app_template.composeapp.generated.resources.label_title
@@ -113,8 +113,8 @@ private fun ObjectDetails(
                     LabeledInfo(stringResource(Res.string.label_medium), obj.medium)
                     LabeledInfo(stringResource(Res.string.label_department), obj.department)
                     LabeledInfo(stringResource(Res.string.label_repository), obj.repository)
-                    //LabeledInfo(stringResource(Res.string.label_length), obj.length)
-                    LabeledInfo(stringResource(Res.string.label_credits), obj.creditLine)
+                    LabeledInfo(stringResource(Res.string.label_length), obj.length)
+                    //LabeledInfo(stringResource(Res.string.label_credits), obj.creditLine)
                 }
             }
         }
