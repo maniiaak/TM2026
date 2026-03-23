@@ -13,5 +13,5 @@ data class MuseumObject(
     val primaryImage: String,
     val primaryImageSmall: String,
     val tracks: String,
-    val length: String
+    val length: String,
 )
