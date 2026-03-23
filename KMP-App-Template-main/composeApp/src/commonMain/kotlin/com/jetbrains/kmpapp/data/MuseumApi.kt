@@ -12,7 +12,7 @@ interface MuseumApi {
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
     companion object {
         private const val API_URL =
-            "https://raw.githubusercontent.com/Kotlin/KMP-App-Template/main/list.json"
+            "https://raw.githubusercontent.com/maniiaak/TM2026/main/KMP-App-Template-main/list.json"
     }
 
     override suspend fun getData(): List<MuseumObject> {
