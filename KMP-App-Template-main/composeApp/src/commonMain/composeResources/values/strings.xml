@@ -3,10 +3,8 @@
     <string name="label_title">Title</string>
     <string name="label_artist">Artist</string>
     <string name="label_date">Date</string>
-    <string name="label_dimensions">Dimensions</string>
     <string name="label_type">Type</string>
-    <string name="label_department">Department</string>
-    <string name="label_repository">Repository</string>
+    <string name="label_tracks">Tracks</string>
     <string name="label_length">Length</string>
 
 

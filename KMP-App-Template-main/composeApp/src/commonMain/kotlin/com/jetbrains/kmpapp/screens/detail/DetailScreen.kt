@@ -40,13 +40,10 @@ import com.jetbrains.kmpapp.screens.EmptyScreenContent
 import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.back
 import kmp_app_template.composeapp.generated.resources.label_artist
-//import kmp_app_template.composeapp.generated.resources.label_credits
 import kmp_app_template.composeapp.generated.resources.label_date
-import kmp_app_template.composeapp.generated.resources.label_department
-import kmp_app_template.composeapp.generated.resources.label_dimensions
 import kmp_app_template.composeapp.generated.resources.label_length
 import kmp_app_template.composeapp.generated.resources.label_type
-import kmp_app_template.composeapp.generated.resources.label_repository
+import kmp_app_template.composeapp.generated.resources.label_tracks
 import kmp_app_template.composeapp.generated.resources.label_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -109,12 +106,9 @@ private fun ObjectDetails(
                     LabeledInfo(stringResource(Res.string.label_title), obj.title)
                     LabeledInfo(stringResource(Res.string.label_artist), obj.artistDisplayName)
                     LabeledInfo(stringResource(Res.string.label_date), obj.objectDate)
-                    LabeledInfo(stringResource(Res.string.label_dimensions), obj.dimensions)
                     LabeledInfo(stringResource(Res.string.label_type), obj.type)
-                    LabeledInfo(stringResource(Res.string.label_department), obj.department)
-                    LabeledInfo(stringResource(Res.string.label_repository), obj.repository)
                     LabeledInfo(stringResource(Res.string.label_length), obj.length)
-                    //LabeledInfo(stringResource(Res.string.label_credits), obj.creditLine)
+                    LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks)
                 }
             }
         }
