@@ -81,7 +81,7 @@ private fun ObjectFrame(
             .clickable { onClick() }
     ) {
         AsyncImage(
-            model = obj.primaryImageSmall,
+            model = obj.coverImage,
             contentDescription = obj.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
