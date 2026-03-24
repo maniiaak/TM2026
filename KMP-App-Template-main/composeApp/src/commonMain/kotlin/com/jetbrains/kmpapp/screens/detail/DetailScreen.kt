@@ -91,7 +91,7 @@ private fun ObjectDetails(
                 .padding(paddingValues)
         ) {
             AsyncImage(
-                model = obj.primaryImageSmall,
+                model = obj.coverImage,
                 contentDescription = obj.title,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
