@@ -17,26 +17,37 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val dataModule = module {
+    // 1. HttpClient with JSON Serialization
     single {
-        val json = Json { ignoreUnknownKeys = true }
+        val json = Json {
+            ignoreUnknownKeys = true
+            isLenient = true // Helps with strict JSON servers
+        }
         HttpClient {
             install(ContentNegotiation) {
-                // TODO Fix API so it serves application/json
-                json(json, contentType = ContentType.Any)
+                // Explicitly set JSON content type for better compatibility
+                json(json, contentType = ContentType.Application.Json)
             }
         }
     }
 
+    // 2. API Implementation
     single<MuseumApi> { KtorMuseumApi(get()) }
+
+    // 3. Storage Implementation
     single<MuseumStorage> { InMemoryMuseumStorage() }
+
+    // 4. Repository (Singleton to maintain state)
     single {
         MuseumRepository(get(), get()).apply {
+            // Initialize data on startup
             initialize()
         }
     }
 }
 
 val viewModelModule = module {
+    // Factory creates a new instance for each screen/view
     factoryOf(::ListViewModel)
     factoryOf(::DetailViewModel)
 }
