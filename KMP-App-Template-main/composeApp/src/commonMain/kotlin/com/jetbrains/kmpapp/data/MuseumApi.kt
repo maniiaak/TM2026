@@ -9,38 +9,26 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.utils.io.CancellationException
+import org.dotenv.vault.dotenvVault
+
+val dotenv = dotenvVault()
 
 interface MuseumApi {
     suspend fun getData(): List<MuseumObject>
-    suspend fun submitReview(review: AlbumReview): Boolean
 }
 
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
     companion object {
-***REMOVED***
-***REMOVED***
+        private const val API_URL = dotenv["BASE_API_URL"]
     }
 
     override suspend fun getData(): List<MuseumObject> {
         return try {
-***REMOVED***
+            client.get(API_URL).body()
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             e.printStackTrace()
             emptyList()
-        }
-    }
-
-    override suspend fun submitReview(review: AlbumReview): Boolean {
-        return try {
-***REMOVED***
-                contentType(ContentType.Application.Json)
-                setBody(review)
-            }
-            response.status.isSuccess()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
         }
     }
 }

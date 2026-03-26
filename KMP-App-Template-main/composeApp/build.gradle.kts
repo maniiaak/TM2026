@@ -90,4 +90,9 @@ android {
 
 dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation("com.github.dotenv-org:dotenv-vault-kotlin:0.0.2")
+}
+
+repositories {
+    maven { url = uri("https://jitpack.io") }
 }
