@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="reverse">
-      <change afterPath="$PROJECT_DIR$/KMP-App-Template-main/.env.vault" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/db-forest-config.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Serverside/musicbrainz.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/data_source_mapping.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serverside/new_artist.py" beforeDir="false" afterPath="$PROJECT_DIR$/Serverside/mbrainz2db.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,12 +49,15 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.init.executor": "Run",
+    "Python.mbrainz2db.executor": "Run",
+    "Python.musicbrainz.executor": "Run",
     "Python.setup_db.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
