@@ -19,7 +19,7 @@ interface MuseumApi {
 
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
     companion object {
-        private const val API_URL = dotenv["BASE_API_URL"]
+        private const val API_URL = DataFrame.read("local_api_url.txt")
     }
 
     override suspend fun getData(): List<MuseumObject> {
