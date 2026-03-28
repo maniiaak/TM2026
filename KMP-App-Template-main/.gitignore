@@ -16,6 +16,7 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+*/local_api_url.txt
 
 .env.vault
 .flaskenv*
