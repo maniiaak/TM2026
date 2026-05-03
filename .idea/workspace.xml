@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="added historique">
-      <change afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/create/CreateScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/search/SearchScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/AlbumReview.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/settings.gradle.kts" afterDir="false" />
-    </list>
+    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="update" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,12 +24,12 @@
     &quot;assignee&quot;: &quot;maniiaak&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/maniiaak/TM2026.git&quot;,
-    &quot;accountId&quot;: &quot;1907e9e5-8342-4e67-bb7b-5107fcd53707&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/maniiaak/TM2026",
+    "accountId": "316d220c-71c3-485f-acc2-0af51c739ef4"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -55,26 +42,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.init.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.mbrainz2db.executor": "Run",
-    "Python.musicbrainz.executor": "Run",
-    "Python.setup_db.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/marston/IdeaProjects/TM2026",
-    "settings.editor.selected.configurable": "preferences.language.Kotlin"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.init.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mbrainz2db.executor&quot;: &quot;Run&quot;,
+    &quot;Python.musicbrainz.executor&quot;: &quot;Run&quot;,
+    &quot;Python.setup_db.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/marston/IdeaProjects/TM2026&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.Kotlin&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -158,7 +145,23 @@
       <option name="project" value="LOCAL" />
       <updated>1776672172819</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="update">
+      <option name="closed" value="true" />
+      <created>1777805258954</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1777805258954</updated>
+    </task>
+    <task id="LOCAL-00009" summary="update">
+      <option name="closed" value="true" />
+      <created>1777805685925</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1777805685925</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -178,7 +181,8 @@
     <MESSAGE value="reverse" />
     <MESSAGE value="tested musicbrainz to sql" />
     <MESSAGE value="added historique" />
-    <option name="LAST_COMMIT_MESSAGE" value="added historique" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
