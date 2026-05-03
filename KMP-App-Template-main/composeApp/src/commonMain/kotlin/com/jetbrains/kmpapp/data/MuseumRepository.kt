@@ -24,8 +24,4 @@ class MuseumRepository(
     fun getObjects(): Flow<List<MuseumObject>> = museumStorage.getObjects()
 
     fun getObjectById(objectId: Int): Flow<MuseumObject?> = museumStorage.getObjectById(objectId)
-
-    suspend fun submitReview(review: AlbumReview): Boolean {
-        return museumApi.submitReview(review)
-    }
 }

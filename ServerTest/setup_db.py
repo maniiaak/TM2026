@@ -4,7 +4,7 @@ import os
 
 # Configuration
 DB_NAME = 'music.db'
-JSON_FILE = 'Server/data.json'
+JSON_FILE = '/home/marston/IdeaProjects/TM2026/ServerTest/data.json'
 
 def init_db():
     # Connect to database (creates file if it doesn't exist)
