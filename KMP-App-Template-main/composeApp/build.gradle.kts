@@ -9,6 +9,13 @@ plugins {
     alias(libs.plugins.kotlinxSerialization)
 }
 
+repositories {
+    google()
+    mavenCentral()
+    maven("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+    maven("https://maven.pkg.jetbrains.space/public/compose/maven")
+}
+
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -57,6 +64,7 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+
         }
     }
 }
@@ -90,9 +98,4 @@ android {
 
 dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation("com.github.dotenv-org:dotenv-vault-kotlin:0.0.2")
-}
-
-repositories {
-    maven { url = uri("https://jitpack.io") }
 }
