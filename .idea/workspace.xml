@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="update" />
+    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="update">
+      <change afterPath="$PROJECT_DIR$/ServerTest/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ServerTest/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ServerTest/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/create/CreateScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/search/SearchScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerTest/music.db" beforeDir="false" afterPath="$PROJECT_DIR$/ServerTest/music.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerTest/setup_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/ServerTest/setup_db.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,12 +42,12 @@
     &quot;assignee&quot;: &quot;maniiaak&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/maniiaak/TM2026",
-    "accountId": "316d220c-71c3-485f-acc2-0af51c739ef4"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/maniiaak/TM2026&quot;,
+    &quot;accountId&quot;: &quot;316d220c-71c3-485f-acc2-0af51c739ef4&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
