@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="update">
-      <change beforePath="$PROJECT_DIR$/.~lock.Historique.odt#" beforeDir="false" afterPath="$PROJECT_DIR$/.~lock.Historique.odt#" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Historique.odt" beforeDir="false" afterPath="$PROJECT_DIR$/Historique.odt" afterDir="false" />
-    </list>
+    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="mise à jour du carnet de bord" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,26 +42,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.init.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mbrainz2db.executor&quot;: &quot;Run&quot;,
-    &quot;Python.musicbrainz.executor&quot;: &quot;Run&quot;,
-    &quot;Python.setup_db.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/marston/IdeaProjects/TM2026&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.language.Kotlin&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.init.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.mbrainz2db.executor": "Run",
+    "Python.musicbrainz.executor": "Run",
+    "Python.setup_db.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/marston/IdeaProjects/TM2026/KMP-App-Template-main",
+    "settings.editor.selected.configurable": "preferences.language.Kotlin"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -164,7 +161,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777805685925</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="mise à jour du carnet de bord">
+      <option name="closed" value="true" />
+      <created>1777817407541</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1777817407541</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -185,7 +190,8 @@
     <MESSAGE value="tested musicbrainz to sql" />
     <MESSAGE value="added historique" />
     <MESSAGE value="update" />
-    <option name="LAST_COMMIT_MESSAGE" value="update" />
+    <MESSAGE value="mise à jour du carnet de bord" />
+    <option name="LAST_COMMIT_MESSAGE" value="mise à jour du carnet de bord" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
