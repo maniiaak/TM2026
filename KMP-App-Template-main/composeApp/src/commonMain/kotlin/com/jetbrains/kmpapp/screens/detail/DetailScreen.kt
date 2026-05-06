@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -25,9 +27,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -42,26 +48,12 @@ import kmp_app_template.composeapp.generated.resources.back
 import kmp_app_template.composeapp.generated.resources.label_artist
 import kmp_app_template.composeapp.generated.resources.label_date
 import kmp_app_template.composeapp.generated.resources.label_length
-import kmp_app_template.composeapp.generated.resources.label_type
-import kmp_app_template.composeapp.generated.resources.label_tracks
 import kmp_app_template.composeapp.generated.resources.label_title
+import kmp_app_template.composeapp.generated.resources.label_tracks
+import kmp_app_template.composeapp.generated.resources.label_type
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 @Composable
 fun DetailScreen(
@@ -70,12 +62,17 @@ fun DetailScreen(
 ) {
     val viewModel = koinViewModel<DetailViewModel>()
 
+    // State for the dialog
     var showNoteDialog by remember { mutableStateOf(false) }
 
+    // Context for Toast
     val context = LocalContext.current
-    fun handleSaveNote(note: String) {
-        // TODO: Save this note to your database/storage later
-        Toast.makeText(context, "Note saved: $note", Toast.LENGTH_SHORT).show()
+
+    // Handler for saving
+    fun handleSaveNote(note: String, rating: Float?) {
+        val ratingDisplay = rating?.let { "Rating: $it/5 | " } ?: ""
+        Toast.makeText(context, "${ratingDisplay}Note saved!", Toast.LENGTH_SHORT).show()
+        // TODO: Connect this to your ViewModel/Repository to save permanently
     }
 
     val obj by viewModel.getObject(objectId).collectAsStateWithLifecycle(initialValue = null)
@@ -92,7 +89,7 @@ fun DetailScreen(
             NoteDialog(
                 isOpen = showNoteDialog,
                 onDismiss = { showNoteDialog = false },
-                onSave = { note -> handleSaveNote(note) }
+                onSave = { note, rating -> handleSaveNote(note, rating) }
             )
         } else {
             EmptyScreenContent(Modifier.fillMaxSize())
@@ -104,26 +101,31 @@ fun DetailScreen(
 private fun ObjectDetails(
     obj: MuseumObject,
     onBackClick: () -> Unit,
-    onShowNoteDialog: () -> Unit, // New parameter
+    onShowNoteDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { Text(obj.title) }, // Added title back for clarity
+                title = { Text(obj.title, maxLines = 1) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(Res.string.back))
                     }
-                },
-                actions = {
-                    // Add the button here
-                    IconButton(onClick = onShowNoteDialog) {
-                        Icon(Icons.Default.Edit, contentDescription = "Add Note")
-                    }
                 }
+                // No actions here anymore, the FAB handles the "Add" action
             )
+        },
+        floatingActionButton = {
+            // NEW: Prominent Floating Action Button
+            FloatingActionButton(
+                onClick = onShowNoteDialog,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Note & Rating")
+            }
         },
         modifier = modifier.windowInsetsPadding(WindowInsets.systemBars),
     ) { paddingValues ->
@@ -132,7 +134,6 @@ private fun ObjectDetails(
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
         ) {
-
             AsyncImage(
                 model = obj.coverImage,
                 contentDescription = obj.title,
@@ -143,10 +144,10 @@ private fun ObjectDetails(
             )
 
             SelectionContainer {
-                Column(Modifier.padding(12.dp)) {
+                Column(Modifier.padding(16.dp)) {
                     Text(obj.title, style = MaterialTheme.typography.headlineMedium)
-                    Spacer(Modifier.height(6.dp))
-                    LabeledInfo(stringResource(Res.string.label_title), obj.title)
+                    Spacer(Modifier.height(8.dp))
+
                     LabeledInfo(stringResource(Res.string.label_artist), obj.artistDisplayName)
                     LabeledInfo(stringResource(Res.string.label_date), obj.objectDate)
                     LabeledInfo(stringResource(Res.string.label_type), obj.type)
@@ -165,14 +166,14 @@ private fun LabeledInfo(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.padding(vertical = 4.dp)) {
-        Spacer(Modifier.height(6.dp))
         Text(
             buildAnnotatedString {
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append("$label: ")
                 }
                 append(data)
-            }
+            },
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
