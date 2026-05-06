@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,6 +47,21 @@ import kmp_app_template.composeapp.generated.resources.label_tracks
 import kmp_app_template.composeapp.generated.resources.label_title
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun DetailScreen(
@@ -55,10 +70,30 @@ fun DetailScreen(
 ) {
     val viewModel = koinViewModel<DetailViewModel>()
 
+    var showNoteDialog by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    fun handleSaveNote(note: String) {
+        // TODO: Save this note to your database/storage later
+        Toast.makeText(context, "Note saved: $note", Toast.LENGTH_SHORT).show()
+    }
+
     val obj by viewModel.getObject(objectId).collectAsStateWithLifecycle(initialValue = null)
+
     AnimatedContent(obj != null) { objectAvailable ->
         if (objectAvailable) {
-            ObjectDetails(obj!!, onBackClick = navigateBack)
+            ObjectDetails(
+                obj = obj!!,
+                onBackClick = navigateBack,
+                onShowNoteDialog = { showNoteDialog = true }
+            )
+
+            // Render the Dialog
+            NoteDialog(
+                isOpen = showNoteDialog,
+                onDismiss = { showNoteDialog = false },
+                onSave = { note -> handleSaveNote(note) }
+            )
         } else {
             EmptyScreenContent(Modifier.fillMaxSize())
         }
@@ -69,16 +104,23 @@ fun DetailScreen(
 private fun ObjectDetails(
     obj: MuseumObject,
     onBackClick: () -> Unit,
+    onShowNoteDialog: () -> Unit, // New parameter
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = {},
+                title = { Text(obj.title) }, // Added title back for clarity
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(Res.string.back))
+                    }
+                },
+                actions = {
+                    // Add the button here
+                    IconButton(onClick = onShowNoteDialog) {
+                        Icon(Icons.Default.Edit, contentDescription = "Add Note")
                     }
                 }
             )
@@ -90,6 +132,7 @@ private fun ObjectDetails(
                 .verticalScroll(rememberScrollState())
                 .padding(paddingValues)
         ) {
+
             AsyncImage(
                 model = obj.coverImage,
                 contentDescription = obj.title,
