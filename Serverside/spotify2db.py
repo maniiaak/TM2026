@@ -38,10 +38,10 @@ def get_or_create_artist(cursor, artist_name, artist_genre=None, artist_country=
             (artist_name, artist_genre, artist_country)
         )
         artist_id = cursor.lastrowid
-        print(f"   ✅ New artist '{artist_name}' inserted (ID: {artist_id}).")
+        print(f"    New artist '{artist_name}' inserted (ID: {artist_id}).")
         return artist_id
     except Exception as e:
-        print(f"   ❌ Error inserting artist: {e}")
+        print(f"    Error inserting artist: {e}")
         return None
 
 # --- ALBUM HANDLER ---
@@ -61,13 +61,13 @@ def get_or_create_album(cursor, album_title, release_date, artist_id, cover_url=
         )
         return cursor.lastrowid
     except Exception as e:
-        print(f"   ❌ Error inserting album: {e}")
+        print(f"   Error inserting album: {e}")
         return None
 
 # --- SPOTIFY FETCH ---
 def fetch_spotify_data(album_name, artist_name=None):
     try:
-        print("   🌐 Fetching from Spotify...")
+        print("   Fetching from Spotify...")
 
         query = f"album:{album_name}"
         if artist_name:
@@ -75,7 +75,7 @@ def fetch_spotify_data(album_name, artist_name=None):
 
         results = sp.search(q=query, type="album", limit=1)
         if not results["albums"]["items"]:
-            print("❌ No results found on Spotify.")
+            print(" No results found on Spotify.")
             return None
 
         album = results["albums"]["items"][0]
@@ -98,14 +98,14 @@ def fetch_spotify_data(album_name, artist_name=None):
         }
 
     except Exception as e:
-        print(f"   ❌ Spotify error: {e}")
+        print(f"    Spotify error: {e}")
         return None
 
 # --- PROCESS TO DB ---
 def process_spotify_to_db(data, db_conn):
     cursor = db_conn.cursor()
     try:
-        print(f"\n🔄 Processing: '{data['title']}' by '{data['artist_name']}'")
+        print(f"\n Processing: '{data['title']}' by '{data['artist_name']}'")
 
         artist_id = get_or_create_artist(
             cursor,
@@ -127,21 +127,21 @@ def process_spotify_to_db(data, db_conn):
             return False
 
         db_conn.commit()
-        print("✅ Success!\n")
+        print(" Success!\n")
         return True
     except Exception as e:
         db_conn.rollback()
-        print(f"❌ Failed: {e}")
+        print(f" Failed: {e}")
         return False
     finally:
         cursor.close()
 
 # --- MAIN LOOP ---
 def main():
-    print("🚀 Spotify to SQLite Importer")
+    print(" Spotify to SQLite Importer")
 
     if not os.path.exists(DB_NAME):
-        print(f"⚠️  Database '{DB_NAME}' not found. Please run init_db() first.")
+        print(f"⚠  Database '{DB_NAME}' not found. Please run init_db() first.")
         return
 
     conn = get_db_connection()
@@ -164,7 +164,7 @@ def main():
                                         JOIN artists ar ON a.artist_id = ar.id
                                """)
                 albums = cursor.fetchall()
-                print("\n📚 Albums:")
+                print("\n Albums:")
                 for a in albums:
                     print(f"   - {a['title']} by {a['name']} ({a['release_date']})")
                 cursor.close()
@@ -173,7 +173,7 @@ def main():
                 cursor = conn.cursor()
                 cursor.execute("SELECT id, name, genre, country FROM artists")
                 artists = cursor.fetchall()
-                print("\n👨‍🎤 Artists:")
+                print("\n Artists:")
                 for a in artists:
                     print(f"   ID {a['id']}: {a['name']} | Genres: {a['genre']} | Country: {a['country']}")
                 cursor.close()

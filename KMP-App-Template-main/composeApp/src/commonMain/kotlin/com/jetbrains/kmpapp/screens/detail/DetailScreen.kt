@@ -51,6 +51,8 @@ import kmp_app_template.composeapp.generated.resources.label_length
 import kmp_app_template.composeapp.generated.resources.label_title
 import kmp_app_template.composeapp.generated.resources.label_tracks
 import kmp_app_template.composeapp.generated.resources.label_type
+import kmp_app_template.composeapp.generated.resources.label_total_ratings
+import kmp_app_template.composeapp.generated.resources.label_rating
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import android.widget.Toast
@@ -62,17 +64,24 @@ fun DetailScreen(
 ) {
     val viewModel = koinViewModel<DetailViewModel>()
 
-    // State for the dialog
     var showNoteDialog by remember { mutableStateOf(false) }
-
-    // Context for Toast
     val context = LocalContext.current
 
-    // Handler for saving
+    // UPDATED: Call the ViewModel to save
     fun handleSaveNote(note: String, rating: Float?) {
-        val ratingDisplay = rating?.let { "Rating: $it/5 | " } ?: ""
-        Toast.makeText(context, "${ratingDisplay}Note saved!", Toast.LENGTH_SHORT).show()
-        // TODO: Connect this to your ViewModel/Repository to save permanently
+        if (rating == null) {
+            Toast.makeText(context, "Please enter a rating", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Call the ViewModel function
+        viewModel.saveReview(rating, note, objectId)
+
+        // Show temporary feedback
+        Toast.makeText(context, "Saving review...", Toast.LENGTH_SHORT).show()
+
+        // Close dialog
+        showNoteDialog = false
     }
 
     val obj by viewModel.getObject(objectId).collectAsStateWithLifecycle(initialValue = null)
@@ -153,6 +162,8 @@ private fun ObjectDetails(
                     LabeledInfo(stringResource(Res.string.label_type), obj.type)
                     LabeledInfo(stringResource(Res.string.label_length), obj.length)
                     LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks)
+                    LabeledInfo(stringResource(Res.string.label_total_ratings), obj.totalRatings.toString())
+                    LabeledInfo(stringResource(Res.string.label_rating), obj.rating.toString())
                 }
             }
         }

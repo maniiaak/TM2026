@@ -6,7 +6,8 @@
     <string name="label_type">Type</string>
     <string name="label_tracks">Tracks</string>
     <string name="label_length">Length</string>
-
+    <string name="label_total_ratings">Total Ratings</string>
+    <string name="label_rating">Average Rating</string>
 
     <string name="back">Back</string>
 

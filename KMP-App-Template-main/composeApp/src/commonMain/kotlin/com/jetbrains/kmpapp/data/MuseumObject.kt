@@ -13,4 +13,6 @@ data class MuseumObject(
     val coverImage: String,
     val tracks: String,
     val length: String,
+    val totalRatings: Int,
+    val rating: Float,
 )
