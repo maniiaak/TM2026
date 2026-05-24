@@ -56,7 +56,7 @@ private fun ObjectGrid(
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(180.dp),
+        columns = GridCells.Adaptive(120.dp),
         modifier = modifier.fillMaxSize(),
         contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
     ) {
@@ -92,8 +92,8 @@ private fun ObjectFrame(
 
         Spacer(Modifier.height(2.dp))
 
-        Text(obj.title, style = MaterialTheme.typography.titleMedium)
-        Text(obj.artistDisplayName, style = MaterialTheme.typography.bodyMedium)
-        Text(obj.objectDate, style = MaterialTheme.typography.bodySmall)
+        // Text("${obj.title} (${obj.objectDate.take(4)})", style = MaterialTheme.typography.titleSmall)
+        Text(obj.title, style = MaterialTheme.typography.titleSmall)
+        Text(obj.artistDisplayName, style = MaterialTheme.typography.bodySmall)
     }
 }
