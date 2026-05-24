@@ -2,48 +2,79 @@ package com.jetbrains.kmpapp.data
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
-import io.ktor.http.isSuccess
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.utils.io.CancellationException
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+
+// 1. Request Data Class
+@Serializable
+data class ReviewRequest(
+    val rating: Float,
+    val content: String,
+    val user_id: Int,
+    val album_id: Int
+)
+
+// 2. Response Data Class
+@Serializable
+data class ReviewResponse(
+    val success: Boolean,
+    val review_id: Int,
+    val message: String
+)
 
 interface MuseumApi {
     suspend fun getData(): List<MuseumObject>
+    suspend fun submitReview(review: ReviewRequest): Result<ReviewResponse>
 }
 
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
     companion object {
         private const val API_URL =
             "http://192.168.1.139:5000/api/albums"
+        private const val REVIEW_ENDPOINT =
+            "http://192.168.1.139:5000/api/reviews"
     }
 
     override suspend fun getData(): List<MuseumObject> {
         return try {
-            val response = client.get(API_URL)
-
-            // 1. Check HTTP Status
-            if (!response.status.isSuccess()) {
-                println("❌ HTTP Error: ${response.status} - ${response.body<String>()}")
-                return emptyList()
-            }
-
-            // 2. Print Raw Body (to see if it's actually JSON)
-            val rawBody = response.body<String>()
-            println("📄 Raw Response Length: ${rawBody.length}")
-            if (rawBody.isEmpty()) {
-                println("⚠️ Response body is empty!")
-                return emptyList()
-            }
-
-            // 3. Try to parse
-            val data = Json.decodeFromString<List<MuseumObject>>(rawBody)
-            println("✅ Successfully parsed ${data.size} objects")
-            return data
-
+            client.get(API_URL).body()
         } catch (e: Exception) {
-            println("❌ Exception: ${e.message}")
+            if (e is CancellationException) throw e
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    override suspend fun submitReview(review: ReviewRequest): Result<ReviewResponse> {
+        return try {
+            val response = client.post(REVIEW_ENDPOINT) {
+                contentType(ContentType.Application.Json)
+                setBody(review)
+            }
+
+            // Check if the request was successful (2xx status)
+            if (response.status.value in 200..299) {
+                val result = response.body<ReviewResponse>()
+                Result.success(result)
+            } else {
+                // If server returns an error (e.g., 400, 500), try to read the error message
+                val errorMsg = try {
+                    response.body<String>()
+                } catch (e: Exception) {
+                    "Unknown error"
+                }
+                Result.failure(Exception("Server error (${response.status.value}): $errorMsg"))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
         }
     }
 }
