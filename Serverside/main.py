@@ -74,10 +74,10 @@ def get_reviews_for_album(album_id):
     close_db(conn)
 
     return [{
-        "user_id": review["user_id"],
+        "userID": review["user_id"],
         "username": review["username"],  # Added username
         "content": review["content"],
-        "created_at": str(review["created_at"]),
+        "createdAt": str(review["created_at"]),
         "rating": review["rating"]
     } for review in reviews]
 

@@ -56,6 +56,10 @@ import kmp_app_template.composeapp.generated.resources.label_rating
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import android.widget.Toast
+import com.jetbrains.kmpapp.data.Review
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DetailScreen(
@@ -67,20 +71,14 @@ fun DetailScreen(
     var showNoteDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    // UPDATED: Call the ViewModel to save
     fun handleSaveNote(note: String, rating: Float?) {
         if (rating == null) {
             Toast.makeText(context, "Please enter a rating", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Call the ViewModel function
         viewModel.saveReview(rating, note, objectId)
-
-        // Show temporary feedback
-        Toast.makeText(context, "Saving review...", Toast.LENGTH_SHORT).show()
-
-        // Close dialog
+        Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
         showNoteDialog = false
     }
 
@@ -94,7 +92,6 @@ fun DetailScreen(
                 onShowNoteDialog = { showNoteDialog = true }
             )
 
-            // Render the Dialog
             NoteDialog(
                 isOpen = showNoteDialog,
                 onDismiss = { showNoteDialog = false },
@@ -123,11 +120,9 @@ private fun ObjectDetails(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(Res.string.back))
                     }
                 }
-                // No actions here anymore, the FAB handles the "Add" action
             )
         },
         floatingActionButton = {
-            // NEW: Prominent Floating Action Button
             FloatingActionButton(
                 onClick = onShowNoteDialog,
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -162,8 +157,24 @@ private fun ObjectDetails(
                     LabeledInfo(stringResource(Res.string.label_type), obj.type)
                     LabeledInfo(stringResource(Res.string.label_length), obj.length)
                     LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks)
+
+                    // Display Aggregate Stats
                     LabeledInfo(stringResource(Res.string.label_total_ratings), obj.totalRatings.toString())
                     LabeledInfo(stringResource(Res.string.label_rating), obj.rating.toString())
+
+                    Spacer(Modifier.height(16.dp))
+
+                    // NEW: Render Reviews Section
+                    if (!obj.reviews.isNullOrEmpty()) {
+                        ReviewsList(reviews = obj.reviews)
+                    } else {
+                        Text(
+                            text = "No reviews yet.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                    }
                 }
             }
         }
@@ -186,5 +197,61 @@ private fun LabeledInfo(
             },
             style = MaterialTheme.typography.bodyLarge
         )
+    }
+}
+
+// NEW Composable for the Reviews List
+@Composable
+private fun ReviewsList(reviews: List<Review>) {
+    Column(modifier = Modifier.padding(top = 8.dp)) {
+        Text(
+            text = "User Reviews",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        reviews.forEach { review ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                // Username in Bold
+                Text(
+                    text = review.username,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+
+                Spacer(Modifier.height(4.dp))
+
+                // Rating
+                Text(
+                    text = "Rating: ${review.rating}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                Spacer(Modifier.height(2.dp))
+
+                // Review Content
+                Text(
+                    text = review.content,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                // Optional: Date (smaller, gray)
+                Text(
+                    text = review.createdAt,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                // Divider between reviews
+                Spacer(Modifier.height(8.dp))
+                // HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp)) // If using Material3 divider
+            }
+        }
     }
 }
