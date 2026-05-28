@@ -26,13 +26,20 @@ class AuthViewModel(
     fun exchangeSpotifyCode(code: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
-
             val result = repository.exchangeSpotifyCode(code)
 
             result.fold(
-                onSuccess = { username ->
+                onSuccess = { response ->
+                    println("🔍 Received user_id: ${response.user_id} (Type: ${response.user_id::class.simpleName})")
+                    if (response.user_id == 0) {
+                        println("❌ ERROR: user_id is 0!")
+                    }
+
                     // 1. Save the session
-                    sessionManager.login(username)
+                    val userId = response.user_id
+                    val username = response.username
+
+                    sessionManager.login(username, userId)
 
                     // 2. Update state to success
                     _authState.value = AuthState.Success(username)

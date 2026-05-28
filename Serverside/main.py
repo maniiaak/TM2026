@@ -107,6 +107,60 @@ def check_tables():
 check_tables()
 
 # --- API Endpoints ---
+@app.route('/api/albums', methods=['GET'])
+def get_albums():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Select ONLY album columns, NO reviews joined
+    cursor.execute("""
+                   SELECT objectID, title, artistDisplayName, coverImage, objectDate
+                   FROM objects
+                   """)
+    albums = cursor.fetchall()
+    conn.close()
+
+    # Convert to list of dicts
+    result = []
+    for row in albums:
+        result.append({
+            "objectID": row['objectID'],
+            "title": row['title'],
+            "artistDisplayName": row['artistDisplayName'],
+            "coverImage": row['coverImage'],
+            "objectDate": row['objectDate']
+        })
+
+    return jsonify(result), 200
+
+@app.route('/api/albums/<int:album_id>/reviews', methods=['GET'])
+def get_album_reviews(album_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Join reviews with users to get the username
+    cursor.execute("""
+                   SELECT r.rating, r.content, r.created_at, u.username
+                   FROM reviews r
+                            JOIN users u ON r.user_id = u.id
+                   WHERE r.album_id = ?
+                   ORDER BY r.created_at DESC
+                   """, (album_id,))
+
+    reviews = cursor.fetchall()
+    conn.close()
+
+    result = []
+    for row in reviews:
+        result.append({
+            "rating": row['rating'],
+            "content": row['content'],
+            "created_at": row['created_at'],
+            "username": row['username']
+        })
+
+    return jsonify(result), 200
+
 
 @app.route('/api/albums', methods=['GET'])
 def get_all_albums():
@@ -178,11 +232,11 @@ def submit_review():
 
     rating = data.get('rating')
     content = data.get('content')
-    user_id = data.get('user_id', 0)
+    user_id = data.get('user_id',)
     album_id = data.get('album_id')
 
     if rating is None or content is None or album_id is None:
-        print(f" Missing fields. Got: rating={rating}, content={content}, album_id={album_id}")
+        print(f" Missing fields. Got: rating={rating}, content={content}, album_id={album_id}, user_id={user_id}")
         return jsonify({"error": "Missing required fields"}), 400
 
     conn = get_db_connection()
@@ -193,6 +247,12 @@ def submit_review():
         if not cursor.fetchone():
             print(f" Album ID {album_id} not found in DB!")
             return jsonify({"error": f"Album {album_id} not found"}), 404
+
+        cursor.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+        user_row = cursor.fetchone()
+
+        if not user_row:
+            return jsonify({"error": "User not found"}), 404
 
         cursor.execute('''
                        INSERT INTO reviews (rating, content, user_id, album_id)
@@ -306,6 +366,7 @@ def spotify_login():
         conn.close()
 
         # 5. Return Success
+
         return jsonify({
             "success": True,
             "user_id": user_id,
