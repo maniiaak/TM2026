@@ -1,28 +1,26 @@
 package com.jetbrains.kmpapp.data
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class Review(
-    val userID: Int,
-    val username: String,
+    val rating: Float,
     val content: String,
-    val createdAt: String,
-    val rating: Double
+    @SerialName("created_at") val createdAt: String,
+    val username: String
 )
 
 @Serializable
 data class MuseumObject(
     val objectID: Int,
     val title: String,
-    val artistDisplayName: String,
-    val objectDate: String,
-    val type: String,
-    val length: String,
-    val tracks: String,
+    val artistDisplayName: String?,
     val coverImage: String?,
-    val objectURL: String?,
-    val rating: Double, // Average rating
-    val totalRatings: Int, // Total count
-    val reviews: List<Review>? // The list of reviews
+    val objectDate: String?,
+    val type: String?,
+    val length: String?,
+    val tracks: String?,
+    val totalRatings: Int?,
+    val rating: Double?
 )

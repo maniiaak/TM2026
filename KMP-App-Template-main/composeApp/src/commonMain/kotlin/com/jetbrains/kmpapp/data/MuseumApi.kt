@@ -1,18 +1,17 @@
 package com.jetbrains.kmpapp.data
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.utils.io.CancellationException
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
-// 1. Request Data Class
+interface MuseumApi {
+    suspend fun getData(): List<MuseumObject>
+    suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse>
+    suspend fun getReviews(albumId: Int): Result<List<Review>>
+}
+
 @Serializable
 data class ReviewRequest(
     val rating: Float,
@@ -21,58 +20,45 @@ data class ReviewRequest(
     val album_id: Int
 )
 
-// 2. Response Data Class
 @Serializable
 data class ReviewResponse(
-    val success: Boolean,
-    val review_id: Int,
-    val message: String
+    val success: Boolean
 )
 
-interface MuseumApi {
-    suspend fun getData(): List<MuseumObject>
-    suspend fun submitReview(review: ReviewRequest): Result<ReviewResponse>
-}
-
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
-    companion object {
-        private const val API_URL =
-            "http://192.168.1.139:5000/api/albums"
-        private const val REVIEW_ENDPOINT =
-            "http://192.168.1.139:5000/api/reviews"
-    }
+
+    // CRITICAL: Change localhost to 10.0.2.2 for Android Emulator
+    private val baseUrl = "http://192.168.1.139:5000/api/"
 
     override suspend fun getData(): List<MuseumObject> {
+        return client.get("${baseUrl}albums").body()
+    }
+
+    override suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse> {
         return try {
-            client.get(API_URL).body()
+            val response = client.post("${baseUrl}reviews") {
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+            if (response.status.isSuccess()) {
+                Result.success(response.body())
+            } else {
+                Result.failure(Exception("Failed to submit review"))
+            }
         } catch (e: Exception) {
-            if (e is CancellationException) throw e
-            e.printStackTrace()
-            emptyList()
+            Result.failure(e)
         }
     }
 
-    override suspend fun submitReview(review: ReviewRequest): Result<ReviewResponse> {
+    override suspend fun getReviews(albumId: Int): Result<List<Review>> {
         return try {
-            val response = client.post(REVIEW_ENDPOINT) {
-                contentType(ContentType.Application.Json)
-                setBody(review)
-            }
-
-            // Check if the request was successful (2xx status)
-            if (response.status.value in 200..299) {
-                val result = response.body<ReviewResponse>()
-                Result.success(result)
+            val response = client.get("${baseUrl}albums/$albumId/reviews")
+            if (response.status.isSuccess()) {
+                Result.success(response.body())
             } else {
-                val errorMsg = try {
-                    response.body<String>()
-                } catch (e: Exception) {
-                    "Unknown error"
-                }
-                Result.failure(Exception("Server error (${response.status.value}): $errorMsg"))
+                Result.failure(Exception("Failed to fetch reviews"))
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             Result.failure(e)
         }
     }

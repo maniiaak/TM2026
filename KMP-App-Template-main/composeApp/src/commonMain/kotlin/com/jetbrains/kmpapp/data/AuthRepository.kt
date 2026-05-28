@@ -18,7 +18,7 @@ class AuthRepository {
         }
     }
 
-    private val baseUrl = "http://192.168.1.139:5000/api/auth"
+    private val baseUrl = "http://192.168.1.139:5000/api/auth/"
 
     suspend fun exchangeSpotifyCode(code: String): Result<SpotifyLoginResponse> {
         return try {

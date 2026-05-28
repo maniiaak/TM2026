@@ -112,15 +112,27 @@ def get_albums():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Select ONLY album columns, NO reviews joined
     cursor.execute("""
-                   SELECT objectID, title, artistDisplayName, coverImage, objectDate
-                   FROM objects
+                   SELECT
+                       a.id as objectID,
+                       a.title,
+                       ar.name as artistDisplayName,
+                       a.cover_image_url as coverImage,
+                       a.release_date as objectDate,
+                       'Album' as type,
+                       '0:00' as length,
+                       '0' as tracks,
+                       COALESCE(COUNT(r.id), 0) as totalRatings,
+                       COALESCE(ROUND(AVG(r.rating), 1), 0.0) as rating
+                   FROM albums a
+                            JOIN artists ar ON a.artist_id = ar.id
+                            LEFT JOIN reviews r ON a.id = r.album_id
+                   GROUP BY a.id
                    """)
+
     albums = cursor.fetchall()
     conn.close()
 
-    # Convert to list of dicts
     result = []
     for row in albums:
         result.append({
@@ -128,7 +140,12 @@ def get_albums():
             "title": row['title'],
             "artistDisplayName": row['artistDisplayName'],
             "coverImage": row['coverImage'],
-            "objectDate": row['objectDate']
+            "objectDate": row['objectDate'],
+            "type": row['type'],
+            "length": row['length'],
+            "tracks": row['tracks'],
+            "totalRatings": row['totalRatings'],
+            "rating": row['rating']
         })
 
     return jsonify(result), 200
@@ -138,7 +155,6 @@ def get_album_reviews(album_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Join reviews with users to get the username
     cursor.execute("""
                    SELECT r.rating, r.content, r.created_at, u.username
                    FROM reviews r
@@ -162,7 +178,7 @@ def get_album_reviews(album_id):
     return jsonify(result), 200
 
 
-@app.route('/api/albums', methods=['GET'])
+@app.route('/api/all_albums', methods=['GET'])
 def get_all_albums():
     """Get all albums with review statistics in list.json format"""
     conn = get_db_connection()
