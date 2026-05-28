@@ -64,7 +64,6 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
                 val result = response.body<ReviewResponse>()
                 Result.success(result)
             } else {
-                // If server returns an error (e.g., 400, 500), try to read the error message
                 val errorMsg = try {
                     response.body<String>()
                 } catch (e: Exception) {

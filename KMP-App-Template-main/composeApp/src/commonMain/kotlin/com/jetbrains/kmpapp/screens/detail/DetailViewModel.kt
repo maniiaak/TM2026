@@ -21,8 +21,6 @@ class DetailViewModel(
             val result = museumRepository.submitReview(rating, note, albumId)
             result.onSuccess { response ->
                 println("Review saved successfully: ${response.review_id}")
-                // Optional: Trigger a refresh of the object to show the new review immediately
-                // This depends on how your repository handles caching/refreshing
             }.onFailure { error ->
                 println("Failed to save review: ${error.message}")
             }

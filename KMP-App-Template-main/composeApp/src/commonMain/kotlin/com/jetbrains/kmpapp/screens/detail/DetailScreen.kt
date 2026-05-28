@@ -164,7 +164,6 @@ private fun ObjectDetails(
 
                     Spacer(Modifier.height(16.dp))
 
-                    // NEW: Render Reviews Section
                     if (!obj.reviews.isNullOrEmpty()) {
                         ReviewsList(reviews = obj.reviews)
                     } else {
@@ -200,7 +199,6 @@ private fun LabeledInfo(
     }
 }
 
-// NEW Composable for the Reviews List
 @Composable
 private fun ReviewsList(reviews: List<Review>) {
     Column(modifier = Modifier.padding(top = 8.dp)) {
@@ -250,7 +248,6 @@ private fun ReviewsList(reviews: List<Review>) {
 
                 // Divider between reviews
                 Spacer(Modifier.height(8.dp))
-                // HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp)) // If using Material3 divider
             }
         }
     }

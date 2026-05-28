@@ -1,10 +1,14 @@
 package com.jetbrains.kmpapp.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.jetbrains.kmpapp.data.InMemoryMuseumStorage
 import com.jetbrains.kmpapp.data.KtorMuseumApi
 import com.jetbrains.kmpapp.data.MuseumApi
 import com.jetbrains.kmpapp.data.MuseumRepository
 import com.jetbrains.kmpapp.data.MuseumStorage
+import com.jetbrains.kmpapp.data.SessionManager
+import com.jetbrains.kmpapp.screens.auth.AuthViewModel
 import com.jetbrains.kmpapp.screens.detail.DetailViewModel
 import com.jetbrains.kmpapp.screens.list.ListViewModel
 import io.ktor.client.HttpClient
@@ -17,46 +21,40 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val dataModule = module {
-    // 1. HttpClient with JSON Serialization
     single {
         val json = Json {
             ignoreUnknownKeys = true
-            isLenient = true // Helps with strict JSON servers
+            isLenient = true
         }
         HttpClient {
             install(ContentNegotiation) {
-                // Explicitly set JSON content type for better compatibility
                 json(json, contentType = ContentType.Application.Json)
             }
         }
     }
 
-    // 2. API Implementation
     single<MuseumApi> { KtorMuseumApi(get()) }
-
-    // 3. Storage Implementation
     single<MuseumStorage> { InMemoryMuseumStorage() }
 
-    // 4. Repository (Singleton to maintain state)
     single {
         MuseumRepository(get(), get()).apply {
-            // Initialize data on startup
             initialize()
         }
     }
+
+    // We expect the DataStore to be provided by the Android layer
+    single<DataStore<Preferences>> { get() }
+    single { SessionManager(get()) }
 }
 
 val viewModelModule = module {
-    // Factory creates a new instance for each screen/view
     factoryOf(::ListViewModel)
     factoryOf(::DetailViewModel)
+    factoryOf(::AuthViewModel)
 }
 
 fun initKoin() {
     startKoin {
-        modules(
-            dataModule,
-            viewModelModule,
-        )
+        modules(dataModule, viewModelModule)
     }
 }

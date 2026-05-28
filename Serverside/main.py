@@ -1,6 +1,11 @@
 from flask import Flask, jsonify, request
 import sqlite3
+import requests
+import spotipy
+from dotenv import load_dotenv
+from spotipy.oauth2 import SpotifyClientCredentials
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 DATABASE = 'app_data.db'
@@ -209,8 +214,110 @@ def submit_review():
     finally:
         close_db(conn)
 
-# Keep other endpoints (artists, stats, search, etc.) as they were,
-# or update them similarly if you need them to match the new format.
+@app.route('/api/auth/spotify', methods=['POST'])
+def spotify_login():
+    data = request.get_json()
+    code = data.get('code')
+
+    load_dotenv()
+
+    client_id=os.getenv("SPOTIPY_CLIENT_ID"),
+    client_secret=os.getenv("SPOTIPY_CLIENT_SECRET")
+
+    if not code:
+        return jsonify({"error": "No code"}), 400
+
+    print(f"Attempting exchange with:")
+    print(f"  Code: {code[:10]}...") # Print first 10 chars
+    print(f"  Redirect URI: com.jetbrains.kmpapp://callback")
+    print(f"  Client ID: {client_id}")
+
+    # 1. Exchange code for Access Token
+    token_url = "https://accounts.spotify.com/api/token"
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    body = {
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": "com.jetbrains.kmpapp://callback",
+        "client_id": client_id,
+        "client_secret": client_secret
+    }
+
+    print(f"Exchanging code for token...")
+    token_response = requests.post(token_url, headers=headers, data=body)
+
+    if token_response.status_code != 200:
+        print(f"Token Exchange Failed: {token_response.status_code}")
+        print(f"Response: {token_response.text}")
+        return jsonify({"error": "Token exchange failed", "details": token_response.text}), 400
+
+    token_data = token_response.json()
+    access_token = token_data['access_token']
+    print(f"Token received: {access_token[:10]}...")
+
+    # 2. Fetch User Profile
+    profile_url = "https://api.spotify.com/v1/me"
+    profile_headers = {"Authorization": f"Bearer {access_token}"}
+
+    print(f"Fetching profile with token...")
+    profile_resp = requests.get(profile_url, headers=profile_headers)
+
+    if profile_resp.status_code != 200:
+        print(f"Profile Fetch Failed: {profile_resp.status_code}")
+        print(f"Response: {profile_resp.text}")
+        return jsonify({"error": "Profile fetch failed", "details": profile_resp.text}), 400
+
+    user_info = profile_resp.json()
+    print(f"Profile fetched: {user_info.get('display_name')} ({user_info.get('id')})")
+
+    # 3. Extract Data
+    spotify_id = user_info.get('id')
+    email = user_info.get('email')
+    name = user_info.get('display_name')
+
+    # DEBUG: Print extracted data
+    print(f"Extracted: ID={spotify_id}, Email={email}, Name={name}")
+
+    if not spotify_id:
+        print("ERROR: Spotify ID is missing!")
+        return jsonify({"error": "Invalid profile data: missing ID"}), 500
+
+    # 4. Save to Database
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if user exists by Email
+        cursor.execute("SELECT id, username FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
+
+        if user:
+            user_id = user['id']
+            # Update name if changed
+            cursor.execute("UPDATE users SET username = ? WHERE id = ?", (name, user_id))
+            print(f"Updated existing user: {user_id}")
+        else:
+            # New user
+            cursor.execute("INSERT INTO users (username, email) VALUES (?, ?)", (name, email))
+            user_id = cursor.lastrowid
+            print(f"Created new user: {user_id}")
+
+        conn.commit()
+        conn.close()
+
+        # 5. Return Success
+        return jsonify({
+            "success": True,
+            "user_id": user_id,
+            "username": name,
+            "spotify_id": spotify_id
+        }), 200
+
+    except Exception as e:
+        print(f"Database Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": "Database error", "details": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
