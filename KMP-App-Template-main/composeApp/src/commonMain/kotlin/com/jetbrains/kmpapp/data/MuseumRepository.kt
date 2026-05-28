@@ -34,4 +34,8 @@ class MuseumRepository(
         )
         return museumApi.submitReview(request)
     }
+
+    suspend fun getReviewsForAlbum(albumId: Int): Result<List<Review>> {
+        return museumApi.getReviews(albumId)
+    }
 }

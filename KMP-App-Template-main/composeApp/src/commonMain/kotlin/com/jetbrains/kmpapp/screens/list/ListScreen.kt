@@ -1,18 +1,8 @@
 package com.jetbrains.kmpapp.screens.list
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -29,15 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.jetbrains.kmpapp.data.MuseumObject
 import com.jetbrains.kmpapp.screens.EmptyScreenContent
-import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,40 +55,27 @@ fun ListScreen(
             )
         }
     ) { paddingValues ->
-        AnimatedContent(objects.isNotEmpty()) { objectsAvailable ->
-            if (objectsAvailable) {
-                ObjectGrid(
-                    objects = objects,
-                    onObjectClick = navigateToDetails,
-                    modifier = Modifier.padding(paddingValues) // Apply padding here
-                )
-            } else {
-                EmptyScreenContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ObjectGrid(
-    objects: List<MuseumObject>,
-    onObjectClick: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(120.dp),
-        modifier = modifier.fillMaxSize(),
-        contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
-    ) {
-        items(objects, key = { it.objectID }) { obj ->
-            ObjectFrame(
-                obj = obj,
-                onClick = { onObjectClick(obj.objectID) },
+        if (objects.isEmpty()) {
+            EmptyScreenContent(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
             )
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(120.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentPadding = WindowInsets.safeDrawing.asPaddingValues(),
+            ) {
+                items(objects, key = { it.objectID }) { obj ->
+                    ObjectFrame(
+                        obj = obj,
+                        onClick = { navigateToDetails(obj.objectID) },
+                    )
+                }
+            }
         }
     }
 }
@@ -119,16 +94,16 @@ private fun ObjectFrame(
         AsyncImage(
             model = obj.coverImage,
             contentDescription = obj.title,
-            contentScale = ContentScale.Crop,
+            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .background(Color.LightGray),
+                .background(androidx.compose.ui.graphics.Color.LightGray),
         )
 
         Spacer(Modifier.height(2.dp))
 
         Text(obj.title, style = MaterialTheme.typography.titleSmall)
-        Text(obj.artistDisplayName, style = MaterialTheme.typography.bodySmall)
+        Text(obj.artistDisplayName ?: "Unknown", style = MaterialTheme.typography.bodySmall)
     }
 }

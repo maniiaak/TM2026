@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.data.Review
+import com.jetbrains.kmpapp.data.SessionManager
 import com.jetbrains.kmpapp.screens.EmptyScreenContent
 import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.back
@@ -53,24 +55,26 @@ import kmp_app_template.composeapp.generated.resources.label_tracks
 import kmp_app_template.composeapp.generated.resources.label_type
 import kmp_app_template.composeapp.generated.resources.label_total_ratings
 import kmp_app_template.composeapp.generated.resources.label_rating
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import android.widget.Toast
-import com.jetbrains.kmpapp.data.Review
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.unit.sp
-import com.jetbrains.kmpapp.data.SessionManager
 import org.koin.compose.koinInject
+import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun DetailScreen(
     objectId: Int,
     navigateBack: () -> Unit,
+    viewModel: DetailViewModel = koinViewModel(),
     sessionManager: SessionManager = koinInject()
 ) {
-    val viewModel = koinViewModel<DetailViewModel>()
+    LaunchedEffect(objectId) {
+        viewModel.loadReviews(objectId)
+    }
 
+    val reviews by viewModel.reviews.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoadingReviews.collectAsStateWithLifecycle()
     val userId by sessionManager.userId.collectAsStateWithLifecycle(initialValue = 0)
 
     var showNoteDialog by remember { mutableStateOf(false) }
@@ -81,12 +85,11 @@ fun DetailScreen(
             Toast.makeText(context, "Please enter a rating", Toast.LENGTH_SHORT).show()
             return
         }
-
         if (userId == 0) {
             Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
             return
         }
-
+        if (viewModel.reviewState.value is ReviewState.Loading) return
 
         viewModel.saveReview(rating, note, objectId, userId)
         Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
@@ -100,7 +103,10 @@ fun DetailScreen(
             ObjectDetails(
                 obj = obj!!,
                 onBackClick = navigateBack,
-                onShowNoteDialog = { showNoteDialog = true }
+                onShowNoteDialog = { showNoteDialog = true },
+                reviews = reviews,
+                isLoading = isLoading,
+                handleSaveNote = ::handleSaveNote
             )
 
             NoteDialog(
@@ -119,6 +125,9 @@ private fun ObjectDetails(
     obj: MuseumObject,
     onBackClick: () -> Unit,
     onShowNoteDialog: () -> Unit,
+    reviews: List<Review>,
+    isLoading: Boolean,
+    handleSaveNote: (String, Float?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -163,27 +172,28 @@ private fun ObjectDetails(
                     Text(obj.title, style = MaterialTheme.typography.headlineMedium)
                     Spacer(Modifier.height(8.dp))
 
-                    LabeledInfo(stringResource(Res.string.label_artist), obj.artistDisplayName)
-                    LabeledInfo(stringResource(Res.string.label_date), obj.objectDate)
-                    LabeledInfo(stringResource(Res.string.label_type), obj.type)
-                    LabeledInfo(stringResource(Res.string.label_length), obj.length)
-                    LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks)
+                    LabeledInfo(stringResource(Res.string.label_artist), obj.artistDisplayName ?: "Unknown")
+                    LabeledInfo(stringResource(Res.string.label_date), obj.objectDate ?: "Unknown")
+                    LabeledInfo(stringResource(Res.string.label_type), obj.type ?: "Album")
+                    LabeledInfo(stringResource(Res.string.label_length), obj.length ?: "0:00")
+                    LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks ?: "0")
 
-                    // Display Aggregate Stats
-                    LabeledInfo(stringResource(Res.string.label_total_ratings), obj.totalRatings.toString())
-                    LabeledInfo(stringResource(Res.string.label_rating), obj.rating.toString())
+                    LabeledInfo(stringResource(Res.string.label_total_ratings), (obj.totalRatings ?: 0).toString())
+                    LabeledInfo(stringResource(Res.string.label_rating), (obj.rating ?: 0.0).toString())
 
                     Spacer(Modifier.height(16.dp))
 
-                    if (!obj.reviews.isNullOrEmpty()) {
-                        ReviewsList(reviews = obj.reviews)
-                    } else {
+                    if (isLoading) {
+                        androidx.compose.material3.CircularProgressIndicator()
+                    } else if (reviews.isEmpty()) {
                         Text(
                             text = "No reviews yet.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
+                    } else {
+                        ReviewsList(reviews = reviews)
                     }
                 }
             }
@@ -226,7 +236,6 @@ private fun ReviewsList(reviews: List<Review>) {
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
-                // Username in Bold
                 Text(
                     text = review.username,
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
@@ -234,7 +243,6 @@ private fun ReviewsList(reviews: List<Review>) {
 
                 Spacer(Modifier.height(4.dp))
 
-                // Rating
                 Text(
                     text = "Rating: ${review.rating}",
                     style = MaterialTheme.typography.bodyMedium,
@@ -243,13 +251,11 @@ private fun ReviewsList(reviews: List<Review>) {
 
                 Spacer(Modifier.height(2.dp))
 
-                // Review Content
                 Text(
                     text = review.content,
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                // Optional: Date (smaller, gray)
                 Text(
                     text = review.createdAt,
                     style = MaterialTheme.typography.labelSmall,
@@ -257,7 +263,6 @@ private fun ReviewsList(reviews: List<Review>) {
                     modifier = Modifier.padding(top = 4.dp)
                 )
 
-                // Divider between reviews
                 Spacer(Modifier.height(8.dp))
             }
         }
