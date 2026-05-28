@@ -25,11 +25,11 @@ class MuseumRepository(
 
     fun getObjectById(objectId: Int): Flow<MuseumObject?> = museumStorage.getObjectById(objectId)
 
-    suspend fun submitReview(rating: Float, content: String, albumId: Int): Result<ReviewResponse> {
+    suspend fun submitReview(rating: Float, content: String, albumId: Int, userId: Int): Result<ReviewResponse> {
         val request = ReviewRequest(
             rating = rating,
             content = content,
-            user_id = 0,
+            user_id = userId,
             album_id = albumId
         )
         return museumApi.submitReview(request)

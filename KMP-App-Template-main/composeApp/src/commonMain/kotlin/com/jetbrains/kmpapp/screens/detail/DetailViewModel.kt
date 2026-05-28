@@ -14,11 +14,11 @@ class DetailViewModel(
     fun getObject(objectId: Int): Flow<MuseumObject?> =
         museumRepository.getObjectById(objectId)
 
-    fun saveReview(rating: Float?, note: String, albumId: Int) {
+    fun saveReview(rating: Float?, note: String, albumId: Int, userId: Int) {
         if (rating == null || note.isBlank()) return
 
         viewModelScope.launch {
-            val result = museumRepository.submitReview(rating, note, albumId)
+            val result = museumRepository.submitReview(rating, note, albumId, userId)
             result.onSuccess { response ->
                 println("Review saved successfully: ${response.review_id}")
             }.onFailure { error ->

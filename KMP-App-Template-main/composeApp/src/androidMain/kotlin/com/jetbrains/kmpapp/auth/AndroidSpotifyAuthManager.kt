@@ -21,7 +21,6 @@ class AndroidSpotifyAuthManager(
 
     override fun initiateLogin() {
         _state.value = AuthState.Loading
-        // The WebView will be created in the Composable, we just trigger the state
     }
 
     override fun handleUrl(url: String) {

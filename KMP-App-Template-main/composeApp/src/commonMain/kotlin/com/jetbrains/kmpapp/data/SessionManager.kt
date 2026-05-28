@@ -4,12 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 val IS_LOGGED_IN_KEY = booleanPreferencesKey("is_logged_in")
 val USERNAME_KEY = stringPreferencesKey("username")
+val USER_ID_KEY = intPreferencesKey("user_id")
 
 class SessionManager(private val dataStore: DataStore<Preferences>) {
 
@@ -21,10 +23,15 @@ class SessionManager(private val dataStore: DataStore<Preferences>) {
         preferences[USERNAME_KEY] ?: ""
     }
 
-    suspend fun login(name: String) {
+    val userId: Flow<Int> = dataStore.data.map { preferences ->
+        preferences[USER_ID_KEY] ?: 0
+    }
+
+    suspend fun login(name: String, id: Int) {
         dataStore.edit { preferences ->
             preferences[IS_LOGGED_IN_KEY] = true
             preferences[USERNAME_KEY] = name
+            preferences[USER_ID_KEY] = id
         }
     }
 

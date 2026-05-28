@@ -60,13 +60,18 @@ import com.jetbrains.kmpapp.data.Review
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.unit.sp
+import com.jetbrains.kmpapp.data.SessionManager
+import org.koin.compose.koinInject
 
 @Composable
 fun DetailScreen(
     objectId: Int,
     navigateBack: () -> Unit,
+    sessionManager: SessionManager = koinInject()
 ) {
     val viewModel = koinViewModel<DetailViewModel>()
+
+    val userId by sessionManager.userId.collectAsStateWithLifecycle(initialValue = 0)
 
     var showNoteDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -77,7 +82,13 @@ fun DetailScreen(
             return
         }
 
-        viewModel.saveReview(rating, note, objectId)
+        if (userId == 0) {
+            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        viewModel.saveReview(rating, note, objectId, userId)
         Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
         showNoteDialog = false
     }

@@ -20,7 +20,7 @@ class AuthRepository {
 
     private val baseUrl = "http://192.168.1.139:5000/api/auth"
 
-    suspend fun exchangeSpotifyCode(code: String): Result<String> {
+    suspend fun exchangeSpotifyCode(code: String): Result<SpotifyLoginResponse> {
         return try {
             val response = client.post("$baseUrl/spotify") {
                 contentType(ContentType.Application.Json)
@@ -28,13 +28,9 @@ class AuthRepository {
             }
 
             if (response.status.isSuccess()) {
+                // This line MUST work now that the class is correct
                 val responseBody = response.body<SpotifyLoginResponse>()
-
-                if (responseBody.success) {
-                    Result.success(responseBody.username)
-                } else {
-                    Result.failure(Exception("Login failed: ${responseBody.username}"))
-                }
+                Result.success(responseBody)
             } else {
                 val errorBody = response.body<String>()
                 Result.failure(Exception("Backend error: $errorBody"))
