@@ -29,7 +29,7 @@ class MuseumRepository(
         val request = ReviewRequest(
             rating = rating,
             content = content,
-            user_id = 0, // As requested
+            user_id = 0,
             album_id = albumId
         )
         return museumApi.submitReview(request)

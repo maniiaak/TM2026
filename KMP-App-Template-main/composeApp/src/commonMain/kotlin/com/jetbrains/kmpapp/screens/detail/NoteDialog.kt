@@ -1,4 +1,3 @@
-// NoteDialog.kt
 package com.jetbrains.kmpapp.screens.detail
 
 import androidx.compose.foundation.layout.Column
@@ -34,10 +33,8 @@ fun NoteDialog(
     var text by remember { mutableStateOf(initialText) }
     var ratingError by remember { mutableStateOf<String?>(null) }
 
-    // FIXED: Removed 'private' keyword
     val validRatings = listOf(0.5f, 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f)
 
-    // Validate rating - must be exactly one of the allowed values
     fun validateRating(input: String): Float? {
         if (input.isBlank()) return null
 
@@ -61,7 +58,6 @@ fun NoteDialog(
         title = { Text("Review album") },
         text = {
             Column {
-                // Rating Field (First)
                 OutlinedTextField(
                     value = ratingText,
                     onValueChange = {
