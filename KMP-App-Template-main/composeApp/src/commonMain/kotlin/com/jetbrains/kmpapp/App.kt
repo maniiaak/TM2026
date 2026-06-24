@@ -44,7 +44,6 @@ fun App(
 
             NavHost(navController = navController, startDestination = startDestination) {
 
-                // 1. Login Route
                 composable<LoginDestination> {
                     LoginScreen(
                         onLoginSuccess = { username ->
@@ -55,7 +54,6 @@ fun App(
                     )
                 }
 
-                // 2. List (Home) Route
                 composable<ListDestination> {
                     ListScreen(
                         navigateToDetails = { objectId ->
@@ -70,10 +68,12 @@ fun App(
                     )
                 }
 
-                // 3. Detail Route
                 composable<DetailDestination> { backStackEntry ->
+                    val objectId = backStackEntry.toRoute<DetailDestination>().objectId
+                    println("Navigating to DetailScreen with ID: $objectId")
+
                     DetailScreen(
-                        objectId = backStackEntry.toRoute<DetailDestination>().objectId,
+                        objectId = objectId,
                         navigateBack = {
                             navController.popBackStack()
                         }

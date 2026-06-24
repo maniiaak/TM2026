@@ -112,6 +112,7 @@ def get_albums():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Simple query: No JOIN, No Aggregation. Just basic info.
     cursor.execute("""
                    SELECT
                        a.id as objectID,
@@ -122,12 +123,10 @@ def get_albums():
                        'Album' as type,
                        '0:00' as length,
                        '0' as tracks,
-                       COALESCE(COUNT(r.id), 0) as totalRatings,
-                       COALESCE(ROUND(AVG(r.rating), 1), 0.0) as rating
+                       0 as totalRatings,   -- Always 0 for list view
+                       0.0 as rating        -- Always 0.0 for list view
                    FROM albums a
                             JOIN artists ar ON a.artist_id = ar.id
-                            LEFT JOIN reviews r ON a.id = r.album_id
-                   GROUP BY a.id
                    """)
 
     albums = cursor.fetchall()
@@ -155,27 +154,46 @@ def get_album_reviews(album_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # 1. Get the list of reviews
     cursor.execute("""
                    SELECT r.rating, r.content, r.created_at, u.username
                    FROM reviews r
-                            JOIN users u ON r.user_id = u.id
+                            LEFT JOIN users u ON r.user_id = u.id
                    WHERE r.album_id = ?
                    ORDER BY r.created_at DESC
                    """, (album_id,))
 
     reviews = cursor.fetchall()
+
+    # 2. Calculate Stats (Count and Average)
+    cursor.execute("""
+                   SELECT COUNT(*), COALESCE(ROUND(AVG(rating), 1), 0.0)
+                   FROM reviews
+                   WHERE album_id = ?
+                   """, (album_id,))
+
+    stats = cursor.fetchone()
+    total_count = stats[0]
+    avg_rating = stats[1]
+
     conn.close()
 
-    result = []
+    # 3. Format Reviews List
+    reviews_list = []
     for row in reviews:
-        result.append({
+        reviews_list.append({
             "rating": row['rating'],
             "content": row['content'],
             "created_at": row['created_at'],
             "username": row['username']
         })
 
-    return jsonify(result), 200
+    # 4. Return BOTH the list AND the stats
+    return jsonify({
+        "reviews": reviews_list,
+        "totalRatings": total_count,
+        "rating": avg_rating
+    }), 200
 
 
 @app.route('/api/all_albums', methods=['GET'])
