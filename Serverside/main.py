@@ -414,10 +414,9 @@ def spotify_login():
         traceback.print_exc()
         return jsonify({"error": "Database error", "details": str(e)}), 500
 
-@app.route('/api/spotify/sync', methods=['POST'])
-def spotify_sync():
+@app.route('/api/spotify/search', methods=['POST'])
+def spotify_search():
     data = request.get_json()
-
     query = data.get("query", "").strip()
 
     if not query:
@@ -428,14 +427,14 @@ def spotify_sync():
 
     try:
         # --------------------------------------------------
-        # 1. Check local DB first
+        # Check local DB
         # --------------------------------------------------
         cursor.execute("""
                        SELECT
                            a.id,
                            a.title,
                            a.cover_image_url,
-                           ar.name as artist_name
+                           ar.name AS artist_name
                        FROM albums a
                                 JOIN artists ar ON a.artist_id = ar.id
                        WHERE LOWER(a.title) LIKE LOWER(?)
@@ -443,30 +442,27 @@ def spotify_sync():
                            LIMIT 1
                        """, (f"%{query}%", f"%{query}%"))
 
-        existing_album = cursor.fetchone()
+        album = cursor.fetchone()
 
-        if existing_album:
+        if album:
             return jsonify({
                 "success": True,
-                "album_id": existing_album["id"],
-                "title": existing_album["title"],
-                "artist": existing_album["artist_name"],
-                "coverImage": existing_album["cover_image_url"],
-                "source": "database"
+                "exists": True,
+                "album_id": album["id"],
+                "title": album["title"],
+                "artist": album["artist_name"],
+                "coverImage": album["cover_image_url"]
             })
 
         # --------------------------------------------------
-        # 2. Search Spotify
+        # Spotify search
         # --------------------------------------------------
         load_dotenv()
 
-        client_id = os.getenv("SPOTIPY_CLIENT_ID")
-        client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
-
         spotify = spotipy.Spotify(
             auth_manager=SpotifyClientCredentials(
-                client_id=client_id,
-                client_secret=client_secret
+                client_id=os.getenv("SPOTIPY_CLIENT_ID"),
+                client_secret=os.getenv("SPOTIPY_CLIENT_SECRET")
             )
         )
 
@@ -481,28 +477,104 @@ def spotify_sync():
         if not items:
             return jsonify({
                 "success": False,
-                "error": "Album not found on Spotify"
+                "error": "Album not found"
             }), 404
 
         album = items[0]
 
+        return jsonify({
+            "success": True,
+            "exists": False,
+            "spotify_id": album["id"],
+            "title": album["name"],
+            "artist": album["artists"][0]["name"],
+            "coverImage": (
+                album["images"][0]["url"]
+                if album.get("images")
+                else None
+            )
+        })
+
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+    finally:
+        close_db(conn)
+
+@app.route('/api/spotify/import', methods=['POST'])
+def spotify_import():
+    print(request.get_json(force=True))
+    data = request.get_json()
+
+    spotify_id = data.get("spotify_id")
+
+    if not spotify_id:
+        return jsonify({
+            "success": False,
+            "error": "Missing spotify_id"
+        }), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        load_dotenv()
+
+        spotify = spotipy.Spotify(
+            auth_manager=SpotifyClientCredentials(
+                client_id=os.getenv("SPOTIPY_CLIENT_ID"),
+                client_secret=os.getenv("SPOTIPY_CLIENT_SECRET")
+            )
+        )
+
+        album = spotify.album(spotify_id)
+
         title = album["name"]
         artist_name = album["artists"][0]["name"]
         release_date = album.get("release_date")
-        cover_url = album["images"][0]["url"] if album.get("images") else None
+
+        cover_url = (
+            album["images"][0]["url"]
+            if album.get("images")
+            else None
+        )
 
         # --------------------------------------------------
-        # 3. Create / get artist
+        # Check if album already exists
+        # --------------------------------------------------
+        cursor.execute("""
+                       SELECT a.id
+                       FROM albums a
+                                JOIN artists ar ON a.artist_id = ar.id
+                       WHERE a.title = ?
+                         AND ar.name = ?
+                           LIMIT 1
+                       """, (title, artist_name))
+
+        existing = cursor.fetchone()
+
+        if existing:
+            return jsonify({
+                "success": True,
+                "album_id": existing["id"],
+                "source": "database"
+            })
+
+        # --------------------------------------------------
+        # Artist
         # --------------------------------------------------
         cursor.execute(
             "SELECT id FROM artists WHERE name = ?",
             (artist_name,)
         )
 
-        artist_row = cursor.fetchone()
+        artist = cursor.fetchone()
 
-        if artist_row:
-            artist_id = artist_row["id"]
+        if artist:
+            artist_id = artist["id"]
         else:
             cursor.execute(
                 "INSERT INTO artists (name) VALUES (?)",
@@ -511,11 +583,16 @@ def spotify_sync():
             artist_id = cursor.lastrowid
 
         # --------------------------------------------------
-        # 4. Create album
+        # Album
         # --------------------------------------------------
         cursor.execute("""
                        INSERT INTO albums
-                           (title, release_date, cover_image_url, artist_id)
+                       (
+                           title,
+                           release_date,
+                           cover_image_url,
+                           artist_id
+                       )
                        VALUES (?, ?, ?, ?)
                        """, (
                            title,
@@ -528,17 +605,23 @@ def spotify_sync():
 
         conn.commit()
 
+        print(jsonify({
+            "success": True,
+            "album_id": album_id,
+            "source": "created",
+            "spotify_id": spotify_id
+        }))
+
         return jsonify({
             "success": True,
             "album_id": album_id,
-            "title": title,
-            "artist": artist_name,
-            "coverImage": cover_url,
-            "source": "spotify"
-        }), 201
+            "source": "created",
+            "spotify_id": spotify_id
+        })
 
     except Exception as e:
         conn.rollback()
+
         return jsonify({
             "success": False,
             "error": str(e)

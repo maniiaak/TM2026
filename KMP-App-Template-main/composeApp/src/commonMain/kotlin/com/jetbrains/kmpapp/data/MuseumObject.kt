@@ -57,17 +57,12 @@ data class TracksContainer(
 )
 
 @Serializable
-data class SyncRequest(
-    val query: String
-)
-
-@Serializable
-data class SyncResponse(
+data class SearchResponse(
     val success: Boolean,
+    val exists: Boolean,
     val album_id: Int? = null,
+    val spotify_id: String? = null,
     val title: String? = null,
     val artist: String? = null,
-    val coverImage: String? = null,
-    val source: String? = null,
-    val error: String? = null
+    val coverImage: String? = null
 )

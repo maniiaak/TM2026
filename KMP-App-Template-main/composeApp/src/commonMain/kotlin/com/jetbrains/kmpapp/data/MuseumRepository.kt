@@ -43,8 +43,16 @@ class MuseumRepository(
     }
 
 
-    suspend fun findAndCreateAlbum(query: String): Result<SyncResponse> {
-        val result = museumApi.findOrCreateAlbum(query)
+    suspend fun searchAlbum(
+        query: String
+    ): Result<SyncResponse> =
+        museumApi.searchAlbum(query)
+
+
+    suspend fun importAlbum(
+        query: String
+    ): Result<Int> {
+        val result = museumApi.importAlbum(query)
 
         if (result.isSuccess) {
             refresh()
