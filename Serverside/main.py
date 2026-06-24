@@ -112,6 +112,7 @@ def get_albums():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Simple query: No JOIN, No Aggregation. Just basic info.
     cursor.execute("""
                    SELECT
                        a.id as objectID,
@@ -122,12 +123,10 @@ def get_albums():
                        'Album' as type,
                        '0:00' as length,
                        '0' as tracks,
-                       COALESCE(COUNT(r.id), 0) as totalRatings,
-                       COALESCE(ROUND(AVG(r.rating), 1), 0.0) as rating
+                       0 as totalRatings,   -- Always 0 for list view
+                       0.0 as rating        -- Always 0.0 for list view
                    FROM albums a
                             JOIN artists ar ON a.artist_id = ar.id
-                            LEFT JOIN reviews r ON a.id = r.album_id
-                   GROUP BY a.id
                    """)
 
     albums = cursor.fetchall()
@@ -155,27 +154,46 @@ def get_album_reviews(album_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # 1. Get the list of reviews
     cursor.execute("""
                    SELECT r.rating, r.content, r.created_at, u.username
                    FROM reviews r
-                            JOIN users u ON r.user_id = u.id
+                            LEFT JOIN users u ON r.user_id = u.id
                    WHERE r.album_id = ?
                    ORDER BY r.created_at DESC
                    """, (album_id,))
 
     reviews = cursor.fetchall()
+
+    # 2. Calculate Stats (Count and Average)
+    cursor.execute("""
+                   SELECT COUNT(*), COALESCE(ROUND(AVG(rating), 1), 0.0)
+                   FROM reviews
+                   WHERE album_id = ?
+                   """, (album_id,))
+
+    stats = cursor.fetchone()
+    total_count = stats[0]
+    avg_rating = stats[1]
+
     conn.close()
 
-    result = []
+    # 3. Format Reviews List
+    reviews_list = []
     for row in reviews:
-        result.append({
+        reviews_list.append({
             "rating": row['rating'],
             "content": row['content'],
             "created_at": row['created_at'],
             "username": row['username']
         })
 
-    return jsonify(result), 200
+    # 4. Return BOTH the list AND the stats
+    return jsonify({
+        "reviews": reviews_list,
+        "totalRatings": total_count,
+        "rating": avg_rating
+    }), 200
 
 
 @app.route('/api/all_albums', methods=['GET'])
@@ -395,6 +413,129 @@ def spotify_login():
         import traceback
         traceback.print_exc()
         return jsonify({"error": "Database error", "details": str(e)}), 500
+
+@app.route('/api/spotify/sync', methods=['POST'])
+def spotify_sync():
+    data = request.get_json()
+
+    query = data.get("query", "").strip()
+
+    if not query:
+        return jsonify({"error": "Missing query"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # --------------------------------------------------
+        # 1. Check local DB first
+        # --------------------------------------------------
+        cursor.execute("""
+                       SELECT a.id
+                       FROM albums a
+                                JOIN artists ar ON a.artist_id = ar.id
+                       WHERE LOWER(a.title) LIKE LOWER(?)
+                          OR LOWER(ar.name) LIKE LOWER(?)
+                           LIMIT 1
+                       """, (f"%{query}%", f"%{query}%"))
+
+        existing_album = cursor.fetchone()
+
+        if existing_album:
+            return jsonify({
+                "success": True,
+                "album_id": existing_album["id"],
+                "source": "database"
+            }), 200
+
+        # --------------------------------------------------
+        # 2. Search Spotify
+        # --------------------------------------------------
+        load_dotenv()
+
+        client_id = os.getenv("SPOTIPY_CLIENT_ID")
+        client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
+
+        spotify = spotipy.Spotify(
+            auth_manager=SpotifyClientCredentials(
+                client_id=client_id,
+                client_secret=client_secret
+            )
+        )
+
+        results = spotify.search(
+            q=query,
+            type="album",
+            limit=1
+        )
+
+        items = results.get("albums", {}).get("items", [])
+
+        if not items:
+            return jsonify({
+                "success": False,
+                "error": "Album not found on Spotify"
+            }), 404
+
+        album = items[0]
+
+        title = album["name"]
+        artist_name = album["artists"][0]["name"]
+        release_date = album.get("release_date")
+        cover_url = album["images"][0]["url"] if album.get("images") else None
+
+        # --------------------------------------------------
+        # 3. Create / get artist
+        # --------------------------------------------------
+        cursor.execute(
+            "SELECT id FROM artists WHERE name = ?",
+            (artist_name,)
+        )
+
+        artist_row = cursor.fetchone()
+
+        if artist_row:
+            artist_id = artist_row["id"]
+        else:
+            cursor.execute(
+                "INSERT INTO artists (name) VALUES (?)",
+                (artist_name,)
+            )
+            artist_id = cursor.lastrowid
+
+        # --------------------------------------------------
+        # 4. Create album
+        # --------------------------------------------------
+        cursor.execute("""
+                       INSERT INTO albums
+                           (title, release_date, cover_image_url, artist_id)
+                       VALUES (?, ?, ?, ?)
+                       """, (
+                           title,
+                           release_date,
+                           cover_url,
+                           artist_id
+                       ))
+
+        album_id = cursor.lastrowid
+
+        conn.commit()
+
+        return jsonify({
+            "success": True,
+            "album_id": album_id,
+            "source": "spotify"
+        }), 201
+
+    except Exception as e:
+        conn.rollback()
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
+    finally:
+        close_db(conn)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -23,6 +23,7 @@ import com.jetbrains.kmpapp.data.AuthRepository // ADD THIS IMPORT
 import com.jetbrains.kmpapp.screens.auth.AuthViewModel
 import com.jetbrains.kmpapp.screens.detail.DetailViewModel
 import com.jetbrains.kmpapp.screens.list.ListViewModel
+import com.jetbrains.kmpapp.screens.search.SearchViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
@@ -76,6 +77,7 @@ class MyApp : Application() {
                     factoryOf(::ListViewModel)
                     factoryOf(::DetailViewModel)
                     factoryOf(::AuthViewModel)
+                    factoryOf(::SearchViewModel)
                 }
             )
         }

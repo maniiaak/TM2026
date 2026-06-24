@@ -69,11 +69,16 @@ fun DetailScreen(
     viewModel: DetailViewModel = koinViewModel(),
     sessionManager: SessionManager = koinInject()
 ) {
+    println("DetailScreen Composing for Album ID: $objectId")
+
     LaunchedEffect(objectId) {
+        println("🚀 LaunchedEffect triggered for Album ID: $objectId")
         viewModel.loadReviews(objectId)
     }
 
     val reviews by viewModel.reviews.collectAsStateWithLifecycle()
+    val totalRatings by viewModel.totalRatings.collectAsStateWithLifecycle()
+    val averageRating by viewModel.averageRating.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoadingReviews.collectAsStateWithLifecycle()
     val userId by sessionManager.userId.collectAsStateWithLifecycle(initialValue = 0)
 
@@ -96,27 +101,33 @@ fun DetailScreen(
         showNoteDialog = false
     }
 
+    // Get the album object
     val obj by viewModel.getObject(objectId).collectAsStateWithLifecycle(initialValue = null)
 
-    AnimatedContent(obj != null) { objectAvailable ->
-        if (objectAvailable) {
-            ObjectDetails(
-                obj = obj!!,
-                onBackClick = navigateBack,
-                onShowNoteDialog = { showNoteDialog = true },
-                reviews = reviews,
-                isLoading = isLoading,
-                handleSaveNote = ::handleSaveNote
-            )
+    // RENDER LOGIC
+    if (obj != null) {
+        ObjectDetails(
+            obj = obj!!,
+            onBackClick = navigateBack,
+            onShowNoteDialog = { showNoteDialog = true },
+            reviews = reviews,
+            isLoading = isLoading,
+            handleSaveNote = ::handleSaveNote,
+            totalRatings = totalRatings,
+            averageRating = averageRating
+        )
 
-            NoteDialog(
-                isOpen = showNoteDialog,
-                onDismiss = { showNoteDialog = false },
-                onSave = { note, rating -> handleSaveNote(note, rating) }
-            )
-        } else {
-            EmptyScreenContent(Modifier.fillMaxSize())
-        }
+        NoteDialog(
+            isOpen = showNoteDialog,
+            onDismiss = { showNoteDialog = false },
+            onSave = { note, rating -> handleSaveNote(note, rating) }
+        )
+    } else {
+        // Show loading or empty state while obj loads
+        println("⏳ Waiting for album object to load...")
+        androidx.compose.material3.CircularProgressIndicator(
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -128,6 +139,8 @@ private fun ObjectDetails(
     reviews: List<Review>,
     isLoading: Boolean,
     handleSaveNote: (String, Float?) -> Unit,
+    totalRatings: Int,
+    averageRating: Double,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -177,9 +190,8 @@ private fun ObjectDetails(
                     LabeledInfo(stringResource(Res.string.label_type), obj.type ?: "Album")
                     LabeledInfo(stringResource(Res.string.label_length), obj.length ?: "0:00")
                     LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks ?: "0")
-
-                    LabeledInfo(stringResource(Res.string.label_total_ratings), (obj.totalRatings ?: 0).toString())
-                    LabeledInfo(stringResource(Res.string.label_rating), (obj.rating ?: 0.0).toString())
+                    LabeledInfo(stringResource(Res.string.label_total_ratings), totalRatings.toString())
+                    LabeledInfo(stringResource(Res.string.label_rating), averageRating.toString())
 
                     Spacer(Modifier.height(16.dp))
 

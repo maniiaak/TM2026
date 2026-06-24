@@ -24,3 +24,47 @@ data class MuseumObject(
     val totalRatings: Int?,
     val rating: Double?
 )
+
+@Serializable
+data class SpotifyTrackItem(
+    val id: String,
+    val name: String,
+    @SerialName("album") val albumData: AlbumData
+)
+
+@Serializable
+data class AlbumData(
+    val name: String,
+    @SerialName("release_date") val releaseDate: String? = null,
+    val images: List<ImageData>? = null
+)
+
+@Serializable
+data class ImageData(
+    val url: String,
+    val height: Int?,
+    val width: Int?
+)
+
+@Serializable
+data class SpotifySearchResponse(
+    val tracks: TracksContainer?
+)
+
+@Serializable
+data class TracksContainer(
+    val items: List<SpotifyTrackItem>
+)
+
+@Serializable
+data class SyncRequest(
+    val query: String
+)
+
+@Serializable
+data class SyncResponse(
+    val success: Boolean,
+    val album_id: Int? = null,
+    val source: String? = null,
+    val error: String? = null
+)

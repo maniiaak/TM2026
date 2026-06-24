@@ -35,7 +35,21 @@ class MuseumRepository(
         return museumApi.submitReview(request)
     }
 
-    suspend fun getReviewsForAlbum(albumId: Int): Result<List<Review>> {
-        return museumApi.getReviews(albumId)
+    suspend fun getReviewsForAlbum(albumId: Int): Result<AlbumReviewsResponse> {
+        println("[Repository] Calling API for album $albumId")
+        val result = museumApi.getReviews(albumId)
+        println("[Repository] API call returned: ${result.isFailure}")
+        return result
+    }
+
+
+    suspend fun findAndCreateAlbum(query: String): Result<Int?> {
+        val result = museumApi.findOrCreateAlbum(query)
+
+        if (result.isSuccess) {
+            refresh()
+        }
+
+        return result
     }
 }
