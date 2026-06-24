@@ -1,6 +1,7 @@
 package com.jetbrains.kmpapp.screens.search
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -8,7 +9,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -86,15 +89,50 @@ fun SearchScreen(
                 is SearchState.Success -> {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Album Found!", style = MaterialTheme.typography.titleMedium)
-                            Spacer(Modifier.height(8.dp))
-                            Text("Title: ${s.albumTitle}", style = MaterialTheme.typography.bodyLarge)
-                            Text("Artist: ${s.artistName}", style = MaterialTheme.typography.bodyMedium)
-                            Spacer(Modifier.height(8.dp))
-                            TextButton(
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            Text(
+                                text = "Album Found!",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+
+                            Spacer(Modifier.height(12.dp))
+
+                            AsyncImage(
+                                model = s.coverImage,
+                                contentDescription = s.albumTitle,
+                                modifier = Modifier
+                                    .size(200.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                            )
+
+                            Spacer(Modifier.height(16.dp))
+
+                            Text(
+                                text = s.albumTitle,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+
+                            Spacer(Modifier.height(4.dp))
+
+                            Text(
+                                text = s.artistName,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            Spacer(Modifier.height(16.dp))
+
+                            Button(
                                 onClick = { onAlbumFound(s.albumId) }
                             ) {
                                 Text("Open Details")
@@ -116,9 +154,10 @@ fun SearchScreen(
 
 @Immutable
 sealed class SearchState {
+
     object Idle : SearchState()
     object Loading : SearchState()
-    data class Success(val albumId: Int, val albumTitle: String, val artistName: String) : SearchState()
+    data class Success(val albumId: Int, val albumTitle: String, val artistName: String, val coverImage: String?) : SearchState()
     data class Error(val message: String) : SearchState()
     object NotFound : SearchState()
 }

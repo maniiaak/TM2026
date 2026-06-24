@@ -431,7 +431,11 @@ def spotify_sync():
         # 1. Check local DB first
         # --------------------------------------------------
         cursor.execute("""
-                       SELECT a.id
+                       SELECT
+                           a.id,
+                           a.title,
+                           a.cover_image_url,
+                           ar.name as artist_name
                        FROM albums a
                                 JOIN artists ar ON a.artist_id = ar.id
                        WHERE LOWER(a.title) LIKE LOWER(?)
@@ -445,8 +449,11 @@ def spotify_sync():
             return jsonify({
                 "success": True,
                 "album_id": existing_album["id"],
+                "title": existing_album["title"],
+                "artist": existing_album["artist_name"],
+                "coverImage": existing_album["cover_image_url"],
                 "source": "database"
-            }), 200
+            })
 
         # --------------------------------------------------
         # 2. Search Spotify
@@ -524,6 +531,9 @@ def spotify_sync():
         return jsonify({
             "success": True,
             "album_id": album_id,
+            "title": title,
+            "artist": artist_name,
+            "coverImage": cover_url,
             "source": "spotify"
         }), 201
 

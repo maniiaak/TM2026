@@ -21,15 +21,22 @@ class SearchViewModel(
                 val result = repository.findAndCreateAlbum(query)
 
                 result.fold(
-                    onSuccess = { albumId ->
-                        if (albumId != null) {
-                            _state.value = SearchState.Success(albumId, "Unknown", "Unknown")
+                    onSuccess = { body ->
+                        if (body.album_id != null) {
+                            _state.value = SearchState.Success(
+                                albumId = body.album_id,
+                                albumTitle = body.title ?: "Unknown",
+                                artistName = body.artist ?: "Unknown",
+                                coverImage = body.coverImage
+                            )
                         } else {
                             _state.value = SearchState.NotFound
                         }
                     },
                     onFailure = { error ->
-                        _state.value = SearchState.Error(error.message ?: "Unknown error")
+                        _state.value = SearchState.Error(
+                            error.message ?: "Unknown error"
+                        )
                     }
                 )
             } catch (e: Exception) {

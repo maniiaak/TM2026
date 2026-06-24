@@ -43,7 +43,7 @@ class MuseumRepository(
     }
 
 
-    suspend fun findAndCreateAlbum(query: String): Result<Int?> {
+    suspend fun findAndCreateAlbum(query: String): Result<SyncResponse> {
         val result = museumApi.findOrCreateAlbum(query)
 
         if (result.isSuccess) {
