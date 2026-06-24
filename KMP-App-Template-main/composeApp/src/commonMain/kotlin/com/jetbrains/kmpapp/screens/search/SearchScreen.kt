@@ -1,5 +1,6 @@
 package com.jetbrains.kmpapp.screens.search
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -88,54 +89,52 @@ fun SearchScreen(
                 }
                 is SearchState.Success -> {
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onAlbumFound(s.albumId)
+                            },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer
                         )
                     ) {
-                        Column(
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-
-                            Text(
-                                text = "Album Found!",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-
-                            Spacer(Modifier.height(12.dp))
 
                             AsyncImage(
                                 model = s.coverImage,
                                 contentDescription = s.albumTitle,
                                 modifier = Modifier
-                                    .size(200.dp)
-                                    .clip(RoundedCornerShape(12.dp))
+                                    .size(80.dp)
+                                    .clip(RoundedCornerShape(8.dp))
                             )
 
-                            Spacer(Modifier.height(16.dp))
+                            Spacer(Modifier.width(16.dp))
 
-                            Text(
-                                text = s.albumTitle,
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-
-                            Spacer(Modifier.height(4.dp))
-
-                            Text(
-                                text = s.artistName,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-
-                            Spacer(Modifier.height(16.dp))
-
-                            Button(
-                                onClick = { onAlbumFound(s.albumId) }
+                            Column(
+                                modifier = Modifier.weight(1f)
                             ) {
-                                Text("Open Details")
+                                Text(
+                                    text = "Album Found!",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+
+                                Spacer(Modifier.height(4.dp))
+
+                                Text(
+                                    text = s.albumTitle,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+
+                                Text(
+                                    text = s.artistName,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         }
                     }
