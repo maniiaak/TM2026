@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 interface MuseumApi {
     suspend fun getData(): List<MuseumObject>
     suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse>
-    suspend fun getReviews(albumId: Int): Result<List<Review>>
+    suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse>
+    suspend fun findOrCreateAlbum(spotifyQuery: String): Result<Int?> // Returns album_id or null
 }
 
 @Serializable
@@ -24,19 +25,22 @@ data class ReviewRequest(
 data class ReviewResponse(
     val success: Boolean
 )
-
+@Serializable
+data class AlbumReviewsResponse(
+    val reviews: List<Review>,
+    val totalRatings: Int,
+    val rating: Double
+)
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
-
-    // CRITICAL: Change localhost to 10.0.2.2 for Android Emulator
     private val baseUrl = "http://192.168.1.139:5000/api/"
 
     override suspend fun getData(): List<MuseumObject> {
-        return client.get("${baseUrl}albums").body()
+        return client.get(baseUrl + "albums").body()
     }
 
     override suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse> {
         return try {
-            val response = client.post("${baseUrl}reviews") {
+            val response = client.post(baseUrl + "reviews") {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
@@ -50,15 +54,35 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         }
     }
 
-    override suspend fun getReviews(albumId: Int): Result<List<Review>> {
+    override suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse> {
         return try {
-            val response = client.get("${baseUrl}albums/$albumId/reviews")
+            val response = client.get(baseUrl + "albums/$albumId/reviews")
             if (response.status.isSuccess()) {
                 Result.success(response.body())
             } else {
                 Result.failure(Exception("Failed to fetch reviews"))
             }
         } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun findOrCreateAlbum(query: String): Result<Int?> {
+        return try {
+            val response = client.post(baseUrl + "spotify/sync") {
+                contentType(ContentType.Application.Json)
+                setBody(SyncRequest(query))
+            }
+
+            println("STATUS = ${response.status}")
+
+            val body = response.body<SyncResponse>()
+            println("ALBUM ID = ${body.album_id}")
+
+            Result.success(body.album_id)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
             Result.failure(e)
         }
     }

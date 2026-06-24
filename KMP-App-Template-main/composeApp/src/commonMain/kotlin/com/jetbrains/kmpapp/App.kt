@@ -1,13 +1,14 @@
 package com.jetbrains.kmpapp
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +18,7 @@ import com.jetbrains.kmpapp.data.SessionManager
 import com.jetbrains.kmpapp.screens.auth.LoginScreen
 import com.jetbrains.kmpapp.screens.detail.DetailScreen
 import com.jetbrains.kmpapp.screens.list.ListScreen
+import com.jetbrains.kmpapp.screens.search.SearchScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 
@@ -25,6 +27,9 @@ object ListDestination
 
 @Serializable
 object LoginDestination
+
+@Serializable
+object SearchDestination
 
 @Serializable
 data class DetailDestination(val objectId: Int)
@@ -39,45 +44,96 @@ fun App(
         Surface {
             val navController: NavHostController = rememberNavController()
 
+            // Collect the state from the Flow
             val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = false)
-            val startDestination = if (isLoggedIn) ListDestination else LoginDestination
 
-            NavHost(navController = navController, startDestination = startDestination) {
+            // If NOT logged in, show LoginScreen immediately and return
+            if (!isLoggedIn) {
+                LoginScreen(
+                    onLoginSuccess = { username ->
+                        navController.navigate(ListDestination) {
+                            popUpTo(LoginDestination) { inclusive = true }
+                        }
+                    }
+                )
 
-                // 1. Login Route
-                composable<LoginDestination> {
-                    LoginScreen(
-                        onLoginSuccess = { username ->
-                            navController.navigate(ListDestination) {
-                                popUpTo(LoginDestination) { inclusive = true }
+                return@Surface
+            }
+
+            Scaffold(
+                bottomBar = {
+                    NavigationBar {
+                        val currentRoute = navController.currentBackStackEntryFlow.collectAsState(initial = null).value?.destination?.route ?: ""
+
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Default.List, contentDescription = "Library") },
+                            label = { Text("Library") },
+                            selected = currentRoute.contains("list"),
+                            onClick = {
+                                navController.navigate(ListDestination) {
+                                    popUpTo(navController.graph.findStartDestination().id)
+                                }
                             }
-                        }
-                    )
-                }
-
-                // 2. List (Home) Route
-                composable<ListDestination> {
-                    ListScreen(
-                        navigateToDetails = { objectId ->
-                            navController.navigate(DetailDestination(objectId))
-                        },
-                        onLogout = {
-                            sessionManager.logout()
-                            navController.navigate(LoginDestination) {
-                                popUpTo(ListDestination) { inclusive = true }
+                        )
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                            label = { Text("Search") },
+                            selected = currentRoute.contains("search"),
+                            onClick = {
+                                navController.navigate(SearchDestination) {
+                                    popUpTo(navController.graph.findStartDestination().id)
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
+            ) { paddingValues ->
+                NavHost(
+                    navController = navController,
+                    startDestination = ListDestination
+                ) {
+                    composable<ListDestination> {
+                        ListScreen(
+                            navigateToDetails = { id ->
+                                navController.navigate(DetailDestination(id))
+                            },
+                            onLogout = {
+                                sessionManager.logout()
+                                navController.navigate(LoginDestination) {
+                                    popUpTo(ListDestination) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
 
-                // 3. Detail Route
-                composable<DetailDestination> { backStackEntry ->
-                    DetailScreen(
-                        objectId = backStackEntry.toRoute<DetailDestination>().objectId,
-                        navigateBack = {
-                            navController.popBackStack()
-                        }
-                    )
+                    composable<DetailDestination> { backStackEntry ->
+                        val objectId = backStackEntry.toRoute<DetailDestination>().objectId
+                        DetailScreen(
+                            objectId = objectId,
+                            navigateBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable<SearchDestination> {
+                        SearchScreen(
+                            onAlbumFound = { id ->
+                                navController.navigate(DetailDestination(id))
+                            },
+                            onError = { message ->
+                                println("Search Error: $message")
+                            }
+                        )
+                    }
+
+                    composable<LoginDestination> {
+                        LoginScreen(
+                            onLoginSuccess = { username ->
+                                navController.navigate(ListDestination) {
+                                    popUpTo(LoginDestination) { inclusive = true }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
