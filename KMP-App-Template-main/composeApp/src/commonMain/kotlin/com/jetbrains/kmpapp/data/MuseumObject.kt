@@ -65,6 +65,9 @@ data class SyncRequest(
 data class SyncResponse(
     val success: Boolean,
     val album_id: Int? = null,
+    val title: String? = null,
+    val artist: String? = null,
+    val coverImage: String? = null,
     val source: String? = null,
     val error: String? = null
 )

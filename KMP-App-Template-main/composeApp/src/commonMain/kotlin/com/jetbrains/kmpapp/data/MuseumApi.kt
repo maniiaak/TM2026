@@ -10,7 +10,7 @@ interface MuseumApi {
     suspend fun getData(): List<MuseumObject>
     suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse>
     suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse>
-    suspend fun findOrCreateAlbum(spotifyQuery: String): Result<Int?> // Returns album_id or null
+    suspend fun findOrCreateAlbum(spotifyQuery: String): Result<SyncResponse> // Returns album_id or null
 }
 
 @Serializable
@@ -67,7 +67,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         }
     }
 
-    override suspend fun findOrCreateAlbum(query: String): Result<Int?> {
+    override suspend fun findOrCreateAlbum(query: String): Result<SyncResponse> {
         return try {
             val response = client.post(baseUrl + "spotify/sync") {
                 contentType(ContentType.Application.Json)
@@ -77,9 +77,12 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
             println("STATUS = ${response.status}")
 
             val body = response.body<SyncResponse>()
-            println("ALBUM ID = ${body.album_id}")
 
-            Result.success(body.album_id)
+            println("ALBUM ID = ${body.album_id}")
+            println("TITLE = ${body.title}")
+            println("ARTIST = ${body.artist}")
+
+            Result.success(body)
 
         } catch (e: Exception) {
             e.printStackTrace()
