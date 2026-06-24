@@ -60,6 +60,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.compose.koinInject
 import android.widget.Toast
+import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.LaunchedEffect
 
 @Composable
@@ -159,7 +160,8 @@ private fun ObjectDetails(
             FloatingActionButton(
                 onClick = onShowNoteDialog,
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.offset(y = (-50).dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Note & Rating")
             }

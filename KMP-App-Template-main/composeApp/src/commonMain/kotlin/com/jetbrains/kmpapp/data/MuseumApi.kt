@@ -10,7 +10,13 @@ interface MuseumApi {
     suspend fun getData(): List<MuseumObject>
     suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse>
     suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse>
-    suspend fun findOrCreateAlbum(spotifyQuery: String): Result<SyncResponse> // Returns album_id or null
+    suspend fun searchAlbum(
+        query: String
+    ): Result<SyncResponse>
+
+    suspend fun importAlbum(
+        query: String
+    ): Result<Int>
 }
 
 @Serializable
@@ -67,26 +73,40 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         }
     }
 
-    override suspend fun findOrCreateAlbum(query: String): Result<SyncResponse> {
-        return try {
-            val response = client.post(baseUrl + "spotify/sync") {
+    override suspend fun searchAlbum(
+        query: String
+    ): Result<SyncResponse> {
+
+        return runCatching {
+            client.post(baseUrl + "spotify/search") {
                 contentType(ContentType.Application.Json)
-                setBody(SyncRequest(query))
-            }
 
-            println("STATUS = ${response.status}")
+                setBody(
+                    SyncRequest(query)
+                )
+            }.body<SyncResponse>()
+        }
+    }
 
-            val body = response.body<SyncResponse>()
+    override suspend fun importAlbum(
+        query: String
+    ): Result<Int> {
 
-            println("ALBUM ID = ${body.album_id}")
-            println("TITLE = ${body.title}")
-            println("ARTIST = ${body.artist}")
+        return runCatching {
 
-            Result.success(body)
+            val response = client.post(urlString = baseUrl + "spotify/import") {
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure(e)
+                contentType(ContentType.Application.Json)
+
+                setBody(
+                    ImportRequest(spotifyId = query)
+                )
+            }.body<ImportResponse>()
+
+            println("STATUS = ${response}")
+
+            response.album_id
+                ?: error("Album ID missing")
         }
     }
 }

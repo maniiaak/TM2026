@@ -1,12 +1,15 @@
 package com.jetbrains.kmpapp
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -62,12 +65,13 @@ fun App(
 
             Scaffold(
                 bottomBar = {
-                    NavigationBar {
+                    NavigationBar (
+                        modifier = Modifier.height(100.dp)
+                        ){
                         val currentRoute = navController.currentBackStackEntryFlow.collectAsState(initial = null).value?.destination?.route ?: ""
 
                         NavigationBarItem(
-                            icon = { Icon(Icons.Default.List, contentDescription = "Library") },
-                            label = { Text("Library") },
+                            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
                             selected = currentRoute.contains("list"),
                             onClick = {
                                 navController.navigate(ListDestination) {
@@ -77,7 +81,6 @@ fun App(
                         )
                         NavigationBarItem(
                             icon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                            label = { Text("Search") },
                             selected = currentRoute.contains("search"),
                             onClick = {
                                 navController.navigate(SearchDestination) {
