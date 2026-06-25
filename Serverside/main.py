@@ -674,5 +674,37 @@ def spotify_import():
     finally:
         close_db(conn)
 
+@app.route('/api/users/<int:user_id>/stats', methods=['GET'])
+def get_user(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   SELECT
+                       u.id,
+                       u.username,
+                       COUNT(r.id) AS review_count
+                   FROM users u
+                            LEFT JOIN reviews r ON u.id = r.user_id
+                   WHERE u.id = ?
+                   GROUP BY u.id
+                   """, (user_id,))
+
+    user = cursor.fetchone()
+    close_db(conn)
+
+    if not user:
+        return jsonify({
+            "success": False,
+            "error": "User not found"
+        }), 404
+
+    return jsonify({
+        "success": True,
+        "id": user["id"],
+        "username": user["username"],
+        "review_count": user["review_count"]
+    })
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

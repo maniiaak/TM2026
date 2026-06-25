@@ -4,12 +4,13 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -21,9 +22,12 @@ import com.jetbrains.kmpapp.data.SessionManager
 import com.jetbrains.kmpapp.screens.auth.LoginScreen
 import com.jetbrains.kmpapp.screens.detail.DetailScreen
 import com.jetbrains.kmpapp.screens.list.ListScreen
+import com.jetbrains.kmpapp.screens.profile.ProfileScreen
+import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
 import com.jetbrains.kmpapp.screens.search.SearchScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 object ListDestination
@@ -36,6 +40,9 @@ object SearchDestination
 
 @Serializable
 data class DetailDestination(val objectId: Int)
+
+@Serializable
+object ProfileDestination
 
 @Composable
 fun App(
@@ -88,6 +95,20 @@ fun App(
                                 }
                             }
                         )
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    Icons.Default.Person,
+                                    contentDescription = "Profile"
+                                )
+                            },
+                            selected = currentRoute.contains("profile"),
+                            onClick = {
+                                navController.navigate(ProfileDestination) {
+                                    popUpTo(navController.graph.findStartDestination().id)
+                                }
+                            }
+                        )
                     }
                 }
             ) { paddingValues ->
@@ -135,6 +156,15 @@ fun App(
                                     popUpTo(LoginDestination) { inclusive = true }
                                 }
                             }
+                        )
+                    }
+
+                    composable<ProfileDestination> {
+                        println("Trying to resolve ProfileViewModel")
+                        val profileViewModel: ProfileViewModel = koinViewModel()
+
+                        ProfileScreen(
+                            viewModel = profileViewModel
                         )
                     }
                 }

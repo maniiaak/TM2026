@@ -60,4 +60,11 @@ class MuseumRepository(
 
         return result
     }
+
+    suspend fun getUserStats(
+        userId: Int
+    ): Result<UserStats> =
+        runCatching {
+            museumApi.getUserStats(userId)
+        }
 }
