@@ -21,7 +21,11 @@ class InMemoryMuseumStorage : MuseumStorage {
 
     override fun getObjectById(objectId: Int): Flow<MuseumObject?> {
         return storedObjects.map { objects ->
-            objects.find { it.objectID == objectId }
+            val obj = objects.find { it.objectID == objectId }
+
+            println("FOUND OBJECT = $obj")
+
+            obj
         }
     }
 

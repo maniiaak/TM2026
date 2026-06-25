@@ -121,10 +121,10 @@ def get_albums():
                        a.cover_image_url as coverImage,
                        a.release_date as objectDate,
                        'Album' as type,
-                       '0:00' as length,
-                       '0' as tracks,
-                       0 as totalRatings,   -- Always 0 for list view
-                       0.0 as rating        -- Always 0.0 for list view
+                       a.length as length,
+                       a.tracks as tracks,
+                       0 as totalRatings,
+                       0.0 as rating
                    FROM albums a
                             JOIN artists ar ON a.artist_id = ar.id
                    """)
@@ -233,7 +233,12 @@ def get_album_by_id(album_id):
     cursor = conn.cursor()
 
     cursor.execute('''
-                   SELECT a.id, a.title, a.release_date, a.cover_image_url,
+                   SELECT a.id,
+                          a.title,
+                          a.release_date,
+                          a.cover_image_url,
+                          a.length,
+                          a.tracks,
                           ar.name as artist_name,
                           COALESCE(AVG(r.rating), 0) as avg_rating,
                           COUNT(r.id) as num_of_ratings
@@ -250,6 +255,10 @@ def get_album_by_id(album_id):
         return jsonify({"error": "Album not found"}), 404
 
     album_data = row_to_list_json_format(album)
+
+    album_data["length"] = album["length"]
+    album_data["tracks"] = album["tracks"]
+
     album_data["ratings"] = round(album["avg_rating"], 2) if album["avg_rating"] else 0
     album_data["num_of_ratings"] = album["num_of_ratings"]
     album_data["reviews"] = get_reviews_for_album(album_id)
@@ -558,6 +567,22 @@ def spotify_import():
             else None
         )
 
+        track_count = album.get("total_tracks", 0)
+
+        tracks = spotify.album_tracks(spotify_id)["items"]
+
+        total_ms = sum(
+            track.get("duration_ms", 0)
+            for track in tracks
+        )
+
+        total_seconds = total_ms // 1000
+
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+
+        length = f"{minutes}:{seconds:02d}"
+
         # --------------------------------------------------
         # Check if album already exists
         # --------------------------------------------------
@@ -602,19 +627,22 @@ def spotify_import():
         # Album
         # --------------------------------------------------
         cursor.execute("""
-                       INSERT INTO albums
-                       (
+                       INSERT INTO albums (
                            title,
-                           release_date,
+                           artist_id,
                            cover_image_url,
-                           artist_id
+                           release_date,
+                           length,
+                           tracks
                        )
-                       VALUES (?, ?, ?, ?)
+                       VALUES (?, ?, ?, ?, ?, ?)
                        """, (
                            title,
-                           release_date,
+                           artist_id,
                            cover_url,
-                           artist_id
+                           release_date,
+                           length,
+                           track_count
                        ))
 
         album_id = cursor.lastrowid

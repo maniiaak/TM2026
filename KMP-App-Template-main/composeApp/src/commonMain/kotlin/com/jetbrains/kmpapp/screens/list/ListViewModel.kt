@@ -16,15 +16,18 @@ class ListViewModel(
     val objects: StateFlow<List<MuseumObject>> = _objects
 
     init {
-        loadObjects()
-    }
-
-    private fun loadObjects() {
         viewModelScope.launch {
-            repository.refresh()
             repository.getObjects().collect { list ->
                 _objects.value = list
             }
+        }
+
+        refresh()
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            repository.refresh()
         }
     }
 }
