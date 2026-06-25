@@ -3,7 +3,7 @@ package com.jetbrains.kmpapp.screens.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jetbrains.kmpapp.data.MuseumRepository
-import com.jetbrains.kmpapp.data.SyncResponse
+import com.jetbrains.kmpapp.data.SearchResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,7 +24,7 @@ class SearchViewModel(
             _state.value = SearchState.Loading
 
             repository.searchAlbum(query)
-                .onSuccess { response: SyncResponse ->
+                .onSuccess { response ->
 
                     if (!response.success) {
 
@@ -34,17 +34,8 @@ class SearchViewModel(
                         return@onSuccess
                     }
 
-                    println("albumId = ${response.albumId}")
-                    println("title = ${response.title}")
-                    println("source = ${response.source}")
-
                     _state.value = SearchState.Success(
-                        albumId = response.albumId,
-                        title = response.title ?: "",
-                        artist = response.artist ?: "",
-                        coverImage = response.coverImage,
-                        source = response.source ?: "",
-                        spotifyId = response.spotifyId ?: ""
+                        albums = response.results
                     )
                 }
                 .onFailure { throwable ->

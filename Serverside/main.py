@@ -426,9 +426,11 @@ def spotify_search():
     cursor = conn.cursor()
 
     try:
-        # --------------------------------------------------
-        # Check local DB
-        # --------------------------------------------------
+        results = []
+
+        # -----------------------------------
+        # Local DB results
+        # -----------------------------------
         cursor.execute("""
                        SELECT
                            a.id,
@@ -439,24 +441,29 @@ def spotify_search():
                                 JOIN artists ar ON a.artist_id = ar.id
                        WHERE LOWER(a.title) LIKE LOWER(?)
                           OR LOWER(ar.name) LIKE LOWER(?)
-                           LIMIT 1
+                           LIMIT 10
                        """, (f"%{query}%", f"%{query}%"))
 
-        album = cursor.fetchone()
+        db_albums = cursor.fetchall()
 
-        if album:
-            return jsonify({
-                "success": True,
+        for album in db_albums:
+            results.append({
                 "exists": True,
                 "album_id": album["id"],
+                "spotify_id": None,
                 "title": album["title"],
                 "artist": album["artist_name"],
                 "coverImage": album["cover_image_url"]
             })
 
-        # --------------------------------------------------
-        # Spotify search
-        # --------------------------------------------------
+        existing_titles = {
+            album["title"].lower()
+            for album in db_albums
+        }
+
+        # -----------------------------------
+        # Spotify results
+        # -----------------------------------
         load_dotenv()
 
         spotify = spotipy.Spotify(
@@ -466,33 +473,42 @@ def spotify_search():
             )
         )
 
-        results = spotify.search(
+        spotify_results = spotify.search(
             q=query,
             type="album",
-            limit=1
+            limit=10
         )
 
-        items = results.get("albums", {}).get("items", [])
+        spotify_items = spotify_results.get("albums", {}).get("items", [])
 
-        if not items:
+        for album in spotify_items:
+
+            # Skip duplicates already found locally
+            if album["name"].lower() in existing_titles:
+                continue
+
+            results.append({
+                "exists": False,
+                "album_id": None,
+                "spotify_id": album["id"],
+                "title": album["name"],
+                "artist": album["artists"][0]["name"],
+                "coverImage": (
+                    album["images"][0]["url"]
+                    if album.get("images")
+                    else None
+                )
+            })
+
+        if not results:
             return jsonify({
                 "success": False,
                 "error": "Album not found"
             }), 404
 
-        album = items[0]
-
         return jsonify({
             "success": True,
-            "exists": False,
-            "spotify_id": album["id"],
-            "title": album["name"],
-            "artist": album["artists"][0]["name"],
-            "coverImage": (
-                album["images"][0]["url"]
-                if album.get("images")
-                else None
-            )
+            "results": results
         })
 
     except Exception as e:
