@@ -45,7 +45,7 @@ class MuseumRepository(
 
     suspend fun searchAlbum(
         query: String
-    ): Result<SyncResponse> =
+    ): Result<SearchResponse> =
         museumApi.searchAlbum(query)
 
 

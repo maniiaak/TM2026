@@ -2,6 +2,8 @@ package com.jetbrains.kmpapp.screens.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.jetbrains.kmpapp.data.SearchResult
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,69 +104,90 @@ fun SearchScreen(
 
                 is SearchState.Success -> {
 
-                    Card(
+                    LazyColumn(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-
-                                if (s.albumId != null) {
-
-                                    onAlbumFound(s.albumId)
-
-                                } else {
-
-                                    viewModel.importAlbum(
-                                        query = s.spotifyId,
-                                        onSuccess = { importedId ->
-                                            onAlbumFound(importedId)
-                                        },
-                                        onError = { error ->
-                                            onError(error)
-                                        }
-                                    )
-                                }
-                            }
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(
+                            top = 8.dp,
+                            bottom = 16.dp
+                        )
                     ) {
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                        items(
 
-                            AsyncImage(
-                                model = s.coverImage,
-                                contentDescription = s.title,
+                            items = s.albums,
+                            key = { album ->
+                                album.albumId ?: album.spotifyId ?: album.title
+                            }
+                        ) { album ->
+
+                            Card(
                                 modifier = Modifier
-                                    .size(80.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                            )
+                                    .fillMaxWidth()
+                                    .animateItem()
+                                    .clickable {
 
-                            Spacer(Modifier.width(16.dp))
+                                        if (album.exists) {
 
-                            Column(
-                                modifier = Modifier.weight(1f)
+                                            onAlbumFound(album.albumId!!)
+
+                                        } else {
+
+                                            viewModel.importAlbum(
+                                                query = album.spotifyId!!,
+                                                onSuccess = { importedId ->
+                                                    onAlbumFound(importedId)
+                                                },
+                                                onError = onError
+                                            )
+                                        }
+                                    }
                             ) {
 
-                                Text(
-                                    text = s.title,
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
 
-                                Spacer(Modifier.height(4.dp))
+                                    AsyncImage(
+                                        model = album.coverImage,
+                                        contentDescription = album.title,
+                                        modifier = Modifier
+                                            .size(80.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                    )
 
-                                Text(
-                                    text = s.artist,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                    Spacer(Modifier.width(16.dp))
 
-                                Spacer(Modifier.height(8.dp))
+                                    Column(
+                                        modifier = Modifier.weight(1f)
+                                    ) {
 
-                                Text(
-                                    text = "Tap to open album",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                                        Text(
+                                            text = album.title,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            maxLines = 2
+                                        )
+
+                                        Text(
+                                            text = album.artist,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+
+                                        Spacer(Modifier.height(4.dp))
+
+                                        Text(
+                                            text = if (album.exists)
+                                                "Already in library"
+                                            else
+                                                "Import from Spotify",
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -181,12 +205,7 @@ sealed class SearchState {
     object Loading : SearchState()
 
     data class Success(
-        val albumId: Int?,
-        val title: String,
-        val artist: String,
-        val coverImage: String?,
-        val source: String,
-        val spotifyId: String
+        val albums: List<SearchResult>
     ) : SearchState()
 
     data class Error(

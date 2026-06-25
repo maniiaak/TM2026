@@ -12,7 +12,7 @@ interface MuseumApi {
     suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse>
     suspend fun searchAlbum(
         query: String
-    ): Result<SyncResponse>
+    ): Result<SearchResponse>
 
     suspend fun importAlbum(
         query: String
@@ -75,7 +75,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
 
     override suspend fun searchAlbum(
         query: String
-    ): Result<SyncResponse> {
+    ): Result<SearchResponse> {
 
         return runCatching {
             client.post(baseUrl + "spotify/search") {
@@ -84,7 +84,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
                 setBody(
                     SyncRequest(query)
                 )
-            }.body<SyncResponse>()
+            }.body<SearchResponse>()
         }
     }
 

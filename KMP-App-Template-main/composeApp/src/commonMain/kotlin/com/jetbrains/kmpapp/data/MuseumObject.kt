@@ -57,12 +57,23 @@ data class TracksContainer(
 )
 
 @Serializable
+data class SearchResult(
+    val exists: Boolean,
+
+    @SerialName("album_id")
+    val albumId: Int? = null,
+
+    @SerialName("spotify_id")
+    val spotifyId: String? = null,
+
+    val title: String,
+    val artist: String,
+    val coverImage: String? = null
+)
+
+@Serializable
 data class SearchResponse(
     val success: Boolean,
-    val exists: Boolean,
-    val album_id: Int? = null,
-    val spotify_id: String? = null,
-    val title: String? = null,
-    val artist: String? = null,
-    val coverImage: String? = null
+    val results: List<SearchResult>,
+    val error: String? = null
 )
