@@ -69,8 +69,14 @@ class MuseumRepository(
         }
 
     suspend fun getUserReviews(
-        userId: Int
+        userId: Int,
+        page: Int,
+        limit: Int = 10
     ): Result<List<UserReview>> {
-        return museumApi.getUserReviews(userId)
+        return museumApi.getUserReviews(
+            userId = userId,
+            page = page,
+            limit = limit
+        )
     }
 }

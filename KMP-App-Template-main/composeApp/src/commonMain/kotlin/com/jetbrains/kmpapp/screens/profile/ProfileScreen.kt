@@ -3,6 +3,7 @@ package com.jetbrains.kmpapp.screens.profile
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,6 +18,8 @@ fun ProfileScreen(
 ) {
     val stats by viewModel.userStats.collectAsState()
     val reviews by viewModel.reviews.collectAsState()
+    val listState = rememberLazyListState()
+    val isLoadingMore by viewModel.isLoadingMore.collectAsState()
 
     if (stats == null) {
         Box(
@@ -29,6 +32,7 @@ fun ProfileScreen(
     }
 
     LazyColumn(
+        state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(
             bottom = 100.dp)
@@ -38,7 +42,7 @@ fun ProfileScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(30.dp),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
@@ -69,6 +73,34 @@ fun ProfileScreen(
 
         items(reviews) { review ->
             UserReviewCard(review)
+        }
+
+        item {
+            if (isLoadingMore) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(listState) {
+
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+        }.collect { lastVisibleIndex ->
+
+            if (
+                lastVisibleIndex != null &&
+                lastVisibleIndex >= reviews.size - 2
+            ) {
+                viewModel.loadMoreReviews()
+            }
         }
     }
 }

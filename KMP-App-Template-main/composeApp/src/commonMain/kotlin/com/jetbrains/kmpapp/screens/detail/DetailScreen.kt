@@ -268,12 +268,14 @@ private fun LabeledInfo(
 @Composable
 fun ReviewsList(reviews: List<Review>) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.padding(bottom=80.dp)
     ) {
         reviews.forEach { review ->
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
+
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 4.dp
                 ),

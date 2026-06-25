@@ -9,6 +9,12 @@ import kotlinx.serialization.Serializable
 interface MuseumApi {
     suspend fun getData(): List<MuseumObject>
     suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse>
+    suspend fun getUserReviews(
+        userId: Int,
+        page: Int,
+        limit: Int = 10
+    ): Result<List<UserReview>>
+
     suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse>
     suspend fun searchAlbum(
         query: String
@@ -21,10 +27,6 @@ interface MuseumApi {
     suspend fun getUserStats(
         userId: Int
     ): UserStats
-
-    suspend fun getUserReviews(
-        userId: Int
-    ): Result<List<UserReview>>
 }
 
 @Serializable
@@ -128,14 +130,14 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
     }
 
     override suspend fun getUserReviews(
-        userId: Int
-    ): Result<List<UserReview>> =
-        try {
-            Result.success(
-                client.get(urlString = baseUrl + "users/$userId/reviews")
-                    .body()
-            )
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        userId: Int,
+        page: Int,
+        limit: Int
+    ): Result<List<UserReview>> = runCatching {
+
+        client.get(urlString = baseUrl + "users/$userId/reviews") {
+            parameter("page", page)
+            parameter("limit", limit)
+        }.body()
+    }
 }

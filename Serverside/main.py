@@ -708,6 +708,12 @@ def get_user(user_id):
 
 @app.route('/api/users/<int:user_id>/reviews', methods=['GET'])
 def get_user_reviews(user_id):
+
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+
+    offset = (page - 1) * limit
+
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -725,10 +731,12 @@ def get_user_reviews(user_id):
                             JOIN artists ar ON a.artist_id = ar.id
                    WHERE r.user_id = ?
                    ORDER BY r.created_at DESC
-                       LIMIT 10
-                   """, (user_id,))
+                       LIMIT ?
+                   OFFSET ?
+                   """, (user_id, limit, offset))
 
     reviews = [dict(row) for row in cursor.fetchall()]
+
     close_db(conn)
 
     return jsonify(reviews)
