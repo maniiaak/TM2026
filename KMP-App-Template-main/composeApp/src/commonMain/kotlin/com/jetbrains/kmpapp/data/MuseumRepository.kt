@@ -67,4 +67,10 @@ class MuseumRepository(
         runCatching {
             museumApi.getUserStats(userId)
         }
+
+    suspend fun getUserReviews(
+        userId: Int
+    ): Result<List<UserReview>> {
+        return museumApi.getUserReviews(userId)
+    }
 }

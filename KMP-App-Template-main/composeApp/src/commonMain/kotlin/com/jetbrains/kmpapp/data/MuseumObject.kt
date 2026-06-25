@@ -97,3 +97,26 @@ data class UserStats(
 
     val success: Boolean = true
 )
+
+@Serializable
+data class UserReview(
+    val id: Int,
+
+    @SerialName("album_id")
+    val albumId: Int,
+
+    val title: String,
+
+    @SerialName("artist_name")
+    val artistName: String,
+
+    @SerialName("cover_image_url")
+    val coverImageUrl: String,
+
+    val rating: Double,
+
+    val content: String,
+
+    @SerialName("created_at")
+    val createdAt: String
+)
