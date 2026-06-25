@@ -706,5 +706,32 @@ def get_user(user_id):
         "review_count": user["review_count"]
     })
 
+@app.route('/api/users/<int:user_id>/reviews', methods=['GET'])
+def get_user_reviews(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+                   SELECT r.id,
+                          r.content,
+                          r.rating,
+                          r.created_at,
+                          a.id as album_id,
+                          a.title,
+                          ar.name as artist_name,
+                          a.cover_image_url
+                   FROM reviews r
+                            JOIN albums a ON r.album_id = a.id
+                            JOIN artists ar ON a.artist_id = ar.id
+                   WHERE r.user_id = ?
+                   ORDER BY r.created_at DESC
+                       LIMIT 10
+                   """, (user_id,))
+
+    reviews = [dict(row) for row in cursor.fetchall()]
+    close_db(conn)
+
+    return jsonify(reviews)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jetbrains.kmpapp.data.MuseumRepository
 import com.jetbrains.kmpapp.data.SessionManager
+import com.jetbrains.kmpapp.data.UserReview
 import com.jetbrains.kmpapp.data.UserStats
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +21,12 @@ class ProfileViewModel(
     val userStats: StateFlow<UserStats?> =
         _userStats
 
+    private val _reviews =
+        MutableStateFlow<List<UserReview>>(emptyList())
+
+    val reviews: StateFlow<List<UserReview>> =
+        _reviews
+
     init {
         loadUser()
     }
@@ -27,20 +34,17 @@ class ProfileViewModel(
     private fun loadUser() {
         viewModelScope.launch {
 
-            val userId = sessionManager.getUserId()
-
-            println("PROFILE: userId = $userId")
-
-            if (userId == null) return@launch
+            val userId =
+                sessionManager.getUserId() ?: return@launch
 
             repository.getUserStats(userId)
                 .onSuccess {
-                    println("PROFILE: success = $it")
                     _userStats.value = it
                 }
-                .onFailure {
-                    println("PROFILE: error = ${it.message}")
-                    it.printStackTrace()
+
+            repository.getUserReviews(userId)
+                .onSuccess {
+                    _reviews.value = it
                 }
         }
     }

@@ -21,6 +21,10 @@ interface MuseumApi {
     suspend fun getUserStats(
         userId: Int
     ): UserStats
+
+    suspend fun getUserReviews(
+        userId: Int
+    ): Result<List<UserReview>>
 }
 
 @Serializable
@@ -122,4 +126,16 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
             urlString = baseUrl + "users/$userId/stats"
         ).body()
     }
+
+    override suspend fun getUserReviews(
+        userId: Int
+    ): Result<List<UserReview>> =
+        try {
+            Result.success(
+                client.get(urlString = baseUrl + "users/$userId/reviews")
+                    .body()
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
 }

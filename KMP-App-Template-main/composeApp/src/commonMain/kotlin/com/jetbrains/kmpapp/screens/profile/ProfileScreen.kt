@@ -1,6 +1,9 @@
 package com.jetbrains.kmpapp.screens.profile
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,59 +16,59 @@ fun ProfileScreen(
     viewModel: ProfileViewModel
 ) {
     val stats by viewModel.userStats.collectAsState()
+    val reviews by viewModel.reviews.collectAsState()
 
-    Box(
+    if (stats == null) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentPadding = PaddingValues(
+            bottom = 100.dp)
     ) {
-        stats?.let { user ->
 
+        item {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                elevation = CardDefaults.cardElevation(8.dp)
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.padding(16.dp)
                 ) {
-
                     Text(
-                        text = "👤",
-                        fontSize = 64.sp
+                        text = stats!!.username,
+                        style = MaterialTheme.typography.titleLarge
                     )
 
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(4.dp))
 
                     Text(
-                        text = user.username,
-                        style = MaterialTheme.typography.headlineSmall
+                        text = "${stats!!.reviewCount} reviews",
+                        style = MaterialTheme.typography.bodyMedium
                     )
-
-                    Spacer(Modifier.height(24.dp))
-
-                    HorizontalDivider()
-
-                    Spacer(Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "${user.reviewCount}",
-                                style = MaterialTheme.typography.headlineMedium
-                            )
-                            Text("Reviews")
-                        }
-                    }
                 }
             }
-        } ?: CircularProgressIndicator()
+        }
+
+        item {
+            Text(
+                "Recent Reviews",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+
+        items(reviews) { review ->
+            UserReviewCard(review)
+        }
     }
 }
