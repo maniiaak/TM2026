@@ -60,8 +60,20 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.compose.koinInject
 import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun DetailScreen(
@@ -73,7 +85,7 @@ fun DetailScreen(
     println("DetailScreen Composing for Album ID: $objectId")
 
     LaunchedEffect(objectId) {
-        println("🚀 LaunchedEffect triggered for Album ID: $objectId")
+        println("LaunchedEffect triggered for Album ID: $objectId")
         viewModel.loadReviews(objectId)
     }
 
@@ -176,10 +188,10 @@ private fun ObjectDetails(
             AsyncImage(
                 model = obj.coverImage,
                 contentDescription = obj.title,
-                contentScale = ContentScale.FillWidth,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.LightGray)
+                    .size(300.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .align(Alignment.CenterHorizontally)
             )
 
             SelectionContainer {
@@ -191,23 +203,38 @@ private fun ObjectDetails(
                     LabeledInfo(stringResource(Res.string.label_date), obj.objectDate ?: "Unknown")
                     LabeledInfo(stringResource(Res.string.label_type), obj.type ?: "Album")
                     LabeledInfo(stringResource(Res.string.label_length), obj.length ?: "0:00")
-                    LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks ?: "0")
+                    LabeledInfo(stringResource(Res.string.label_tracks), obj.tracks?.toString() ?: "0")
                     LabeledInfo(stringResource(Res.string.label_total_ratings), totalRatings.toString())
                     LabeledInfo(stringResource(Res.string.label_rating), averageRating.toString())
 
                     Spacer(Modifier.height(16.dp))
 
-                    if (isLoading) {
-                        androidx.compose.material3.CircularProgressIndicator()
-                    } else if (reviews.isEmpty()) {
-                        Text(
-                            text = "No reviews yet.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    } else {
-                        ReviewsList(reviews = reviews)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 200.dp) // reserve space
+                    ) {
+                        when {
+                            isLoading -> {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+
+                            reviews.isEmpty() -> {
+                                Text(
+                                    text = "Be the first to review this item!",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+
+                            else -> {
+                                ReviewsList(reviews = reviews)
+                            }
+                        }
                     }
                 }
             }
@@ -235,49 +262,56 @@ private fun LabeledInfo(
 }
 
 @Composable
-private fun ReviewsList(reviews: List<Review>) {
-    Column(modifier = Modifier.padding(top = 8.dp)) {
-        Text(
-            text = "User Reviews",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
+fun ReviewsList(reviews: List<Review>) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         reviews.forEach { review ->
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 4.dp
+                ),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Text(
-                    text = review.username,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                )
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
 
-                Spacer(Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = review.username,
+                            style = MaterialTheme.typography.titleMedium
+                        )
 
-                Text(
-                    text = "Rating: ${review.rating}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                        Spacer(Modifier.weight(1f))
 
-                Spacer(Modifier.height(2.dp))
+                        review.rating?.let {
+                            Text(
+                                text = "⭐ $it",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
 
-                Text(
-                    text = review.content,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                    Spacer(Modifier.height(8.dp))
 
-                Text(
-                    text = review.createdAt,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
+                    Text(
+                        text = review.content,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
 
-                Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
+
+                    Text(
+                        text = review.createdAt,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

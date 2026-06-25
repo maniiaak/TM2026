@@ -15,14 +15,19 @@ data class Review(
 data class MuseumObject(
     val objectID: Int,
     val title: String,
-    val artistDisplayName: String?,
-    val coverImage: String?,
-    val objectDate: String?,
-    val type: String?,
-    val length: String?,
-    val tracks: String?,
-    val totalRatings: Int?,
-    val rating: Double?
+    val artistDisplayName: String? = null,
+    val objectDate: String? = null,
+    val coverImage: String? = null,
+    val type: String? = null,
+
+    @SerialName("length")
+    val length: String? = null,
+
+    @SerialName("tracks")
+    val tracks: Int? = null,
+
+    val ratings: Double? = null,
+    val num_of_ratings: Int? = null
 )
 
 @Serializable
@@ -36,6 +41,8 @@ data class SpotifyTrackItem(
 data class AlbumData(
     val name: String,
     @SerialName("release_date") val releaseDate: String? = null,
+    @SerialName("length") val length: String? = null,
+    @SerialName("tracks") val tracks: Int? = null,
     val images: List<ImageData>? = null
 )
 
