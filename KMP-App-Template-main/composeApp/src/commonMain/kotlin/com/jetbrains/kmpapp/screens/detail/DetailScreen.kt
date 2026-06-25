@@ -110,6 +110,9 @@ fun DetailScreen(
         if (viewModel.reviewState.value is ReviewState.Loading) return
 
         viewModel.saveReview(rating, note, objectId, userId)
+
+        viewModel.loadReviews(objectId)
+
         Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
         showNoteDialog = false
     }
@@ -134,6 +137,7 @@ fun DetailScreen(
             isOpen = showNoteDialog,
             onDismiss = { showNoteDialog = false },
             onSave = { note, rating -> handleSaveNote(note, rating) }
+
         )
     } else {
         // Show loading or empty state while obj loads

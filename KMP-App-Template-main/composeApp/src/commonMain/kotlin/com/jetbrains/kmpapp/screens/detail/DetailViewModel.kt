@@ -42,13 +42,6 @@ class DetailViewModel(
 
     fun loadReviews(albumId: Int) {
         println("[ViewModel] loadReviews called with ID: $albumId")
-
-        // Check if we already have data
-        if (_reviews.value.isNotEmpty()) {
-            println("[ViewModel] Skipping load: Reviews already exist (${_reviews.value.size} items)")
-            return
-        }
-
         println("[ViewModel] Starting network request for album $albumId...")
 
         viewModelScope.launch {
@@ -81,6 +74,7 @@ class DetailViewModel(
             _reviewState.value = ReviewState.Loading
             try {
                 repository.submitReview(rating, content, albumId, userId)
+                loadReviews(albumId)
                 _reviewState.value = ReviewState.Success
             } catch (e: Exception) {
                 _reviewState.value = ReviewState.Error(e.message ?: "Failed to save review")
