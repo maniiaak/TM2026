@@ -84,3 +84,16 @@ data class SearchResponse(
     val results: List<SearchResult>,
     val error: String? = null
 )
+
+@Serializable
+data class UserStats(
+    @SerialName("id")
+    val userId: Int,
+
+    val username: String,
+
+    @SerialName("review_count")
+    val reviewCount: Int,
+
+    val success: Boolean = true
+)

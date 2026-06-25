@@ -33,6 +33,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.core.module.dsl.factoryOf
+import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -78,6 +79,7 @@ class MyApp : Application() {
                     factoryOf(::DetailViewModel)
                     factoryOf(::AuthViewModel)
                     factoryOf(::SearchViewModel)
+                    factoryOf(::ProfileViewModel)
                 }
             )
         }

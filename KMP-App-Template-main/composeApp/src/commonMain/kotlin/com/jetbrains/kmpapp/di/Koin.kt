@@ -11,13 +11,14 @@ import com.jetbrains.kmpapp.data.SessionManager
 import com.jetbrains.kmpapp.screens.auth.AuthViewModel
 import com.jetbrains.kmpapp.screens.detail.DetailViewModel
 import com.jetbrains.kmpapp.screens.list.ListViewModel
+import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val dataModule = module {
@@ -44,13 +45,28 @@ val dataModule = module {
 
     // We expect the DataStore to be provided by the Android layer
     single<DataStore<Preferences>> { get() }
-    single { SessionManager(get()) }
+    single {
+        SessionManager(get())
+    }
 }
 
 val viewModelModule = module {
-    factoryOf(::ListViewModel)
-    factoryOf(::DetailViewModel)
-    factoryOf(::AuthViewModel)
+    viewModel { ListViewModel(get()) }
+    viewModel { DetailViewModel(get()) }
+    viewModel {
+        AuthViewModel(
+            repository = get(),
+            sessionManager = get()
+        )
+    }
+
+    viewModel {
+        println("Registering ProfileViewModel")
+        ProfileViewModel(
+            repository = get(),
+            sessionManager = get()
+        )
+    }
 }
 
 fun initKoin() {
@@ -58,3 +74,4 @@ fun initKoin() {
         modules(dataModule, viewModelModule)
     }
 }
+

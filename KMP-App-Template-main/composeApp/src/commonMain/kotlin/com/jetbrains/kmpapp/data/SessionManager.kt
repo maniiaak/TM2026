@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 val IS_LOGGED_IN_KEY = booleanPreferencesKey("is_logged_in")
@@ -39,5 +40,9 @@ class SessionManager(private val dataStore: DataStore<Preferences>) {
         dataStore.edit { preferences ->
             preferences.clear()
         }
+    }
+
+    suspend fun getUserId(): Int? {
+        return userId.first()
     }
 }

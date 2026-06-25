@@ -17,6 +17,10 @@ interface MuseumApi {
     suspend fun importAlbum(
         query: String
     ): Result<Int>
+
+    suspend fun getUserStats(
+        userId: Int
+    ): UserStats
 }
 
 @Serializable
@@ -108,5 +112,14 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
             response.album_id
                 ?: error("Album ID missing")
         }
+    }
+
+    override suspend fun getUserStats(
+        userId: Int
+    ): UserStats {
+
+        return client.get(
+            urlString = baseUrl + "users/$userId/stats"
+        ).body()
     }
 }
