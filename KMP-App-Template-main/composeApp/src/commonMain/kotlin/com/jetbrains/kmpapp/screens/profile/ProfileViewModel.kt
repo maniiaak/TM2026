@@ -27,6 +27,13 @@ class ProfileViewModel(
     val reviews: StateFlow<List<UserReview>> =
         _reviews
 
+    private val _isLoadingMore = MutableStateFlow(false)
+    val isLoadingMore: StateFlow<Boolean> = _isLoadingMore
+
+    private var currentPage = 1
+    private var isLoading = false
+    private var endReached = false
+
     init {
         loadUser()
     }
@@ -42,10 +49,50 @@ class ProfileViewModel(
                     _userStats.value = it
                 }
 
-            repository.getUserReviews(userId)
-                .onSuccess {
-                    _reviews.value = it
+            repository.getUserReviews(
+                userId = userId,
+                page = 1
+            ).onSuccess { reviews ->
+
+                _reviews.value = reviews
+
+                currentPage = 2
+
+                if (reviews.size < 10) {
+                    endReached = true
                 }
+            }
+        }
+    }
+
+    fun loadMoreReviews() {
+
+        if (isLoading || endReached) return
+
+        isLoading = true
+        _isLoadingMore.value = true
+
+        viewModelScope.launch {
+
+            val userId =
+                sessionManager.getUserId() ?: return@launch
+
+            repository.getUserReviews(
+                userId = userId,
+                page = currentPage
+            ).onSuccess { reviews ->
+
+                _reviews.value += reviews
+
+                if (reviews.size < 10) {
+                    endReached = true
+                } else {
+                    currentPage++
+                }
+            }
+
+            isLoading = false
+            _isLoadingMore.value = false
         }
     }
 }
