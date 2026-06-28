@@ -60,11 +60,12 @@ val viewModelModule = module {
         )
     }
 
-    viewModel {
-        println("Registering ProfileViewModel")
+    viewModel { (initialUserId: Int?) ->
+        println("Registering ProfileViewModel for initialUserId=$initialUserId")
         ProfileViewModel(
             repository = get(),
-            sessionManager = get()
+            sessionManager = get(),
+            initialUserId = initialUserId
         )
     }
 }

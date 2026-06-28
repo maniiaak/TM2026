@@ -74,11 +74,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.clickable
 
 @Composable
 fun DetailScreen(
     objectId: Int,
     navigateBack: () -> Unit,
+    navigateToUserProfile: (Int) -> Unit,
     viewModel: DetailViewModel = koinViewModel(),
     sessionManager: SessionManager = koinInject()
 ) {
@@ -130,8 +132,10 @@ fun DetailScreen(
             isLoading = isLoading,
             handleSaveNote = ::handleSaveNote,
             totalRatings = totalRatings,
-            averageRating = averageRating
+            averageRating = averageRating,
+            navigateToUserProfile = navigateToUserProfile
         )
+
 
         NoteDialog(
             isOpen = showNoteDialog,
@@ -159,6 +163,7 @@ private fun ObjectDetails(
     totalRatings: Int,
     averageRating: Double,
     modifier: Modifier = Modifier,
+    navigateToUserProfile: (Int) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -236,7 +241,7 @@ private fun ObjectDetails(
                             }
 
                             else -> {
-                                ReviewsList(reviews = reviews)
+                                ReviewsList(reviews = reviews, navigateToUserProfile = navigateToUserProfile)
                             }
                         }
                     }
@@ -266,15 +271,18 @@ private fun LabeledInfo(
 }
 
 @Composable
-fun ReviewsList(reviews: List<Review>) {
+fun ReviewsList(reviews: List<Review>, navigateToUserProfile: (Int) -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.padding(bottom=80.dp)
     ) {
         reviews.forEach { review ->
+            val cardModifier = Modifier
+                .fillMaxWidth()
+                .clickable(enabled = review.userId != null) { review.userId?.let { navigateToUserProfile(it) } }
 
             Card(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = cardModifier,
 
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 4.dp

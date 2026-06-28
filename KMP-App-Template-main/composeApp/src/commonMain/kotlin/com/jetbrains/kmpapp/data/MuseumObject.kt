@@ -8,7 +8,9 @@ data class Review(
     val rating: Float,
     val content: String,
     @SerialName("created_at") val createdAt: String,
-    val username: String
+    val username: String,
+    @SerialName("user_id")
+    val userId: Int? = null
 )
 
 @Serializable

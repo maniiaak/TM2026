@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4bfc2dff-411d-4d5a-8ab7-2959157af95a" name="Changes" comment="optimized requests">
+      <change beforePath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/di/Koin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/di/Koin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Serverside.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_data.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/init.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/spotify2db.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/home/marston/IdeaProjects/TM2026/Serverside" value="3BZouiOdLa2QTh1XhXcFQfw2rgN" />
+    </persistenceIdMap>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;maniiaak&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/maniiaak/TM2026&quot;,
+    &quot;accountId&quot;: &quot;316d220c-71c3-485f-acc2-0af51c739ef4&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="3BZouiOdLa2QTh1XhXcFQfw2rgN" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.Unnamed.executor": "Run",
+    "Python.__future__.executor": "Run",
+    "Python.init.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.maintest.executor": "Run",
+    "Python.mbrainz2db.executor": "Run",
+    "Python.script_groupe_A.executor": "Run",
+    "Python.spotify.executor": "Run",
+    "Python.spotify2db.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "copilot.chat.legacySessionMetadata.migrated": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/marston/IdeaProjects/TM2026/KMP-App-Template-main/Serverside",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "vcs.Git"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy">
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4bfc2dff-411d-4d5a-8ab7-2959157af95a" name="Changes" comment="" />
+      <created>1774706177720</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1774706177720</updated>
+    </task>
+    <task id="LOCAL-00001" summary="databse imrpovments and spotify func added">
+      <option name="closed" value="true" />
+      <created>1774712901943</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774712901943</updated>
+    </task>
+    <task id="LOCAL-00002" summary="optimized requests">
+      <option name="closed" value="true" />
+      <created>1779995023622</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779995023622</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="databse imrpovments and spotify func added" />
+    <MESSAGE value="optimized requests" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimized requests" />
+  </component>
+</project>

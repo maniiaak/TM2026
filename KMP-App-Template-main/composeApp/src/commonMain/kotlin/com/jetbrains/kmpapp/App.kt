@@ -42,7 +42,7 @@ object SearchDestination
 data class DetailDestination(val objectId: Int)
 
 @Serializable
-object ProfileDestination
+data class ProfileDestination(val userId: Int? = null)
 
 @Composable
 fun App(
@@ -76,6 +76,8 @@ fun App(
                         modifier = Modifier.height(100.dp)
                         ){
                         val currentRoute = navController.currentBackStackEntryFlow.collectAsState(initial = null).value?.destination?.route ?: ""
+                        // current session user id to allow opening the profile page for the current user
+                        val currentSessionUserId by sessionManager.userId.collectAsState(initial = 0)
 
                         NavigationBarItem(
                             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
@@ -104,7 +106,8 @@ fun App(
                             },
                             selected = currentRoute.contains("profile"),
                             onClick = {
-                                navController.navigate(ProfileDestination) {
+                                val idForNav = if (currentSessionUserId != 0) currentSessionUserId else null
+                                navController.navigate(ProfileDestination(idForNav)) {
                                     popUpTo(navController.graph.findStartDestination().id)
                                 }
                             }
@@ -134,7 +137,10 @@ fun App(
                         val objectId = backStackEntry.toRoute<DetailDestination>().objectId
                         DetailScreen(
                             objectId = objectId,
-                            navigateBack = { navController.popBackStack() }
+                            navigateBack = { navController.popBackStack() },
+                            navigateToUserProfile = { userId ->
+                                navController.navigate(ProfileDestination(userId = userId))
+                            }
                         )
                     }
 
@@ -159,9 +165,15 @@ fun App(
                         )
                     }
 
-                    composable<ProfileDestination> {
-                        println("Trying to resolve ProfileViewModel")
-                        val profileViewModel: ProfileViewModel = koinViewModel()
+                    composable<ProfileDestination> { backStackEntry ->
+                        // extract the userId from the destination and pass it to the ProfileViewModel
+                        val userId = backStackEntry.toRoute<ProfileDestination>().userId
+
+                        println("Trying to resolve ProfileViewModel for userId=$userId")
+
+                        val profileViewModel: ProfileViewModel = org.koin.compose.viewmodel.koinViewModel(parameters = {
+                            org.koin.core.parameter.parametersOf(userId)
+                        })
 
                         ProfileScreen(
                             viewModel = profileViewModel
