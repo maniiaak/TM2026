@@ -101,6 +101,20 @@ def check_tables():
     else:
         print(" ERROR: 'reviews' table does NOT exist!")
 
+    # Create follows table if it doesn't exist
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS follows (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            following_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            FOREIGN KEY (following_id) REFERENCES users (id),
+            UNIQUE(user_id, following_id)
+        )
+    """)
+    conn.commit()
+
     close_db(conn)
 
 # Run check at startup
@@ -680,6 +694,9 @@ def get_user(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Get current user id from query params (optional)
+    current_user_id = request.args.get('current_user_id', type=int)
+
     cursor.execute("""
                    SELECT
                        u.id,
@@ -692,19 +709,38 @@ def get_user(user_id):
                    """, (user_id,))
 
     user = cursor.fetchone()
-    close_db(conn)
 
     if not user:
+        close_db(conn)
         return jsonify({
             "success": False,
             "error": "User not found"
         }), 404
 
+    # Get follower count
+    cursor.execute("SELECT COUNT(*) as count FROM follows WHERE following_id = ?", (user_id,))
+    follower_count = cursor.fetchone()["count"]
+
+    # Get following count
+    cursor.execute("SELECT COUNT(*) as count FROM follows WHERE user_id = ?", (user_id,))
+    following_count = cursor.fetchone()["count"]
+
+    # Check if current user follows this user (if current_user_id is provided)
+    is_following = False
+    if current_user_id and current_user_id != user_id:
+        cursor.execute("SELECT 1 FROM follows WHERE user_id = ? AND following_id = ?", (current_user_id, user_id))
+        is_following = cursor.fetchone() is not None
+
+    close_db(conn)
+
     return jsonify({
         "success": True,
         "id": user["id"],
         "username": user["username"],
-        "review_count": user["review_count"]
+        "review_count": user["review_count"],
+        "follower_count": follower_count,
+        "following_count": following_count,
+        "is_following": is_following
     })
 
 @app.route('/api/users/<int:user_id>/reviews', methods=['GET'])
@@ -741,6 +777,70 @@ def get_user_reviews(user_id):
     close_db(conn)
 
     return jsonify(reviews)
+
+@app.route('/api/users/<int:following_id>/follow', methods=['POST'])
+def follow_user(following_id):
+    """Follow a user. Current user ID is passed in request body."""
+    data = request.get_json()
+    current_user_id = data.get('current_user_id')
+
+    if not current_user_id:
+        return jsonify({"error": "current_user_id is required"}), 400
+
+    if current_user_id == following_id:
+        return jsonify({"error": "Cannot follow yourself"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        # Check if already following
+        cursor.execute("SELECT 1 FROM follows WHERE user_id = ? AND following_id = ?", (current_user_id, following_id))
+        if cursor.fetchone():
+            close_db(conn)
+            return jsonify({"success": False, "error": "Already following this user"}), 400
+
+        # Insert follow relationship
+        cursor.execute("""
+            INSERT INTO follows (user_id, following_id)
+            VALUES (?, ?)
+        """, (current_user_id, following_id))
+
+        conn.commit()
+        close_db(conn)
+
+        return jsonify({"success": True, "message": "User followed successfully"}), 201
+
+    except sqlite3.IntegrityError as e:
+        close_db(conn)
+        return jsonify({"error": str(e)}), 400
+
+@app.route('/api/users/<int:following_id>/unfollow', methods=['POST'])
+def unfollow_user(following_id):
+    """Unfollow a user. Current user ID is passed in request body."""
+    data = request.get_json()
+    current_user_id = data.get('current_user_id')
+
+    if not current_user_id:
+        return jsonify({"error": "current_user_id is required"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            DELETE FROM follows
+            WHERE user_id = ? AND following_id = ?
+        """, (current_user_id, following_id))
+
+        conn.commit()
+        close_db(conn)
+
+        return jsonify({"success": True, "message": "User unfollowed successfully"}), 200
+
+    except sqlite3.Error as e:
+        close_db(conn)
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

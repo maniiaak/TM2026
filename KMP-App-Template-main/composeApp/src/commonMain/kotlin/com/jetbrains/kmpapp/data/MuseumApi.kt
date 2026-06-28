@@ -25,8 +25,12 @@ interface MuseumApi {
     ): Result<Int>
 
     suspend fun getUserStats(
-        userId: Int
+        userId: Int,
+        currentUserId: Int? = null
     ): UserStats
+
+    suspend fun followUser(userId: Int, currentUserId: Int): Result<Unit>
+    suspend fun unfollowUser(userId: Int, currentUserId: Int): Result<Unit>
 }
 
 @Serializable
@@ -120,13 +124,18 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         }
     }
 
-    override suspend fun getUserStats(
-        userId: Int
-    ): UserStats {
+     override suspend fun getUserStats(
+         userId: Int,
+         currentUserId: Int?
+     ): UserStats {
 
         return client.get(
             urlString = baseUrl + "users/$userId/stats"
-        ).body()
+        ) {
+            if (currentUserId != null) {
+                parameter("current_user_id", currentUserId)
+            }
+        }.body()
     }
 
     override suspend fun getUserReviews(
@@ -139,5 +148,19 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
             parameter("page", page)
             parameter("limit", limit)
         }.body()
+    }
+
+    override suspend fun followUser(userId: Int, currentUserId: Int): Result<Unit> = runCatching {
+        client.post(baseUrl + "users/$userId/follow") {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("current_user_id" to currentUserId))
+        }
+    }
+
+    override suspend fun unfollowUser(userId: Int, currentUserId: Int): Result<Unit> = runCatching {
+        client.post(baseUrl + "users/$userId/unfollow") {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("current_user_id" to currentUserId))
+        }
     }
 }

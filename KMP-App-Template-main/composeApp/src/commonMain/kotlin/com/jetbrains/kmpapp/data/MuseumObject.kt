@@ -97,6 +97,15 @@ data class UserStats(
     @SerialName("review_count")
     val reviewCount: Int,
 
+    @SerialName("follower_count")
+    val followerCount: Int = 0,
+
+    @SerialName("following_count")
+    val followingCount: Int = 0,
+
+    @SerialName("is_following")
+    val isFollowing: Boolean = false,
+
     val success: Boolean = true
 )
 

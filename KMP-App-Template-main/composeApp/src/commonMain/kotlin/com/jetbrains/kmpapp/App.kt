@@ -166,10 +166,19 @@ fun App(
                     }
 
                     composable<ProfileDestination> { backStackEntry ->
+                        val currentSessionUserId by sessionManager.userId.collectAsState(initial = 0)
+
                         // extract the userId from the destination and pass it to the ProfileViewModel
                         val userId = backStackEntry.toRoute<ProfileDestination>().userId
 
                         println("Trying to resolve ProfileViewModel for userId=$userId")
+
+                        // Determine if this is the current user's own profile
+                        val isOwnProfile = if (userId != null) {
+                            userId == currentSessionUserId
+                        } else {
+                            true // If no userId, we're viewing current user's profile
+                        }
 
                         val profileViewModel: ProfileViewModel = org.koin.compose.viewmodel.koinViewModel(parameters = {
                             org.koin.core.parameter.parametersOf(userId)
@@ -179,7 +188,8 @@ fun App(
                             viewModel = profileViewModel,
                             navigateToAlbum = { albumId ->
                                 navController.navigate(DetailDestination(albumId))
-                            }
+                            },
+                            isOwnProfile = isOwnProfile
                         )
                     }
                 }
