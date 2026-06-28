@@ -37,10 +37,22 @@ class ProfileViewModel(
     private var endReached = false
 
     private var viewingUserId: Int? = null
+    private var currentSessionUserId: Int? = null
+
+    private val _isFollowing = MutableStateFlow(false)
+    val isFollowing: StateFlow<Boolean> = _isFollowing
+
+    private val _isFollowLoading = MutableStateFlow(false)
+    val isFollowLoading: StateFlow<Boolean> = _isFollowLoading
 
     init {
         // start loading for either the provided initial user id or the current session user
         loadUser(initialUserId)
+
+        // Get current session user id for follow actions
+        viewModelScope.launch {
+            currentSessionUserId = sessionManager.getUserId()
+        }
     }
 
     private fun loadUser(userIdParam: Int? = null) {
@@ -50,10 +62,12 @@ class ProfileViewModel(
 
             if (userId != null) {
                 viewingUserId = userId
+                val currentUserId = currentSessionUserId
 
-                repository.getUserStats(userId)
-                    .onSuccess {
-                        _userStats.value = it
+                repository.getUserStats(userId, currentUserId)
+                    .onSuccess { stats ->
+                        _userStats.value = stats
+                        _isFollowing.value = stats.isFollowing
                     }
 
                 repository.getUserReviews(
@@ -76,9 +90,10 @@ class ProfileViewModel(
             val sessionUserId = sessionManager.getUserId() ?: return@launch
             viewingUserId = sessionUserId
 
-            repository.getUserStats(sessionUserId)
+            repository.getUserStats(sessionUserId, sessionUserId)
                 .onSuccess {
                     _userStats.value = it
+                    _isFollowing.value = false
                 }
 
             repository.getUserReviews(
@@ -127,6 +142,51 @@ class ProfileViewModel(
 
             isLoading = false
             _isLoadingMore.value = false
+        }
+    }
+
+    fun toggleFollow() {
+        if (_isFollowLoading.value) return
+
+        val userId = viewingUserId ?: return
+        val currentUserId = currentSessionUserId ?: return
+
+        _isFollowLoading.value = true
+
+        viewModelScope.launch {
+            try {
+                if (_isFollowing.value) {
+                    // Unfollow
+                    repository.unfollowUser(userId, currentUserId)
+                        .onSuccess {
+                            _isFollowing.value = false
+                            // Decrement follower count
+                            _userStats.value = _userStats.value?.copy(
+                                followerCount = (_userStats.value?.followerCount ?: 1) - 1,
+                                isFollowing = false
+                            )
+                        }
+                        .onFailure { error ->
+                            println("Unfollow failed: ${error.message}")
+                        }
+                } else {
+                    // Follow
+                    repository.followUser(userId, currentUserId)
+                        .onSuccess {
+                            _isFollowing.value = true
+                            // Increment follower count
+                            _userStats.value = _userStats.value?.copy(
+                                followerCount = (_userStats.value?.followerCount ?: 0) + 1,
+                                isFollowing = true
+                            )
+                        }
+                        .onFailure { error ->
+                            println("Follow failed: ${error.message}")
+                        }
+                }
+            } finally {
+                _isFollowLoading.value = false
+            }
         }
     }
 }

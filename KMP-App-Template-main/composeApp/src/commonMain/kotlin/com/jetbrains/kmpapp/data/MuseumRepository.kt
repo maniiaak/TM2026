@@ -62,10 +62,11 @@ class MuseumRepository(
     }
 
     suspend fun getUserStats(
-        userId: Int
+        userId: Int,
+        currentUserId: Int? = null
     ): Result<UserStats> =
         runCatching {
-            museumApi.getUserStats(userId)
+            museumApi.getUserStats(userId, currentUserId)
         }
 
 
@@ -80,4 +81,10 @@ class MuseumRepository(
             limit = limit
         )
     }
+
+    suspend fun followUser(userId: Int, currentUserId: Int): Result<Unit> =
+        museumApi.followUser(userId, currentUserId)
+
+    suspend fun unfollowUser(userId: Int, currentUserId: Int): Result<Unit> =
+        museumApi.unfollowUser(userId, currentUserId)
 }

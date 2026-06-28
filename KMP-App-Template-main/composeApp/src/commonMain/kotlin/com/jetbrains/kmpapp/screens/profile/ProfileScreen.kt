@@ -14,12 +14,15 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
-    navigateToAlbum: (Int) -> Unit = {}
+    navigateToAlbum: (Int) -> Unit = {},
+    isOwnProfile: Boolean = false
 ) {
     val stats by viewModel.userStats.collectAsState()
     val reviews by viewModel.reviews.collectAsState()
     val listState = rememberLazyListState()
     val isLoadingMore by viewModel.isLoadingMore.collectAsState()
+    val isFollowing by viewModel.isFollowing.collectAsState()
+    val isFollowLoading by viewModel.isFollowLoading.collectAsState()
 
     if (stats == null) {
         Box(
@@ -48,17 +51,71 @@ fun ProfileScreen(
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(
-                        text = stats!!.username,
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stats!!.username,
+                                style = MaterialTheme.typography.titleLarge
+                            )
 
-                    Spacer(Modifier.height(4.dp))
+                            Spacer(Modifier.height(4.dp))
 
-                    Text(
-                        text = "${stats!!.reviewCount} reviews",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                            Text(
+                                text = "${stats!!.reviewCount} reviews",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+
+                            Spacer(Modifier.height(8.dp))
+
+                            Row(
+                                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+                            ) {
+                                Column {
+                                    Text(
+                                        text = stats!!.followingCount.toString(),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = "Following",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+
+                                Column {
+                                    Text(
+                                        text = stats!!.followerCount.toString(),
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Text(
+                                        text = "Followers",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            }
+                        }
+
+                        if (!isOwnProfile) {
+                            Button(
+                                onClick = { viewModel.toggleFollow() },
+                                enabled = !isFollowLoading,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            ) {
+                                if (isFollowLoading) {
+                                    androidx.compose.material3.CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        color = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                } else {
+                                    Text(if (isFollowing) "Unfollow" else "Follow")
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
