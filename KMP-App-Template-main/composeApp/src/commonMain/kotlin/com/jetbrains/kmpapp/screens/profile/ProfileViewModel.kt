@@ -12,7 +12,9 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val repository: MuseumRepository,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    // If provided, this ViewModel will load data for this user id instead of the current session user
+    private val initialUserId: Int? = null
 ) : ViewModel() {
 
     private val _userStats =
@@ -34,23 +36,53 @@ class ProfileViewModel(
     private var isLoading = false
     private var endReached = false
 
+    private var viewingUserId: Int? = null
+
     init {
-        loadUser()
+        // start loading for either the provided initial user id or the current session user
+        loadUser(initialUserId)
     }
 
-    private fun loadUser() {
+    private fun loadUser(userIdParam: Int? = null) {
         viewModelScope.launch {
+            // Prefer explicit id param, then session user id
+            val userId = userIdParam
 
-            val userId =
-                sessionManager.getUserId() ?: return@launch
+            if (userId != null) {
+                viewingUserId = userId
 
-            repository.getUserStats(userId)
+                repository.getUserStats(userId)
+                    .onSuccess {
+                        _userStats.value = it
+                    }
+
+                repository.getUserReviews(
+                    userId = userId,
+                    page = 1
+                ).onSuccess { reviews ->
+
+                    _reviews.value = reviews
+
+                    currentPage = 2
+
+                    if (reviews.size < 10) {
+                        endReached = true
+                    }
+                }
+                return@launch
+            }
+
+            // fallback to session user
+            val sessionUserId = sessionManager.getUserId() ?: return@launch
+            viewingUserId = sessionUserId
+
+            repository.getUserStats(sessionUserId)
                 .onSuccess {
                     _userStats.value = it
                 }
 
             repository.getUserReviews(
-                userId = userId,
+                userId = sessionUserId,
                 page = 1
             ).onSuccess { reviews ->
 
@@ -74,20 +106,22 @@ class ProfileViewModel(
 
         viewModelScope.launch {
 
-            val userId =
-                sessionManager.getUserId() ?: return@launch
+            // If viewing by userId use that, else if viewing by username we call username endpoint
+            val userId = viewingUserId
 
-            repository.getUserReviews(
-                userId = userId,
-                page = currentPage
-            ).onSuccess { reviews ->
+            if (userId != null) {
+                repository.getUserReviews(
+                    userId = userId,
+                    page = currentPage
+                ).onSuccess { reviews ->
 
-                _reviews.value += reviews
+                    _reviews.value += reviews
 
-                if (reviews.size < 10) {
-                    endReached = true
-                } else {
-                    currentPage++
+                    if (reviews.size < 10) {
+                        endReached = true
+                    } else {
+                        currentPage++
+                    }
                 }
             }
 
