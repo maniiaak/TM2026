@@ -9,13 +9,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.jetbrains.kmpapp.data.UserReview
+import androidx.compose.foundation.clickable
 
 @Composable
-fun UserReviewCard(review: UserReview) {
+fun UserReviewCard(review: UserReview, onReviewClick: (Int) -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp),
+            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .clickable { onReviewClick(review.albumId) },
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
