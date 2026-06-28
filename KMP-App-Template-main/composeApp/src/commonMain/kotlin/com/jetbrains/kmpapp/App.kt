@@ -176,7 +176,10 @@ fun App(
                         })
 
                         ProfileScreen(
-                            viewModel = profileViewModel
+                            viewModel = profileViewModel,
+                            navigateToAlbum = { albumId ->
+                                navController.navigate(DetailDestination(albumId))
+                            }
                         )
                     }
                 }

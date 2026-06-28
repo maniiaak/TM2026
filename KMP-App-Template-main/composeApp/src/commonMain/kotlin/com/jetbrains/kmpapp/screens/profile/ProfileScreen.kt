@@ -10,11 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel
+    viewModel: ProfileViewModel,
+    navigateToAlbum: (Int) -> Unit = {}
 ) {
     val stats by viewModel.userStats.collectAsState()
     val reviews by viewModel.reviews.collectAsState()
@@ -72,7 +72,7 @@ fun ProfileScreen(
         }
 
         items(reviews) { review ->
-            UserReviewCard(review)
+            UserReviewCard(review, onReviewClick = navigateToAlbum)
         }
 
         item {
