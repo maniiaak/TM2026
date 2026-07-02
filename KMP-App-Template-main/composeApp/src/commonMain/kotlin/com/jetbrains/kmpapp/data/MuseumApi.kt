@@ -31,6 +31,12 @@ interface MuseumApi {
 
     suspend fun followUser(userId: Int, currentUserId: Int): Result<Unit>
     suspend fun unfollowUser(userId: Int, currentUserId: Int): Result<Unit>
+    suspend fun getHome(currentUserId: Int? = null): Result<HomeResponse>
+    suspend fun getCategoryAlbums(
+        category: String,
+        page: Int,
+        currentUserId: Int? = null
+    ): Result<CategoryResponse>
 }
 
 @Serializable
@@ -51,6 +57,7 @@ data class AlbumReviewsResponse(
     val totalRatings: Int,
     val rating: Double
 )
+
 class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
     private val baseUrl = "http://192.168.1.139:5000/api/"
 
@@ -162,5 +169,31 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
             contentType(ContentType.Application.Json)
             setBody(mapOf("current_user_id" to currentUserId))
         }
+    }
+
+    override suspend fun getHome(currentUserId: Int?): Result<HomeResponse> = runCatching {
+        val url = baseUrl + "home"
+        client.get(url) {
+            if (currentUserId != null) parameter("current_user_id", currentUserId)
+        }.body()
+    }
+
+    override suspend fun getCategoryAlbums(
+        category: String,
+        page: Int,
+        currentUserId: Int?
+    ): Result<CategoryResponse> = runCatching {
+        val categoryPath = when (category) {
+            "popular_this_week" -> "home/popular-this-week"
+            "newly_reviewed_by_friends" -> "home/newly-reviewed-by-friends"
+            "popular_with_friends" -> "home/popular-with-friends"
+            else -> "home/$category"
+        }
+        
+        client.get(baseUrl + categoryPath) {
+            parameter("page", page)
+            parameter("limit", 20)
+            if (currentUserId != null) parameter("current_user_id", currentUserId)
+        }.body()
     }
 }

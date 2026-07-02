@@ -4,30 +4,45 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jetbrains.kmpapp.data.MuseumRepository
 import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.data.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+import kotlinx.coroutines.flow.update
+
 class ListViewModel(
-    private val repository: MuseumRepository
+    private val repository: MuseumRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
-    private val _objects = MutableStateFlow<List<MuseumObject>>(emptyList())
-    val objects: StateFlow<List<MuseumObject>> = _objects
+    private val _popularThisWeek = MutableStateFlow<List<MuseumObject>>(emptyList())
+    val popularThisWeek: StateFlow<List<MuseumObject>> = _popularThisWeek
+
+    private val _newlyReviewedByFriends = MutableStateFlow<List<MuseumObject>>(emptyList())
+    val newlyReviewedByFriends: StateFlow<List<MuseumObject>> = _newlyReviewedByFriends
+
+    private val _popularWithFriends = MutableStateFlow<List<MuseumObject>>(emptyList())
+    val popularWithFriends: StateFlow<List<MuseumObject>> = _popularWithFriends
 
     init {
-        viewModelScope.launch {
-            repository.getObjects().collect { list ->
-                _objects.value = list
-            }
-        }
-
         refresh()
     }
 
     fun refresh() {
         viewModelScope.launch {
-            repository.refresh()
+            val currentUserId = sessionManager.getUserId()
+            val result = repository.getHome(currentUserId)
+            result.onSuccess { home ->
+                _popularThisWeek.value = home.popularThisWeek.take(5)
+                _newlyReviewedByFriends.value = home.newlyReviewedByFriends.take(5)
+                _popularWithFriends.value = home.popularWithFriends.take(5)
+            }.onFailure {
+                // fallback to fetching all objects if home endpoint fails
+                repository.getObjects().collect { list ->
+                    _popularThisWeek.value = list.take(5)
+                }
+            }
         }
     }
 }

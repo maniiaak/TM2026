@@ -72,7 +72,6 @@ class MyApp : Application() {
                     }
 
                     // 5. Auth Repository
-                    single { AuthRepository() }
 
                     // 6. ViewModels
                     factoryOf(::ListViewModel)

@@ -8,15 +8,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
-class AuthRepository {
-    private val client = HttpClient {
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            })
-        }
-    }
+class AuthRepository(private val client: HttpClient) {
 
     private val baseUrl = "http://192.168.1.139:5000/api/auth"
 

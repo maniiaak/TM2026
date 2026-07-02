@@ -22,6 +22,7 @@ import com.jetbrains.kmpapp.data.SessionManager
 import com.jetbrains.kmpapp.screens.auth.LoginScreen
 import com.jetbrains.kmpapp.screens.detail.DetailScreen
 import com.jetbrains.kmpapp.screens.list.ListScreen
+import com.jetbrains.kmpapp.screens.list.CategoryDetailScreen
 import com.jetbrains.kmpapp.screens.profile.ProfileScreen
 import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
 import com.jetbrains.kmpapp.screens.search.SearchScreen
@@ -43,6 +44,9 @@ data class DetailDestination(val objectId: Int)
 
 @Serializable
 data class ProfileDestination(val userId: Int? = null)
+
+@Serializable
+data class CategoryDetailDestination(val category: String)
 
 @Composable
 fun App(
@@ -124,6 +128,9 @@ fun App(
                             navigateToDetails = { id ->
                                 navController.navigate(DetailDestination(id))
                             },
+                            navigateToCategory = { category ->
+                                navController.navigate(CategoryDetailDestination(category))
+                            },
                             onLogout = {
                                 sessionManager.logout()
                                 navController.navigate(LoginDestination) {
@@ -192,6 +199,17 @@ fun App(
                             isOwnProfile = isOwnProfile
                         )
                     }
+
+                     composable<CategoryDetailDestination> { backStackEntry ->
+                         val category = backStackEntry.toRoute<CategoryDetailDestination>().category
+                         CategoryDetailScreen(
+                             category = category,
+                             navigateToDetails = { id ->
+                                 navController.navigate(DetailDestination(id))
+                             },
+                             navigateBack = { navController.popBackStack() }
+                         )
+                     }
                 }
             }
         }
