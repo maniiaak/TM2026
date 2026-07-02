@@ -7,11 +7,14 @@ import com.jetbrains.kmpapp.data.KtorMuseumApi
 import com.jetbrains.kmpapp.data.MuseumApi
 import com.jetbrains.kmpapp.data.MuseumRepository
 import com.jetbrains.kmpapp.data.MuseumStorage
+import com.jetbrains.kmpapp.data.AuthRepository
 import com.jetbrains.kmpapp.data.SessionManager
 import com.jetbrains.kmpapp.screens.auth.AuthViewModel
 import com.jetbrains.kmpapp.screens.detail.DetailViewModel
 import com.jetbrains.kmpapp.screens.list.ListViewModel
+import com.jetbrains.kmpapp.screens.list.CategoryDetailViewModel
 import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
+import com.jetbrains.kmpapp.screens.search.SearchViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
@@ -37,6 +40,9 @@ val dataModule = module {
     single<MuseumApi> { KtorMuseumApi(get()) }
     single<MuseumStorage> { InMemoryMuseumStorage() }
 
+    // AuthRepository is used by AuthViewModel; register it in the common data module
+    single { AuthRepository(get()) }
+
     single {
         MuseumRepository(get(), get()).apply {
             initialize()
@@ -51,8 +57,9 @@ val dataModule = module {
 }
 
 val viewModelModule = module {
-    viewModel { ListViewModel(get()) }
+    viewModel { ListViewModel(get(), get()) }
     viewModel { DetailViewModel(get()) }
+    viewModel { CategoryDetailViewModel(get(), get()) }
     viewModel {
         AuthViewModel(
             repository = get(),
@@ -68,6 +75,7 @@ val viewModelModule = module {
             initialUserId = initialUserId
         )
     }
+    viewModel { SearchViewModel(get()) }
 }
 
 fun initKoin() {

@@ -82,9 +82,19 @@ class MuseumRepository(
         )
     }
 
+    suspend fun getHome(currentUserId: Int? = null): Result<HomeResponse> =
+        museumApi.getHome(currentUserId)
+
     suspend fun followUser(userId: Int, currentUserId: Int): Result<Unit> =
         museumApi.followUser(userId, currentUserId)
 
     suspend fun unfollowUser(userId: Int, currentUserId: Int): Result<Unit> =
         museumApi.unfollowUser(userId, currentUserId)
+
+    suspend fun getCategoryAlbums(
+        category: String,
+        page: Int,
+        currentUserId: Int? = null
+    ): Result<CategoryResponse> =
+        museumApi.getCategoryAlbums(category, page, currentUserId)
 }

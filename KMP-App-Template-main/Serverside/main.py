@@ -4,11 +4,167 @@ import requests
 import spotipy
 from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyClientCredentials
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
+import threading
+import time
 
 app = Flask(__name__)
 DATABASE = 'app_data.db'
+CACHE_TTL = 3600  # 1 hour in seconds
+
+# ===== CACHE STRUCTURES =====
+home_cache = {
+    'data': None,
+    'updated_at': None
+}
+
+per_user_home_cache = {}  # { user_id: { 'data': {...}, 'updated_at': ... } }
+
+def is_cache_expired(updated_at):
+    """Check if cache entry has expired."""
+    if updated_at is None:
+        return True
+    return (datetime.now() - updated_at).total_seconds() > CACHE_TTL
+
+# ===== BACKGROUND CACHE RECOMPUTE =====
+def refresh_global_home_cache():
+    """Recompute and refresh global cache (popular_this_week)."""
+    global home_cache
+    try:
+        popular = compute_popular_this_week()
+        home_cache['data'] = popular
+        home_cache['updated_at'] = datetime.now()
+        print(f"[Cache] Global cache refreshed. Popular this week: {len(popular)} albums")
+    except Exception as e:
+        print(f"[Cache Error] Failed to refresh global cache: {e}")
+
+def schedule_cache_refresh():
+    """Start a background thread that refreshes global cache every hour."""
+    def refresh_loop():
+        while True:
+            try:
+                time.sleep(CACHE_TTL)  # Wait 1 hour
+                refresh_global_home_cache()
+            except Exception as e:
+                print(f"[Cache Error] In refresh loop: {e}")
+
+    thread = threading.Thread(target=refresh_loop, daemon=True)
+    thread.start()
+    print("[Cache] Background cache refresh thread started")
+
+# ===== COMPUTE FUNCTIONS =====
+def compute_popular_this_week():
+    """
+    Get albums most reviewed in the last 7 days.
+    Returns list of album dicts (up to 50).
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    seven_days_ago = datetime.now() - timedelta(days=7)
+
+    cursor.execute("""
+        SELECT 
+            a.id, a.title, a.release_date, a.cover_image_url, a.length, a.tracks,
+            ar.name as artist_name,
+            COUNT(r.id) as review_count,
+            COALESCE(AVG(r.rating), 0) as avg_rating
+        FROM albums a
+        JOIN artists ar ON a.artist_id = ar.id
+        LEFT JOIN reviews r ON a.id = r.album_id AND r.created_at >= ?
+        GROUP BY a.id
+        HAVING COUNT(r.id) > 0
+        ORDER BY review_count DESC
+        LIMIT 50
+    """, (seven_days_ago,))
+
+    albums = cursor.fetchall()
+    close_db(conn)
+
+    return [format_album_for_home(row) for row in albums]
+
+def compute_user_friend_lists(user_id):
+    """
+    Get friend-based recommendations for a user.
+    Returns dict with 'newly_reviewed_by_friends' and 'popular_with_friends'.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get list of users that this user follows
+    cursor.execute("SELECT following_id FROM follows WHERE user_id = ?", (user_id,))
+    following_rows = cursor.fetchall()
+    following_ids = [row['following_id'] for row in following_rows]
+
+    result = {
+        'newly_reviewed_by_friends': [],
+        'popular_with_friends': []
+    }
+
+    if not following_ids:
+        close_db(conn)
+        return result
+
+    # Format for SQL IN clause
+    placeholders = ','.join('?' * len(following_ids))
+
+    # 1. Newly reviewed by friends (most recent reviews from people you follow)
+    cursor.execute(f"""
+        SELECT 
+            a.id, a.title, a.release_date, a.cover_image_url, a.length, a.tracks,
+            ar.name as artist_name,
+            COUNT(r.id) as review_count,
+            COALESCE(AVG(r.rating), 0) as avg_rating,
+            MAX(r.created_at) as latest_review
+        FROM albums a
+        JOIN artists ar ON a.artist_id = ar.id
+        LEFT JOIN reviews r ON a.id = r.album_id AND r.user_id IN ({placeholders})
+        GROUP BY a.id
+        HAVING COUNT(r.id) > 0
+        ORDER BY latest_review DESC
+        LIMIT 50
+    """, following_ids)
+
+    newly_reviewed = cursor.fetchall()
+    result['newly_reviewed_by_friends'] = [format_album_for_home(row) for row in newly_reviewed]
+
+    # 2. Popular with friends (most reviewed albums by people you follow)
+    cursor.execute(f"""
+        SELECT 
+            a.id, a.title, a.release_date, a.cover_image_url, a.length, a.tracks,
+            ar.name as artist_name,
+            COUNT(r.id) as review_count,
+            COALESCE(AVG(r.rating), 0) as avg_rating
+        FROM albums a
+        JOIN artists ar ON a.artist_id = ar.id
+        LEFT JOIN reviews r ON a.id = r.album_id AND r.user_id IN ({placeholders})
+        GROUP BY a.id
+        HAVING COUNT(r.id) > 0
+        ORDER BY review_count DESC
+        LIMIT 50
+    """, following_ids)
+
+    popular_with_friends = cursor.fetchall()
+    result['popular_with_friends'] = [format_album_for_home(row) for row in popular_with_friends]
+
+    close_db(conn)
+    return result
+
+def format_album_for_home(row):
+    """Format a database album row for home endpoint response."""
+    return {
+        "objectID": row['id'],
+        "title": row['title'],
+        "artistDisplayName": row['artist_name'],
+        "coverImage": row['cover_image_url'],
+        "objectDate": str(row['release_date']),
+        "type": "Album",
+        "length": row['length'],
+        "tracks": row['tracks'],
+        "totalRatings": row['review_count'],
+        "rating": round(row['avg_rating'], 1)
+    }
 
 # --- Database helpers ---
 def get_db_connection():
@@ -842,5 +998,143 @@ def unfollow_user(following_id):
         close_db(conn)
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/home', methods=['GET'])
+def get_home():
+    """
+    Get home page categories:
+    - popular_this_week: Always included (global, cached)
+    - newly_reviewed_by_friends: If current_user_id provided
+    - popular_with_friends: If current_user_id provided
+    Each category limited to first 5 items (UI shows 5, but up to 50 are available server-side).
+    """
+    global home_cache, per_user_home_cache
+    
+    current_user_id = request.args.get('current_user_id', type=int)
+    
+    response = {}
+    
+    # 1. Popular this week (global cache)
+    if is_cache_expired(home_cache['updated_at']):
+        print("[Home] Popular this week cache expired, recomputing...")
+        refresh_global_home_cache()
+    
+    response['popular_this_week'] = home_cache['data'][:5] if home_cache['data'] else []
+    
+    # 2. Friend-based categories (per-user cache, only if user provided)
+    if current_user_id:
+        if current_user_id not in per_user_home_cache or is_cache_expired(per_user_home_cache[current_user_id].get('updated_at')):
+            print(f"[Home] Friend lists cache expired for user {current_user_id}, recomputing...")
+            friend_lists = compute_user_friend_lists(current_user_id)
+            per_user_home_cache[current_user_id] = {
+                'data': friend_lists,
+                'updated_at': datetime.now()
+            }
+        
+        friend_data = per_user_home_cache[current_user_id]['data']
+        response['newly_reviewed_by_friends'] = friend_data['newly_reviewed_by_friends'][:5]
+        response['popular_with_friends'] = friend_data['popular_with_friends'][:5]
+    else:
+        response['newly_reviewed_by_friends'] = []
+        response['popular_with_friends'] = []
+    
+    return jsonify(response), 200
+
+@app.route('/api/home/popular-this-week', methods=['GET'])
+def get_home_popular_this_week():
+    """Get full list of popular albums this week (for 'See more' screen)."""
+    global home_cache
+    
+    if is_cache_expired(home_cache['updated_at']):
+        refresh_global_home_cache()
+    
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 20, type=int)
+    
+    offset = (page - 1) * limit
+    all_albums = home_cache['data'] if home_cache['data'] else []
+    
+    paginated = all_albums[offset:offset + limit]
+    
+    return jsonify({
+        "category": "popular_this_week",
+        "albums": paginated,
+        "page": page,
+        "limit": limit,
+        "total": len(all_albums)
+    }), 200
+
+@app.route('/api/home/newly-reviewed-by-friends', methods=['GET'])
+def get_home_newly_reviewed_by_friends():
+    """Get full list of newly reviewed albums by friends (for 'See more' screen)."""
+    global per_user_home_cache
+    
+    current_user_id = request.args.get('current_user_id', type=int)
+    
+    if not current_user_id:
+        return jsonify({"error": "current_user_id is required"}), 400
+    
+    if current_user_id not in per_user_home_cache or is_cache_expired(per_user_home_cache[current_user_id].get('updated_at')):
+        friend_lists = compute_user_friend_lists(current_user_id)
+        per_user_home_cache[current_user_id] = {
+            'data': friend_lists,
+            'updated_at': datetime.now()
+        }
+    
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 20, type=int)
+    
+    offset = (page - 1) * limit
+    all_albums = per_user_home_cache[current_user_id]['data']['newly_reviewed_by_friends']
+    
+    paginated = all_albums[offset:offset + limit]
+    
+    return jsonify({
+        "category": "newly_reviewed_by_friends",
+        "albums": paginated,
+        "page": page,
+        "limit": limit,
+        "total": len(all_albums)
+    }), 200
+
+@app.route('/api/home/popular-with-friends', methods=['GET'])
+def get_home_popular_with_friends():
+    """Get full list of popular albums with friends (for 'See more' screen)."""
+    global per_user_home_cache
+    
+    current_user_id = request.args.get('current_user_id', type=int)
+    
+    if not current_user_id:
+        return jsonify({"error": "current_user_id is required"}), 400
+    
+    if current_user_id not in per_user_home_cache or is_cache_expired(per_user_home_cache[current_user_id].get('updated_at')):
+        friend_lists = compute_user_friend_lists(current_user_id)
+        per_user_home_cache[current_user_id] = {
+            'data': friend_lists,
+            'updated_at': datetime.now()
+        }
+    
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 20, type=int)
+    
+    offset = (page - 1) * limit
+    all_albums = per_user_home_cache[current_user_id]['data']['popular_with_friends']
+    
+    paginated = all_albums[offset:offset + limit]
+    
+    return jsonify({
+        "category": "popular_with_friends",
+        "albums": paginated,
+        "page": page,
+        "limit": limit,
+        "total": len(all_albums)
+    }), 200
+
 if __name__ == '__main__':
+    # Start background cache refresh thread
+    schedule_cache_refresh()
+    
+    # Pre-populate global cache on startup
+    refresh_global_home_cache()
+    
     app.run(host='0.0.0.0', port=5000, debug=True)
+

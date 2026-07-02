@@ -28,7 +28,9 @@ data class MuseumObject(
     @SerialName("tracks")
     val tracks: Int? = null,
 
+    @SerialName("rating")
     val ratings: Double? = null,
+    @SerialName("totalRatings")
     val num_of_ratings: Int? = null
 )
 
@@ -130,4 +132,25 @@ data class UserReview(
 
     @SerialName("created_at")
     val createdAt: String
+)
+
+@Serializable
+data class HomeResponse(
+    @SerialName("popular_this_week")
+    val popularThisWeek: List<MuseumObject> = emptyList(),
+
+    @SerialName("newly_reviewed_by_friends")
+    val newlyReviewedByFriends: List<MuseumObject> = emptyList(),
+
+    @SerialName("popular_with_friends")
+    val popularWithFriends: List<MuseumObject> = emptyList()
+)
+
+@Serializable
+data class CategoryResponse(
+    val category: String,
+    val albums: List<MuseumObject>,
+    val page: Int,
+    val limit: Int,
+    val total: Int
 )
