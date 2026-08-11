@@ -1,3 +1,7 @@
+### iluvmusic
+![iluvmusic](iluvmusic-app/composeApp/src/androidMain/ic_launcher-playstore.png)
+
+
 ### About this project
 This project uses Kotlin and Gradle to build a simple application. The application aims to enhance the 
 experience of music enjoyers by allowing them to log and keep track of the music they've listened to.

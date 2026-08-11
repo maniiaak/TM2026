@@ -1,270 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="mise à jour du carnet de bord">
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/.editorconfig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/.github/CLEAN_README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/.github/workflows/build-android.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/.github/workflows/build-ios.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/.github/workflows/template-cleanup.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/Serverside/.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/Serverside/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/Serverside/init.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/Serverside/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/Serverside/spotify2db.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/build.gradle.kts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/ic_launcher-playstore.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/MainActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/MuseumApp.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/auth/AndroidSpotifyAuthManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/utils/PlatformTime.android.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_background.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_foreground.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_background.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_foreground.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_background.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_foreground.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_background.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_foreground.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_background.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_foreground.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/sublime.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/composeResources/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/AuthRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumStorage.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/SessionManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/SpotifyResponse.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/SpotifySyncModels.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/expressions.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/di/Koin.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/EmptyScreenContent.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/auth/AuthViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/auth/LoginScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/auth/SpotifyAuthManager.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/NoteDialog.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/UserReviewCard.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/search/SearchScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/search/SearchViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/utils/PlatformTime.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/iosMain/kotlin/com/jetbrains/kmpapp/MainViewController.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/iosMain/kotlin/com/jetbrains/kmpapp/utils/PlatformTime.ios.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/gradle/libs.versions.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/images/screenshots.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/Configuration/Config.xcconfig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/Contents.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/Info.plist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.~lock.Historique.odt#" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/.github/CLEAN_README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/.github/workflows/build-android.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/.github/workflows/build-ios.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/.github/workflows/template-cleanup.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/Serverside/.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/Serverside/app_data.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/Serverside/init.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/Serverside/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/Serverside/spotify2db.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/base_list.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/AndroidManifest.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/ic_launcher-playstore.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/MainActivity.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/MuseumApp.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/auth/AndroidSpotifyAuthManager.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/kotlin/com/jetbrains/kmpapp/utils/PlatformTime.android.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/drawable/ic_launcher_background.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_background.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_foreground.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_background.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_foreground.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_background.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_foreground.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_background.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_foreground.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_background.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_foreground.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_round.webp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/sublime.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/androidMain/res/values/strings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/composeResources/values/strings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/App.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/AuthRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumApi.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumObject.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumRepository.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/MuseumStorage.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/SessionManager.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/SpotifyResponse.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/SpotifySyncModels.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/data/expressions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/di/Koin.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/EmptyScreenContent.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/auth/AuthViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/auth/LoginScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/auth/SpotifyAuthManager.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/DetailViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/detail/NoteDialog.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/list/ListViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/ProfileViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/profile/UserReviewCard.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/search/SearchScreen.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/screens/search/SearchViewModel.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/utils/PlatformTime.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/iosMain/kotlin/com/jetbrains/kmpapp/MainViewController.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/composeApp/src/iosMain/kotlin/com/jetbrains/kmpapp/utils/PlatformTime.ios.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/gradle.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/gradle/libs.versions.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/images/screenshots.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/Configuration/Config.xcconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp.xcodeproj/project.pbxproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/Assets.xcassets/AccentColor.colorset/Contents.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/Contents.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/Assets.xcassets/Contents.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/ContentView.swift" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/Info.plist" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/Preview Content/Preview Assets.xcassets/Contents.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/iosApp/iosApp/iOSApp.swift" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/list.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/samsung-SM-G781B-Android-13_2026-05-03_144756.logcat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/KMP-App-Template-main/settings.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/kotlin/org/musicbox/project/MainActivity.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/drawable-v24/ic_launcher_foreground.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/drawable/ic_launcher_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/drawable/ic_launcher_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/androidMain/res/values/strings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/commonMain/composeResources/drawable/compose-multiplatform.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/commonMain/kotlin/org/musicbox/project/App.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/iosMain/kotlin/org/musicbox/project/MainViewController.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/webMain/kotlin/org/musicbox/project/main.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/webMain/resources/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/composeApp/src/webMain/resources/styles.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/gradle.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/gradle/libs.versions.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/gradlew.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/Configuration/Config.xcconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp.xcodeproj/project.xcworkspace/contents.xcworkspacedata" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/Assets.xcassets/AccentColor.colorset/Contents.json" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/Assets.xcassets/AccentColor.colorset/Contents.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/Contents.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/Assets.xcassets/Contents.json" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/Assets.xcassets/Contents.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/ContentView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/ContentView.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/Preview Content/Preview Assets.xcassets/Contents.json" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/Preview Content/Preview Assets.xcassets/Contents.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/iosApp/iosApp/iOSApp.swift" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/iosApp/iosApp/iOSApp.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/server/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/server/src/main/kotlin/org/musicbox/project/Application.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/server/src/main/resources/logback.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/settings.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/androidMain/kotlin/org/musicbox/project/Platform.android.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/commonMain/kotlin/org/musicbox/project/Constants.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/commonMain/kotlin/org/musicbox/project/Greeting.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/commonMain/kotlin/org/musicbox/project/Platform.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/iosMain/kotlin/org/musicbox/project/Platform.ios.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/jsMain/kotlin/org/musicbox/project/Platform.js.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/jvmMain/kotlin/org/musicbox/project/Platform.jvm.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Musicbox/shared/src/wasmJsMain/kotlin/org/musicbox/project/Platform.wasmJs.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/.idea/ServerTest.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/data.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/music.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/newdbinput.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerTest/setup_db.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serverside/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serverside/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app_data.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/carnet_de_bord.odt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fetch_musicboard_review_data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/music.db" beforeDir="false" />
+    <list default="true" id="f75a707c-7a7b-4b11-a590-6c968215e8b4" name="Changes" comment="-updated readme.md&#10;-used Docker to create and manage the dev and the prod server&#10;-deleted useless files">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/ic_launcher-playstore.png" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/ic_launcher-playstore.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_foreground.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_foreground.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-hdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_foreground.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_foreground.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-mdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_foreground.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_foreground.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_foreground.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_foreground.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_foreground.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_foreground.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_round.webp" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/mipmap-xxxhdpi/ic_launcher_round.webp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/sublime.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/androidMain/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/di/Koin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/iluvmusic-app/composeApp/src/commonMain/kotlin/com/jetbrains/kmpapp/di/Koin.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/Activate.ps1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/activate" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/activate.csh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/activate.fish" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/normalizer" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/pip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/pip3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/python" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/bin/python3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib64" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/pyvenv.cfg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -306,6 +65,20 @@
   <component name="ProjectId" id="3AkUuc42g8B0HxHtGDrkQQiIyiA" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectSessionTemplates">
+    <option name="panelTemplate">
+      <template>
+        <option name="modeId" value="Agent" />
+        <option name="model">
+          <model>
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+          </model>
+        </option>
+        <option name="targetType" value="BACKGROUND" />
+      </template>
+    </option>
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -439,7 +212,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777817407541</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="-updated readme.md&#10;-used Docker to create and manage the dev and the prod server&#10;-deleted useless files">
+      <option name="closed" value="true" />
+      <created>1786483068031</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1786483068031</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -461,7 +242,8 @@
     <MESSAGE value="added historique" />
     <MESSAGE value="update" />
     <MESSAGE value="mise à jour du carnet de bord" />
-    <option name="LAST_COMMIT_MESSAGE" value="mise à jour du carnet de bord" />
+    <MESSAGE value="-updated readme.md&#10;-used Docker to create and manage the dev and the prod server&#10;-deleted useless files" />
+    <option name="LAST_COMMIT_MESSAGE" value="-updated readme.md&#10;-used Docker to create and manage the dev and the prod server&#10;-deleted useless files" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
