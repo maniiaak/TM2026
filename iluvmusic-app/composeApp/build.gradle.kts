@@ -96,6 +96,10 @@ android {
         }
     }
     buildTypes {
+        getByName("debug") {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
         getByName("release") {
             isMinifyEnabled = false
         }
