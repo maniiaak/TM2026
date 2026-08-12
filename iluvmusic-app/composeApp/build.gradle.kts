@@ -48,9 +48,10 @@ kotlin {
 
             implementation("io.ktor:ktor-http:3.1.3")
 
-            implementation(project.dependencies.platform(
-                "com.google.firebase:firebase-bom:34.17.0"
-            ))
+            // Firebase Auth
+            implementation("com.google.firebase:firebase-core:21.1.1")
+            implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
+            implementation("com.google.firebase:firebase-common-ktx:21.0.0")
         }
 
         iosMain.dependencies {
