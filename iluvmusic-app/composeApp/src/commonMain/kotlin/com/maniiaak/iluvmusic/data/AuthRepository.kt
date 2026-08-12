@@ -20,32 +20,30 @@ data class FirebaseAuthResponse(
 )
 
 class AuthRepository(private val client: HttpClient) {
-
     private val baseUrl = "${ApiConfig.BASE_URL}/auth"
 
     suspend fun authenticateFirebase(
         idToken: String,
         username: String? = null,
         handle: String? = null
-    ): Result<FirebaseAuthResponse> {
-        return try {
-            val body = mutableMapOf<String, String>("id_token" to idToken)
-            if (!username.isNullOrBlank()) body["username"] = username
-            if (!handle.isNullOrBlank()) body["handle"] = handle
+    ): Result<FirebaseAuthResponse> = try {
+        val body = mutableMapOf<String, String>()
+        if (!username.isNullOrBlank()) body["username"] = username
+        if (!handle.isNullOrBlank()) body["handle"] = handle
 
-            val response = client.post("$baseUrl/firebase") {
-                contentType(ContentType.Application.Json)
-                setBody(body)
-            }
-
-            val responseBody = response.body<FirebaseAuthResponse>()
-            if (response.status.isSuccess()) {
-                Result.success(responseBody)
-            } else {
-                Result.failure(Exception(responseBody.error ?: "Backend authentication failed"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
+        val response = client.post("$baseUrl/firebase") {
+            contentType(ContentType.Application.Json)
+            header(HttpHeaders.Authorization, "Bearer $idToken")
+            setBody(body)
         }
+
+        val responseBody = response.body<FirebaseAuthResponse>()
+        if (response.status.isSuccess()) {
+            Result.success(responseBody)
+        } else {
+            Result.failure(Exception(responseBody.error ?: "Backend authentication failed"))
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 }
