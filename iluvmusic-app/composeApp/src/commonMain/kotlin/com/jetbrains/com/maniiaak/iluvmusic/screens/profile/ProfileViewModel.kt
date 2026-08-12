@@ -2,10 +2,10 @@ package com.maniiaak.iluvmusic.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maniaak.iluvmusic.data.MuseumRepository
-import com.maniaak.iluvmusic.data.SessionManager
-import com.maniaak.iluvmusic.data.UserReview
-import com.maniaak.iluvmusic.data.UserStats
+import com.maniiaak.iluvmusic.data.MuseumRepository
+import com.maniiaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.data.UserReview
+import com.maniiaak.iluvmusic.data.UserStats
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

@@ -25,14 +25,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.maniaak.iluvmusic.data.SessionManager
-import com.maniaak.iluvmusic.screens.auth.LoginScreen
-import com.maniaak.iluvmusic.screens.detail.DetailScreen
-import com.maniaak.iluvmusic.screens.list.CategoryDetailScreen
-import com.maniaak.iluvmusic.screens.list.ListScreen
-import com.maniaak.iluvmusic.screens.profile.ProfileScreen
-import com.maniaak.iluvmusic.screens.profile.ProfileViewModel
-import com.maniaak.iluvmusic.screens.search.SearchScreen
+import com.maniiaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.screens.auth.LoginScreen
+import com.maniiaak.iluvmusic.screens.detail.DetailScreen
+import com.maniiaak.iluvmusic.screens.list.CategoryDetailScreen
+import com.maniiaak.iluvmusic.screens.list.ListScreen
+import com.maniiaak.iluvmusic.screens.profile.ProfileScreen
+import com.maniiaak.iluvmusic.screens.profile.ProfileViewModel
+import com.maniiaak.iluvmusic.screens.search.SearchScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 

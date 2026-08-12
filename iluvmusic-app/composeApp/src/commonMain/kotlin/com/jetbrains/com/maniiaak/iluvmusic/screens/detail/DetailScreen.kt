@@ -53,9 +53,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.maniaak.iluvmusic.data.MuseumObject
-import com.maniaak.iluvmusic.data.Review
-import com.maniaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.data.MuseumObject
+import com.maniiaak.iluvmusic.data.Review
+import com.maniiaak.iluvmusic.data.SessionManager
 import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.back
 import kmp_app_template.composeapp.generated.resources.label_artist

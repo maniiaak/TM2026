@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.maniaak.iluvmusic.data.UserReview
+import com.maniiaak.iluvmusic.data.UserReview
 
 @Composable
 fun UserReviewCard(review: UserReview, onReviewClick: (Int) -> Unit = {}) {

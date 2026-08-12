@@ -3,15 +3,15 @@ package com.maniiaak.iluvmusic.auth
 import android.webkit.WebView
 import android.content.Context
 import android.net.Uri
-import com.maniaak.iluvmusic.screens.auth.AuthState
-import com.maniaak.iluvmusic.screens.auth.SpotifyAuthManager
+import com.maniiaak.iluvmusic.screens.auth.AuthState
+import com.maniiaak.iluvmusic.screens.auth.SpotifyAuthManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class AndroidSpotifyAuthManager(
     private val context: Context,
     private val clientId: String,
-    private val redirectUri: String = "com.maniaak.iluvmusic://callback"
+    private val redirectUri: String = "com.maniiaak.iluvmusic://callback"
 ) : SpotifyAuthManager {
 
     private val _state = MutableStateFlow<AuthState>(AuthState.Idle)
