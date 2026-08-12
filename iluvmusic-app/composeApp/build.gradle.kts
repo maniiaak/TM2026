@@ -80,11 +80,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.jetbrains.kmpapp"
+    namespace = "com.maniiaak.iluvmusic"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.jetbrains.kmpapp"
+        applicationId = "com.maniiaak.iluvmusic"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
