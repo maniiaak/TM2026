@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinxSerialization)
+    //id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 repositories {
@@ -42,15 +44,19 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
 
             implementation("androidx.datastore:datastore-preferences:1.2.1")
-            implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
-            implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-            implementation("io.ktor:ktor-http:2.3.12")
+            implementation("io.ktor:ktor-http:3.1.3")
+
+            implementation(project.dependencies.platform(
+                "com.google.firebase:firebase-bom:34.17.0"
+            ))
         }
+
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -61,6 +67,7 @@ kotlin {
 
             implementation(libs.navigation.compose)
             implementation(libs.lifecycle.runtime.compose)
+
             implementation(libs.material.icons.core)
 
             implementation(libs.ktor.client.core)
@@ -69,12 +76,11 @@ kotlin {
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
 
             implementation("androidx.datastore:datastore-preferences:1.2.1")
-            implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
-            implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
         }
     }
 }
@@ -112,8 +118,9 @@ android {
 
 dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation("io.ktor:ktor-client-core:2.3.7")
-    implementation("io.ktor:ktor-client-cio:2.3.7")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+    //implementation("io.ktor:ktor-client-core:2.3.7")
+    //implementation("io.ktor:ktor-client-cio:2.3.7")
+    //implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
+    //implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+    implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.17.0"))
 }
