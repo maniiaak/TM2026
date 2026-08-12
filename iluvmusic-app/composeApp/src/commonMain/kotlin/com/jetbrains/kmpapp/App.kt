@@ -6,12 +6,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,14 +28,13 @@ import androidx.navigation.toRoute
 import com.jetbrains.kmpapp.data.SessionManager
 import com.jetbrains.kmpapp.screens.auth.LoginScreen
 import com.jetbrains.kmpapp.screens.detail.DetailScreen
-import com.jetbrains.kmpapp.screens.list.ListScreen
 import com.jetbrains.kmpapp.screens.list.CategoryDetailScreen
+import com.jetbrains.kmpapp.screens.list.ListScreen
 import com.jetbrains.kmpapp.screens.profile.ProfileScreen
 import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
 import com.jetbrains.kmpapp.screens.search.SearchScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 object ListDestination
