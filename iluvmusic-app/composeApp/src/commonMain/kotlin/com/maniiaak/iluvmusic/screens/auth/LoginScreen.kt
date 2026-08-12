@@ -28,6 +28,14 @@ fun LoginScreen(
     var isSignUp by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
+    // AuthViewModel is provided by Koin and can survive the previous
+    // authenticated screen. Reset its state whenever LoginScreen becomes the
+    // visible authentication screen, otherwise a previous Success state can
+    // render "Welcome!" and immediately navigate away again after logout.
+    LaunchedEffect(Unit) {
+        viewModel.reset()
+    }
+
     LaunchedEffect(authState) {
         when (val state = authState) {
             is AuthState.Success -> onLoginSuccess(state.username)
