@@ -2,10 +2,10 @@ package com.jetbrains.kmpapp.screens.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jetbrains.kmpapp.data.MuseumRepository
-import com.jetbrains.kmpapp.data.Review
 import com.jetbrains.kmpapp.data.AlbumReviewsResponse
 import com.jetbrains.kmpapp.data.MuseumObject
+import com.jetbrains.kmpapp.data.MuseumRepository
+import com.jetbrains.kmpapp.data.Review
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

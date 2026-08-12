@@ -1,6 +1,5 @@
 package com.jetbrains.kmpapp.screens.auth
 
-import android.net.Uri
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -11,16 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType.Companion.Uri
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jetbrains.kmpapp.screens.auth.AuthState
-import com.jetbrains.kmpapp.screens.auth.AuthViewModel
-import kotlinx.coroutines.launch
+import io.ktor.http.*
 import org.koin.compose.viewmodel.koinViewModel
-import io.ktor.http.encodeURLParameter
-import io.ktor.http.Url
 
 @Composable
 fun LoginScreen(

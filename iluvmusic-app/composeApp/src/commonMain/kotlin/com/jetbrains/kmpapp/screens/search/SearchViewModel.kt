@@ -3,7 +3,6 @@ package com.jetbrains.kmpapp.screens.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jetbrains.kmpapp.data.MuseumRepository
-import com.jetbrains.kmpapp.data.SearchResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
