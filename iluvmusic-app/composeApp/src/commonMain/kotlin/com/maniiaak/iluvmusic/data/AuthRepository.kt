@@ -5,24 +5,44 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class FirebaseAuthResponse(
+    val success: Boolean,
+    val needs_profile: Boolean = false,
+    val user_id: Int? = null,
+    val username: String? = null,
+    val handle: String? = null,
+    val email: String? = null,
+    val firebase_uid: String? = null,
+    val error: String? = null
+)
 
 class AuthRepository(private val client: HttpClient) {
 
     private val baseUrl = "${ApiConfig.BASE_URL}/auth"
 
-    suspend fun exchangeSpotifyCode(code: String): Result<SpotifyLoginResponse> {
+    suspend fun authenticateFirebase(
+        idToken: String,
+        username: String? = null,
+        handle: String? = null
+    ): Result<FirebaseAuthResponse> {
         return try {
-            val response = client.post("$baseUrl/spotify") {
+            val body = mutableMapOf<String, String>("id_token" to idToken)
+            if (!username.isNullOrBlank()) body["username"] = username
+            if (!handle.isNullOrBlank()) body["handle"] = handle
+
+            val response = client.post("$baseUrl/firebase") {
                 contentType(ContentType.Application.Json)
-                setBody(mapOf("code" to code))
+                setBody(body)
             }
 
+            val responseBody = response.body<FirebaseAuthResponse>()
             if (response.status.isSuccess()) {
-                val responseBody = response.body<SpotifyLoginResponse>()
                 Result.success(responseBody)
             } else {
-                val errorBody = response.body<String>()
-                Result.failure(Exception("Backend error: $errorBody"))
+                Result.failure(Exception(responseBody.error ?: "Backend authentication failed"))
             }
         } catch (e: Exception) {
             Result.failure(e)
