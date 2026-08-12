@@ -60,10 +60,39 @@ fun LoginScreen(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     trailingIcon = { TextButton(onClick = { isPasswordVisible = !isPasswordVisible }) { Text(if (isPasswordVisible) "Hide" else "Show") } }
                 )
+
+                if (isSignUp) {
+                    OutlinedTextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        label = { Text("Name") },
+                        supportingText = { Text("This is the name shown on your profile") },
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = handle,
+                        onValueChange = { handle = it.removePrefix("@").replace(" ", "") },
+                        label = { Text("Handle") },
+                        prefix = { Text("@") },
+                        supportingText = { Text("Your unique @handle") },
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                        singleLine = true
+                    )
+                }
+
                 errorMessage?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 16.dp)) }
                 Button(
-                    onClick = { errorMessage = null; if (isSignUp) viewModel.signUp(email, password) else viewModel.signIn(email, password) },
-                    enabled = email.isNotBlank() && password.isNotBlank(),
+                    onClick = {
+                        errorMessage = null
+                        if (isSignUp) {
+                            viewModel.signUp(email, password, username.trim(), handle.trim())
+                        } else {
+                            viewModel.signIn(email, password)
+                        }
+                    },
+                    enabled = email.isNotBlank() && password.isNotBlank() &&
+                        (!isSignUp || (username.trim().isNotEmpty() && handle.trim().isNotEmpty())),
                     modifier = Modifier.fillMaxWidth().height(48.dp)
                 ) { Text(if (isSignUp) "Create Account" else "Sign In") }
                 Spacer(Modifier.height(16.dp))
@@ -74,7 +103,7 @@ fun LoginScreen(
             is AuthState.NeedsProfile -> {
                 Text("Choose a username and a handle for your profile.")
                 Spacer(Modifier.height(24.dp))
-                OutlinedTextField(username, { username = it }, label = { Text("Username") }, modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), singleLine = true)
+                OutlinedTextField(username, { username = it }, label = { Text("Name") }, modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), singleLine = true)
                 OutlinedTextField(handle, { handle = it.removePrefix("@").replace(" ", "") }, label = { Text("Handle") }, prefix = { Text("@") }, modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), singleLine = true)
                 errorMessage?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 16.dp)) }
                 Button(
