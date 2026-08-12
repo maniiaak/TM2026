@@ -29,3 +29,6 @@ captures
 *.sqlite3
 *.db-shm
 *.db-wal
+
+# Firebase/Google services config (local)
+/composeApp/google-services.json
