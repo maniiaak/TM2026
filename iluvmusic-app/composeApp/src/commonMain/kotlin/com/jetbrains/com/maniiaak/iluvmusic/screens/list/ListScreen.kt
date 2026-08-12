@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.list
+package com.maniiaak.iluvmusic.screens.list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,8 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.jetbrains.kmpapp.data.MuseumObject
-import com.jetbrains.kmpapp.screens.EmptyScreenContent
+import com.maniaak.iluvmusic.data.MuseumObject
+import com.maniaak.iluvmusic.screens.EmptyScreenContent
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 

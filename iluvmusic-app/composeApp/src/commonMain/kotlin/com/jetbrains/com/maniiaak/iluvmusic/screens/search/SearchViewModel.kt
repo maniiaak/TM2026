@@ -1,8 +1,8 @@
-package com.jetbrains.kmpapp.screens.search
+package com.maniiaak.iluvmusic.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jetbrains.kmpapp.data.MuseumRepository
+import com.maniaak.iluvmusic.data.MuseumRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

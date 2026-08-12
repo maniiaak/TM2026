@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.data
+package com.maniiaak.iluvmusic.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

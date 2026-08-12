@@ -1,6 +1,6 @@
-package com.jetbrains.kmpapp.data
+package com.maniiaak.iluvmusic.data
 
-import com.jetbrains.kmpapp.config.ApiConfig
+import com.maniaak.iluvmusic.config.ApiConfig
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

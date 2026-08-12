@@ -1,10 +1,10 @@
-package com.jetbrains.kmpapp.screens.list
+package com.maniiaak.iluvmusic.screens.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jetbrains.kmpapp.data.MuseumObject
-import com.jetbrains.kmpapp.data.MuseumRepository
-import com.jetbrains.kmpapp.data.SessionManager
+import com.maniaak.iluvmusic.data.MuseumObject
+import com.maniaak.iluvmusic.data.MuseumRepository
+import com.maniaak.iluvmusic.data.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

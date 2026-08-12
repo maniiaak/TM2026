@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.profile
+package com.maniiaak.iluvmusic.screens.profile
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.jetbrains.kmpapp.data.UserReview
+import com.maniaak.iluvmusic.data.UserReview
 
 @Composable
 fun UserReviewCard(review: UserReview, onReviewClick: (Int) -> Unit = {}) {

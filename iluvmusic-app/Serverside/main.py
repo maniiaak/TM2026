@@ -503,7 +503,7 @@ def spotify_login():
 
     print(f"Attempting exchange with:")
     print(f"  Code: {code[:10]}...") # Print first 10 chars
-    print(f"  Redirect URI: com.jetbrains.kmpapp://callback")
+    print(f"  Redirect URI: com.maniaak.iluvmusic://callback")
     print(f"  Client ID: {client_id}")
 
     # 1. Exchange code for Access Token
@@ -512,7 +512,7 @@ def spotify_login():
     body = {
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": "com.jetbrains.kmpapp://callback",
+        "redirect_uri": "com.maniaak.iluvmusic://callback",
         "client_id": client_id,
         "client_secret": client_secret
     }

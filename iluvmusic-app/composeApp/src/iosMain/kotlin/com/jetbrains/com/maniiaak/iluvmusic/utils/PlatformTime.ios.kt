@@ -1,5 +1,5 @@
 // File: iosMain/kotlin/com/jetbrains/kmpapp/utils/PlatformTime.ios.kt
-package com.jetbrains.kmpapp.utils
+package com.maniiaak.iluvmusic.utils
 
 import platform.Foundation.NSDate
 import platform.Foundation.timeIntervalSince1970

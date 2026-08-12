@@ -1,9 +1,9 @@
-package com.jetbrains.kmpapp.screens.auth
+package com.maniiaak.iluvmusic.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jetbrains.kmpapp.data.AuthRepository
-import com.jetbrains.kmpapp.data.SessionManager
+import com.maniaak.iluvmusic.data.AuthRepository
+import com.maniaak.iluvmusic.data.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

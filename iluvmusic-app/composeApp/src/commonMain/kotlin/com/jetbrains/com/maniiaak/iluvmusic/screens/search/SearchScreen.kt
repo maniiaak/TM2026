@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.search
+package com.maniiaak.iluvmusic.screens.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.jetbrains.kmpapp.data.SearchResult
+import com.maniaak.iluvmusic.data.SearchResult
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.detail
+package com.maniiaak.iluvmusic.screens.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

@@ -1,3 +1,3 @@
-package com.jetbrains.kmpapp.utils
+package com.maniiaak.iluvmusic.utils
 
 expect fun getCurrentTimestamp(): Long

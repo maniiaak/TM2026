@@ -1,7 +1,7 @@
-package com.jetbrains.kmpapp
+package com.maniiaak.iluvmusic
 
 import android.app.Application
-import com.jetbrains.kmpapp.di.initKoin
+import com.maniaak.iluvmusic.di.initKoin
 import android.util.Log
 
 class MuseumApp : Application() {

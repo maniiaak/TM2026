@@ -53,7 +53,7 @@
             <string>Editor</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>com.jetbrains.kmpapp</string>
+                <string>com.maniaak.iluvmusic</string>
             </array>
         </dict>
     </array>
