@@ -26,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.maniiaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.screens.auth.FirebaseAuthManager
 import com.maniiaak.iluvmusic.screens.auth.LoginScreen
 import com.maniiaak.iluvmusic.screens.detail.DetailScreen
 import com.maniiaak.iluvmusic.screens.list.CategoryDetailScreen
@@ -56,37 +57,38 @@ data class CategoryDetailDestination(val category: String)
 
 @Composable
 fun App(
-    sessionManager: SessionManager = koinInject()
+    sessionManager: SessionManager = koinInject(),
+    firebaseAuthManager: FirebaseAuthManager = koinInject()
 ) {
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
     ) {
         Surface {
             val navController: NavHostController = rememberNavController()
-
-            // Collect the state from the Flow
             val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = false)
 
-            // If NOT logged in, show LoginScreen immediately and return
+            // The login screen is owned by the session state. Once logout clears
+            // the session, this branch is shown immediately and there is no
+            // intermediate authenticated/loading screen.
             if (!isLoggedIn) {
                 LoginScreen(
-                    onLoginSuccess = { username ->
+                    onLoginSuccess = { _ ->
                         navController.navigate(ListDestination) {
-                            popUpTo(LoginDestination) { inclusive = true }
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = false
+                            }
+                            launchSingleTop = true
                         }
                     }
                 )
-
                 return@Surface
             }
 
             Scaffold(
                 bottomBar = {
-                    NavigationBar (
-                        modifier = Modifier.height(100.dp)
-                        ){
-                        val currentRoute = navController.currentBackStackEntryFlow.collectAsState(initial = null).value?.destination?.route ?: ""
-                        // current session user id to allow opening the profile page for the current user
+                    NavigationBar(modifier = Modifier.height(100.dp)) {
+                        val currentRoute = navController.currentBackStackEntryFlow
+                            .collectAsState(initial = null).value?.destination?.route ?: ""
                         val currentSessionUserId by sessionManager.userId.collectAsState(initial = 0)
 
                         NavigationBarItem(
@@ -108,12 +110,7 @@ fun App(
                             }
                         )
                         NavigationBarItem(
-                            icon = {
-                                Icon(
-                                    Icons.Default.Person,
-                                    contentDescription = "Profile"
-                                )
-                            },
+                            icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
                             selected = currentRoute.contains("profile"),
                             onClick = {
                                 val idForNav = if (currentSessionUserId != 0) currentSessionUserId else null
@@ -138,10 +135,16 @@ fun App(
                                 navController.navigate(CategoryDetailDestination(category))
                             },
                             onLogout = {
+                                // Sign out of Firebase as well as clearing the
+                                // local session. Clearing only DataStore leaves
+                                // Firebase's current user alive, which causes
+                                // LoginScreen to show its authenticated/loading state.
+                                firebaseAuthManager.signOut()
                                 sessionManager.logout()
-                                navController.navigate(LoginDestination) {
-                                    popUpTo(ListDestination) { inclusive = true }
-                                }
+                                navController.popBackStack(
+                                    navController.graph.findStartDestination().id,
+                                    false
+                                )
                             }
                         )
                     }
@@ -168,9 +171,12 @@ fun App(
                         )
                     }
 
+                    // Kept for compatibility with existing navigation calls.
+                    // Normal authentication is rendered directly from the
+                    // session state above.
                     composable<LoginDestination> {
                         LoginScreen(
-                            onLoginSuccess = { username ->
+                            onLoginSuccess = { _ ->
                                 navController.navigate(ListDestination) {
                                     popUpTo(LoginDestination) { inclusive = true }
                                 }
@@ -180,22 +186,18 @@ fun App(
 
                     composable<ProfileDestination> { backStackEntry ->
                         val currentSessionUserId by sessionManager.userId.collectAsState(initial = 0)
-
-                        // extract the userId from the destination and pass it to the ProfileViewModel
                         val userId = backStackEntry.toRoute<ProfileDestination>().userId
-
-                        println("Trying to resolve ProfileViewModel for userId=$userId")
-
-                        // Determine if this is the current user's own profile
                         val isOwnProfile = if (userId != null) {
                             userId == currentSessionUserId
                         } else {
-                            true // If no userId, we're viewing current user's profile
+                            true
                         }
 
-                        val profileViewModel: ProfileViewModel = org.koin.compose.viewmodel.koinViewModel(parameters = {
-                            org.koin.core.parameter.parametersOf(userId)
-                        })
+                        val profileViewModel: ProfileViewModel = org.koin.compose.viewmodel.koinViewModel(
+                            parameters = {
+                                org.koin.core.parameter.parametersOf(userId)
+                            }
+                        )
 
                         ProfileScreen(
                             viewModel = profileViewModel,
@@ -206,16 +208,16 @@ fun App(
                         )
                     }
 
-                     composable<CategoryDetailDestination> { backStackEntry ->
-                         val category = backStackEntry.toRoute<CategoryDetailDestination>().category
-                         CategoryDetailScreen(
-                             category = category,
-                             navigateToDetails = { id ->
-                                 navController.navigate(DetailDestination(id))
-                             },
-                             navigateBack = { navController.popBackStack() }
-                         )
-                     }
+                    composable<CategoryDetailDestination> { backStackEntry ->
+                        val category = backStackEntry.toRoute<CategoryDetailDestination>().category
+                        CategoryDetailScreen(
+                            category = category,
+                            navigateToDetails = { id ->
+                                navController.navigate(DetailDestination(id))
+                            },
+                            navigateBack = { navController.popBackStack() }
+                        )
+                    }
                 }
             }
         }
