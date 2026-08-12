@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.profile
+package com.maniiaak.iluvmusic.screens.profile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

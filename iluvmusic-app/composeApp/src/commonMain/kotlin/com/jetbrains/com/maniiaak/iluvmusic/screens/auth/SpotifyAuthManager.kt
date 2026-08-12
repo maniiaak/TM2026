@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.auth
+package com.maniiaak.iluvmusic.screens.auth
 
 import kotlinx.coroutines.flow.StateFlow
 

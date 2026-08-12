@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp
+package com.maniiaak.iluvmusic
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.height
@@ -25,14 +25,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.jetbrains.kmpapp.data.SessionManager
-import com.jetbrains.kmpapp.screens.auth.LoginScreen
-import com.jetbrains.kmpapp.screens.detail.DetailScreen
-import com.jetbrains.kmpapp.screens.list.CategoryDetailScreen
-import com.jetbrains.kmpapp.screens.list.ListScreen
-import com.jetbrains.kmpapp.screens.profile.ProfileScreen
-import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
-import com.jetbrains.kmpapp.screens.search.SearchScreen
+import com.maniaak.iluvmusic.data.SessionManager
+import com.maniaak.iluvmusic.screens.auth.LoginScreen
+import com.maniaak.iluvmusic.screens.detail.DetailScreen
+import com.maniaak.iluvmusic.screens.list.CategoryDetailScreen
+import com.maniaak.iluvmusic.screens.list.ListScreen
+import com.maniaak.iluvmusic.screens.profile.ProfileScreen
+import com.maniaak.iluvmusic.screens.profile.ProfileViewModel
+import com.maniaak.iluvmusic.screens.search.SearchScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
 

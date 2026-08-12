@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.data
+package com.maniiaak.iluvmusic.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

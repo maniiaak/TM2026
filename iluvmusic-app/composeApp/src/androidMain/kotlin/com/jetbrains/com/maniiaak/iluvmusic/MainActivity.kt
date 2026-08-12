@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp
+package com.maniiaak.iluvmusic
 
 import android.app.Application
 import android.content.Context
@@ -13,17 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.jetbrains.kmpapp.data.SessionManager
-import com.jetbrains.kmpapp.data.MuseumRepository
-import com.jetbrains.kmpapp.data.MuseumStorage
-import com.jetbrains.kmpapp.data.MuseumApi
-import com.jetbrains.kmpapp.data.KtorMuseumApi
-import com.jetbrains.kmpapp.data.InMemoryMuseumStorage
-import com.jetbrains.kmpapp.data.AuthRepository // ADD THIS IMPORT
-import com.jetbrains.kmpapp.screens.auth.AuthViewModel
-import com.jetbrains.kmpapp.screens.detail.DetailViewModel
-import com.jetbrains.kmpapp.screens.list.ListViewModel
-import com.jetbrains.kmpapp.screens.search.SearchViewModel
+import com.maniaak.iluvmusic.data.SessionManager
+import com.maniaak.iluvmusic.data.MuseumRepository
+import com.maniaak.iluvmusic.data.MuseumStorage
+import com.maniaak.iluvmusic.data.MuseumApi
+import com.maniaak.iluvmusic.data.KtorMuseumApi
+import com.maniaak.iluvmusic.data.InMemoryMuseumStorage
+import com.maniaak.iluvmusic.data.AuthRepository // ADD THIS IMPORT
+import com.maniaak.iluvmusic.screens.auth.AuthViewModel
+import com.maniaak.iluvmusic.screens.detail.DetailViewModel
+import com.maniaak.iluvmusic.screens.list.ListViewModel
+import com.maniaak.iluvmusic.screens.search.SearchViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
@@ -33,7 +33,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.core.module.dsl.factoryOf
-import com.jetbrains.kmpapp.screens.profile.ProfileViewModel
+import com.maniaak.iluvmusic.screens.profile.ProfileViewModel
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 

@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.detail
+package com.maniiaak.iluvmusic.screens.detail
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -53,9 +53,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.jetbrains.kmpapp.data.MuseumObject
-import com.jetbrains.kmpapp.data.Review
-import com.jetbrains.kmpapp.data.SessionManager
+import com.maniaak.iluvmusic.data.MuseumObject
+import com.maniaak.iluvmusic.data.Review
+import com.maniaak.iluvmusic.data.SessionManager
 import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.back
 import kmp_app_template.composeapp.generated.resources.label_artist

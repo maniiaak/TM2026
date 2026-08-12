@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp
+package com.maniiaak.iluvmusic
 
 import androidx.compose.ui.window.ComposeUIViewController
 

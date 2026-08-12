@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.screens.auth
+package com.maniiaak.iluvmusic.screens.auth
 
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -28,7 +28,7 @@ fun LoginScreen(
 
     // Spotify Config
     val clientId = "f1d29529a59846d09d04199689cc2446"
-    val redirectUri = "com.jetbrains.kmpapp://callback"
+    val redirectUri = "com.maniaak.iluvmusic://callback"
     val scopes = "user-read-email user-read-private"
 
     val authUrl = remember(clientId, redirectUri, scopes) {

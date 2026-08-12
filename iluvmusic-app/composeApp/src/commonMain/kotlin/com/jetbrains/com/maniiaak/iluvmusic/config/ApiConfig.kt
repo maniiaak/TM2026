@@ -1,4 +1,4 @@
-package com.jetbrains.kmpapp.config
+package com.maniiaak.iluvmusic.config
 
 object ApiConfig {
     // Change to your server's IP adress
