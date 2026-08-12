@@ -2,6 +2,7 @@ package com.maniiaak.iluvmusic.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.maniiaak.iluvmusic.data.AuthRepository
 import com.maniiaak.iluvmusic.data.InMemoryMuseumStorage
 import com.maniiaak.iluvmusic.data.KtorMuseumApi
 import com.maniiaak.iluvmusic.data.MuseumApi
@@ -21,75 +22,38 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val dataModule = module {
     single {
-        val json = Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-        }
+        val json = Json { ignoreUnknownKeys = true; isLenient = true }
         HttpClient(OkHttp) {
-            install(ContentNegotiation) {
-                json(json, contentType = ContentType.Application.Json)
-            }
+            install(ContentNegotiation) { json(json, contentType = ContentType.Application.Json) }
             install(HttpTimeout) {
                 requestTimeoutMillis = 30000
                 connectTimeoutMillis = 30000
                 socketTimeoutMillis = 30000
             }
-            engine {
-                config {
-                    // Disable IPv6 to avoid timeout issues with Cloudflare tunnel
-                    System.setProperty("java.net.preferIPv4Stack", "true")
-                }
-            }
+            engine { config { System.setProperty("java.net.preferIPv4Stack", "true") } }
         }
     }
-
     single<MuseumApi> { KtorMuseumApi(get()) }
+    single<AuthRepository> { AuthRepository(get()) }
     single<MuseumStorage> { InMemoryMuseumStorage() }
-
-    single {
-        MuseumRepository(get(), get()).apply {
-            initialize()
-        }
-    }
-
-    // We expect the DataStore to be provided by the Android layer
+    single { MuseumRepository(get(), get()).apply { initialize() } }
     single<DataStore<Preferences>> { get() }
-    single {
-        SessionManager(get())
-    }
+    single { SessionManager(get()) }
 }
 
 val viewModelModule = module {
     viewModel { ListViewModel(get(), get()) }
     viewModel { DetailViewModel(get()) }
     viewModel { CategoryDetailViewModel(get(), get()) }
-    viewModel {
-        AuthViewModel(
-            firebaseAuthManager = get(),
-            sessionManager = get()
-        )
-    }
-
-    viewModel { (initialUserId: Int?) ->
-        println("Registering ProfileViewModel for initialUserId=$initialUserId")
-        ProfileViewModel(
-            repository = get(),
-            sessionManager = get(),
-            initialUserId = initialUserId
-        )
-    }
+    viewModel { AuthViewModel(get(), get(), get()) }
+    viewModel { (initialUserId: Int?) -> ProfileViewModel(get(), get(), initialUserId) }
     viewModel { SearchViewModel(get()) }
 }
 
-fun initKoin() {
-    startKoin {
-        modules(dataModule, viewModelModule)
-    }
-}
-
+fun initKoin() { startKoin { modules(dataModule, viewModelModule) } }
