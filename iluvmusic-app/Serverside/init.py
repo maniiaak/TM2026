@@ -13,7 +13,9 @@ def init_db():
     cursor.execute('''
                    CREATE TABLE IF NOT EXISTS users (
                                                         id INTEGER PRIMARY KEY AUTOINCREMENT,          -- Unique ID for the user
-                                                        username VARCHAR(50) UNIQUE NOT NULL,
+                                                       firebase_uid VARCHAR(255) UNIQUE,             -- Firebase UID
+                                                       username VARCHAR(100) UNIQUE NOT NULL,        -- Display name
+                                                       handle VARCHAR(50) UNIQUE NOT NULL,           -- Handle/username for profile URLs
                        email VARCHAR(255) UNIQUE NOT NULL,
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                        )

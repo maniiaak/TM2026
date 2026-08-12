@@ -8,10 +8,26 @@ from datetime import datetime, timedelta
 import os
 import threading
 import time
+import firebase_admin
+from firebase_admin import credentials, auth as firebase_auth
+import json
 
 app = Flask(__name__)
 DATABASE = 'app_data.db'
 CACHE_TTL = 3600  # 1 hour in seconds
+
+# ===== FIREBASE INITIALIZATION =====
+load_dotenv()
+firebase_creds_path = os.getenv("FIREBASE_CREDENTIALS_PATH", "firebase-creds.json")
+if os.path.exists(firebase_creds_path):
+    try:
+        creds = credentials.Certificate(firebase_creds_path)
+        firebase_admin.initialize_app(creds)
+        print("[Firebase] Firebase Admin SDK initialized successfully")
+    except Exception as e:
+        print(f"[Firebase] Warning: Could not initialize Firebase: {e}")
+else:
+    print(f"[Firebase] Warning: Firebase credentials file not found at {firebase_creds_path}")
 
 # ===== CACHE STRUCTURES =====
 home_cache = {

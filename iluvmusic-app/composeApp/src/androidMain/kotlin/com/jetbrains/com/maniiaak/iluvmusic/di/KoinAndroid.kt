@@ -5,6 +5,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.maniiaak.iluvmusic.auth.AndroidFirebaseAuthManager
+import com.maniiaak.iluvmusic.screens.auth.FirebaseAuthManager
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
@@ -20,9 +22,10 @@ fun initKoin(application: Application) {
 
     val androidModule = module {
         single<DataStore<Preferences>> { dataStore }
+        single<FirebaseAuthManager> { AndroidFirebaseAuthManager() }
     }
 
-    // Start Koin and include the Android module so DataStore is available
+    // Start Koin and include the Android module so DataStore and Firebase auth are available
     startKoin {
         modules(dataModule, viewModelModule, androidModule)
     }
