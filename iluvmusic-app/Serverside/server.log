@@ -1,0 +1,6 @@
+🔍 Tables found in app_data.db: ['users', 'sqlite_sequence', 'artists', 'albums', 'reviews', 'follows']
+ 'reviews' table exists with columns: ['id', 'rating', 'content', 'created_at', 'user_id', 'album_id']
+ * Serving Flask app 'main'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.

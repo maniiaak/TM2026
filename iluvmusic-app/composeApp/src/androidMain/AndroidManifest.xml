@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="com.jetbrains.kmpapp" android:host="callback" />
+                <data android:scheme="com.maniiaak.iluvmusic" android:host="callback" />
             </intent-filter>
         </activity>
     </application>
