@@ -24,10 +24,21 @@ class AuthViewModel(
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
 
-    fun signUp(email: String, password: String) = authenticate { firebaseAuthManager.signUp(email, password) }
-    fun signIn(email: String, password: String) = authenticate { firebaseAuthManager.signIn(email, password) }
+    fun signUp(email: String, password: String, username: String, handle: String) = authenticate(
+        action = { firebaseAuthManager.signUp(email, password) },
+        username = username,
+        handle = handle
+    )
 
-    private fun authenticate(action: suspend () -> AuthResult) {
+    fun signIn(email: String, password: String) = authenticate(
+        action = { firebaseAuthManager.signIn(email, password) }
+    )
+
+    private fun authenticate(
+        action: suspend () -> AuthResult,
+        username: String? = null,
+        handle: String? = null
+    ) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
             when (val result = action()) {
@@ -38,14 +49,20 @@ class AuthViewModel(
                         _authState.value = AuthState.Error("Could not obtain Firebase ID token")
                         return@launch
                     }
-                    authenticateBackend(token, result.email, result.userId)
+                    authenticateBackend(token, result.email, result.userId, username, handle)
                 }
             }
         }
     }
 
-    private suspend fun authenticateBackend(token: String, email: String, firebaseUid: String) {
-        repository.authenticateFirebase(token).fold(
+    private suspend fun authenticateBackend(
+        token: String,
+        email: String,
+        firebaseUid: String,
+        username: String? = null,
+        handle: String? = null
+    ) {
+        repository.authenticateFirebase(token, username, handle).fold(
             onSuccess = { response ->
                 if (response.needs_profile || response.user_id == null) {
                     _authState.value = AuthState.NeedsProfile(email, firebaseUid, token)
