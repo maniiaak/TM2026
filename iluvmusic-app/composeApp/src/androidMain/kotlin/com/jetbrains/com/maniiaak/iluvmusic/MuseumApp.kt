@@ -1,7 +1,7 @@
 package com.maniiaak.iluvmusic
 
 import android.app.Application
-import com.maniaak.iluvmusic.di.initKoin
+import com.maniiaak.iluvmusic.di.initKoin
 import android.util.Log
 
 class MuseumApp : Application() {

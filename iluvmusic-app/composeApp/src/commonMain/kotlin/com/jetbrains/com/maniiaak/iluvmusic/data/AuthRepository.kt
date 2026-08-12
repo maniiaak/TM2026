@@ -1,6 +1,6 @@
 package com.maniiaak.iluvmusic.data
 
-import com.maniaak.iluvmusic.config.ApiConfig
+import com.maniiaak.iluvmusic.config.ApiConfig
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

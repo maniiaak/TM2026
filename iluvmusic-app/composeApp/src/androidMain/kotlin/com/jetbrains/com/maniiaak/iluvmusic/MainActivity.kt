@@ -13,17 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.maniaak.iluvmusic.data.SessionManager
-import com.maniaak.iluvmusic.data.MuseumRepository
-import com.maniaak.iluvmusic.data.MuseumStorage
-import com.maniaak.iluvmusic.data.MuseumApi
-import com.maniaak.iluvmusic.data.KtorMuseumApi
-import com.maniaak.iluvmusic.data.InMemoryMuseumStorage
-import com.maniaak.iluvmusic.data.AuthRepository // ADD THIS IMPORT
-import com.maniaak.iluvmusic.screens.auth.AuthViewModel
-import com.maniaak.iluvmusic.screens.detail.DetailViewModel
-import com.maniaak.iluvmusic.screens.list.ListViewModel
-import com.maniaak.iluvmusic.screens.search.SearchViewModel
+import com.maniiaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.data.MuseumRepository
+import com.maniiaak.iluvmusic.data.MuseumStorage
+import com.maniiaak.iluvmusic.data.MuseumApi
+import com.maniiaak.iluvmusic.data.KtorMuseumApi
+import com.maniiaak.iluvmusic.data.InMemoryMuseumStorage
+import com.maniiaak.iluvmusic.data.AuthRepository // ADD THIS IMPORT
+import com.maniiaak.iluvmusic.screens.auth.AuthViewModel
+import com.maniiaak.iluvmusic.screens.detail.DetailViewModel
+import com.maniiaak.iluvmusic.screens.list.ListViewModel
+import com.maniiaak.iluvmusic.screens.search.SearchViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.ContentType
@@ -33,7 +33,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.core.module.dsl.factoryOf
-import com.maniaak.iluvmusic.screens.profile.ProfileViewModel
+import com.maniiaak.iluvmusic.screens.profile.ProfileViewModel
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 

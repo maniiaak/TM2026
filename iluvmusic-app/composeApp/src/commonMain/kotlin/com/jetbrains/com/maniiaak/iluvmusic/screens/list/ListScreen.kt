@@ -32,8 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.maniaak.iluvmusic.data.MuseumObject
-import com.maniaak.iluvmusic.screens.EmptyScreenContent
+import com.maniiaak.iluvmusic.data.MuseumObject
+import com.maniiaak.iluvmusic.screens.EmptyScreenContent
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 

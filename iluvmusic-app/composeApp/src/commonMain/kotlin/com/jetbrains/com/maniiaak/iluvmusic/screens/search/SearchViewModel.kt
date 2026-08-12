@@ -2,7 +2,7 @@ package com.maniiaak.iluvmusic.screens.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maniaak.iluvmusic.data.MuseumRepository
+import com.maniiaak.iluvmusic.data.MuseumRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

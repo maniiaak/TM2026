@@ -2,9 +2,9 @@ package com.maniiaak.iluvmusic.screens.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maniaak.iluvmusic.data.MuseumObject
-import com.maniaak.iluvmusic.data.MuseumRepository
-import com.maniaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.data.MuseumObject
+import com.maniiaak.iluvmusic.data.MuseumRepository
+import com.maniiaak.iluvmusic.data.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

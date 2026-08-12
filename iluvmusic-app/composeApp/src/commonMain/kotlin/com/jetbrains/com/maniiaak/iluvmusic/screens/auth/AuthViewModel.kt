@@ -2,8 +2,8 @@ package com.maniiaak.iluvmusic.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maniaak.iluvmusic.data.AuthRepository
-import com.maniaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.data.AuthRepository
+import com.maniiaak.iluvmusic.data.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
