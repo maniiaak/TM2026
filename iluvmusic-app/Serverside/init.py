@@ -1,72 +1,85 @@
-import sqlite3
 import os
+import sqlite3
 
-# Configuration
 DB_NAME = 'app_data.db'
 
 def init_db():
-    # Connect to database (creates file if it doesn't exist)
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # --- Users table ---
     cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS users (
-                                                        id INTEGER PRIMARY KEY AUTOINCREMENT,          -- Unique ID for the user
-                                                       firebase_uid VARCHAR(255) UNIQUE,             -- Firebase UID
-                                                       username VARCHAR(100) UNIQUE NOT NULL,        -- Display name
-                                                       handle VARCHAR(50) UNIQUE NOT NULL,           -- Handle/username for profile URLs
-                       email VARCHAR(255) UNIQUE NOT NULL,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                       )
-                   ''')
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            firebase_uid VARCHAR(255) UNIQUE,
+            username VARCHAR(100) UNIQUE NOT NULL,
+            handle VARCHAR(50) UNIQUE,
+            email VARCHAR(255) UNIQUE NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
 
-    # --- Artists table ---
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS artists (
-                                                          id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                          name VARCHAR(100) NOT NULL,
-                       genre VARCHAR(50),
-                       country VARCHAR(50)
-                       )
-                   ''')
+    cursor.execute('PRAGMA table_info(users)')
+    columns = {row[1] for row in cursor.fetchall()}
+    if 'firebase_uid' not in columns:
+        cursor.execute('ALTER TABLE users ADD COLUMN firebase_uid VARCHAR(255)')
+        cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_firebase_uid ON users(firebase_uid)')
+    if 'handle' not in columns:
+        cursor.execute('ALTER TABLE users ADD COLUMN handle VARCHAR(50)')
+        cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_handle ON users(handle)')
 
-    # --- Albums table ---
-    cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS albums (
-                                                         id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                         title VARCHAR(150) NOT NULL,
-                       release_date DATE,
-                       cover_image_url TEXT,
-                       artist_id INT NOT NULL,
-                       length INTEGER,
-                       tracks INTEGER,
-                       CONSTRAINT fk_album_artist
-                       FOREIGN KEY(artist_id)
-                       REFERENCES artists(id)
-                       ON DELETE CASCADE
-                       )
-                   ''')
+    if os.getenv('ENVIRONMENT', 'development').lower() == 'development':
+        cursor.execute('DELETE FROM users')
+        print('🧹 Development database: deleted existing users.')
 
-    # --- Reviews table ---
     cursor.execute('''
-                   CREATE TABLE IF NOT EXISTS reviews (
-                                                          id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                          rating DECIMAL(3, 2) CHECK (rating >= 0 AND rating <= 5),
-                       content TEXT NOT NULL,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       user_id INT NOT NULL,
-                       album_id INT NOT NULL,
-                       CONSTRAINT fk_review_user
-                       FOREIGN KEY(user_id)
-                       REFERENCES users(id)
-                       ON DELETE CASCADE,
-                       CONSTRAINT fk_review_album
-                       FOREIGN KEY(album_id)
-                       REFERENCES albums(id)
-                       ON DELETE SET NULL
-                       )
-                   ''')
+        CREATE TABLE IF NOT EXISTS artists (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name VARCHAR(100) NOT NULL,
+            genre VARCHAR(50),
+            country VARCHAR(50)
+        )
+    ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS albums (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title VARCHAR(150) NOT NULL,
+            release_date DATE,
+            cover_image_url TEXT,
+            artist_id INT NOT NULL,
+            length INTEGER,
+            tracks INTEGER,
+            CONSTRAINT fk_album_artist FOREIGN KEY(artist_id)
+                REFERENCES artists(id) ON DELETE CASCADE
+        )
+    ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            rating DECIMAL(3, 2) CHECK (rating >= 0 AND rating <= 5),
+            content TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            user_id INT NOT NULL,
+            album_id INT,
+            CONSTRAINT fk_review_user FOREIGN KEY(user_id)
+                REFERENCES users(id) ON DELETE CASCADE,
+            CONSTRAINT fk_review_album FOREIGN KEY(album_id)
+                REFERENCES albums(id) ON DELETE SET NULL
+        )
+    ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS follows (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            following_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (following_id) REFERENCES users(id) ON DELETE CASCADE,
+            UNIQUE(user_id, following_id)
+        )
+    ''')
 
     conn.commit()
     conn.close()
