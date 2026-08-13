@@ -14,6 +14,7 @@ def init_db():
             username VARCHAR(100) UNIQUE NOT NULL,
             handle VARCHAR(50) UNIQUE,
             email VARCHAR(255) UNIQUE NOT NULL,
+            profile_image_url TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -26,10 +27,12 @@ def init_db():
     if 'handle' not in columns:
         cursor.execute('ALTER TABLE users ADD COLUMN handle VARCHAR(50)')
         cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_handle ON users(handle)')
+    if 'profile_image_url' not in columns:
+        cursor.execute('ALTER TABLE users ADD COLUMN profile_image_url TEXT')
 
     if os.getenv('ENVIRONMENT', 'development').lower() == 'development':
         cursor.execute('DELETE FROM users WHERE firebase_uid IS NULL')
-        print('🧹 Development database: deleted existing users.')
+        print('🧹 Development database: deleted legacy users without Firebase identities.')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS artists (
