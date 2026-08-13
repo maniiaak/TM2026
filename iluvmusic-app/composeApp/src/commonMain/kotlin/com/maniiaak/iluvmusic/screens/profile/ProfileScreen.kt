@@ -41,15 +41,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 
 @Composable
-fun ProfileScreen(
-    viewModel: ProfileViewModel,
-    navigateToAlbum: (Int) -> Unit = {},
-    isOwnProfile: Boolean = false
-) {
+fun ProfileScreen(viewModel: ProfileViewModel, navigateToAlbum: (Int) -> Unit = {}, isOwnProfile: Boolean = false) {
     val stats by viewModel.userStats.collectAsState()
     val reviews by viewModel.reviews.collectAsState()
     val listState = rememberLazyListState()
@@ -59,9 +56,7 @@ fun ProfileScreen(
     var showSettings by remember { mutableStateOf(false) }
 
     if (stats == null) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
         return
     }
 
@@ -69,34 +64,17 @@ fun ProfileScreen(
         ProfileSettingsDialog(
             currentImageUrl = stats!!.profileImageUrl,
             onDismiss = { showSettings = false },
-            onSave = { url ->
-                viewModel.updateProfileImage(url)
-                showSettings = false
-            }
+            onSave = { url -> viewModel.updateProfileImage(url); showSettings = false }
         )
     }
 
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 100.dp)
-    ) {
+    LazyColumn(state = listState, modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 100.dp)) {
         item {
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(30.dp),
-                shape = RoundedCornerShape(16.dp)
-            ) {
+            Card(Modifier.fillMaxWidth().padding(30.dp), shape = RoundedCornerShape(16.dp)) {
                 Column(Modifier.padding(16.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         if (stats!!.profileImageUrl.isNullOrBlank()) {
-                            Icon(
-                                Icons.Default.AccountCircle,
-                                contentDescription = "Default profile picture",
-                                modifier = Modifier.size(88.dp)
-                            )
+                            Icon(Icons.Default.AccountCircle, "Default profile picture", Modifier.size(88.dp))
                         } else {
                             AsyncImage(
                                 model = stats!!.profileImageUrl,
@@ -105,95 +83,57 @@ fun ProfileScreen(
                                 modifier = Modifier.size(88.dp).clip(CircleShape)
                             )
                         }
-
                         Spacer(Modifier.size(16.dp))
-
                         Column(Modifier.weight(1f)) {
+                            Text(stats!!.username, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                             Text(
-                                text = stats!!.username,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = "@${stats!!.handle ?: ""}",
-                                style = MaterialTheme.typography.bodyMedium,
+                                "@${stats!!.handle.orEmpty()}",
+                                style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(Modifier.height(8.dp))
                             Text("${stats!!.reviewCount} reviews", style = MaterialTheme.typography.bodyMedium)
                         }
-
                         if (isOwnProfile) {
                             IconButton(onClick = { showSettings = true }) {
                                 Icon(Icons.Default.Settings, contentDescription = "Profile settings")
                             }
                         } else {
-                            Button(
-                                onClick = { viewModel.toggleFollow() },
-                                enabled = !isFollowLoading
-                            ) {
-                                if (isFollowLoading) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(20.dp),
-                                        color = MaterialTheme.colorScheme.onPrimary
-                                    )
-                                } else {
-                                    Text(if (isFollowing) "Unfollow" else "Follow")
-                                }
+                            Button(onClick = { viewModel.toggleFollow() }, enabled = !isFollowLoading) {
+                                if (isFollowLoading) CircularProgressIndicator(Modifier.size(20.dp), color = MaterialTheme.colorScheme.onPrimary)
+                                else Text(if (isFollowing) "Unfollow" else "Follow")
                             }
                         }
                     }
-
                     Spacer(Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Column {
-                            Text(stats!!.followingCount.toString(), style = MaterialTheme.typography.titleMedium)
-                            Text("Following", style = MaterialTheme.typography.bodySmall)
-                        }
-                        Column {
-                            Text(stats!!.followerCount.toString(), style = MaterialTheme.typography.titleMedium)
-                            Text("Followers", style = MaterialTheme.typography.bodySmall)
-                        }
+                        Column { Text(stats!!.followingCount.toString(), style = MaterialTheme.typography.titleMedium); Text("Following", style = MaterialTheme.typography.bodySmall) }
+                        Column { Text(stats!!.followerCount.toString(), style = MaterialTheme.typography.titleMedium); Text("Followers", style = MaterialTheme.typography.bodySmall) }
                     }
                 }
             }
         }
-
-        item {
-            Text("Recent Reviews", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
-        }
+        item { Text("Recent Reviews", Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium) }
         items(reviews) { review -> UserReviewCard(review, onReviewClick = navigateToAlbum) }
-        item {
-            if (isLoadingMore) {
-                Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-        }
+        item { if (isLoadingMore) Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
     }
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }.collect { lastVisibleIndex ->
-            if (lastVisibleIndex != null && lastVisibleIndex >= reviews.size - 2) {
-                viewModel.loadMoreReviews()
-            }
+            if (lastVisibleIndex != null && lastVisibleIndex >= reviews.size - 2) viewModel.loadMoreReviews()
         }
     }
 }
 
 @Composable
-private fun ProfileSettingsDialog(
-    currentImageUrl: String?,
-    onDismiss: () -> Unit,
-    onSave: (String?) -> Unit
-) {
+private fun ProfileSettingsDialog(currentImageUrl: String?, onDismiss: () -> Unit, onSave: (String?) -> Unit) {
     var imageUrl by remember(currentImageUrl) { mutableStateOf(currentImageUrl.orEmpty()) }
-
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Profile settings") },
         text = {
             Column {
-                Text("Add a profile picture using an image URL.", style = MaterialTheme.typography.bodyMedium)
+                Text("Add a profile picture using an image URL.")
                 Spacer(Modifier.height(12.dp))
                 OutlinedTextField(
                     value = imageUrl,
@@ -205,14 +145,10 @@ private fun ProfileSettingsDialog(
                 )
             }
         },
-        confirmButton = {
-            TextButton(onClick = { onSave(imageUrl.trim().ifBlank { null }) }) { Text("Save") }
-        },
+        confirmButton = { TextButton(onClick = { onSave(imageUrl.trim().ifBlank { null }) }) { Text("Save") } },
         dismissButton = {
             Row {
-                if (!currentImageUrl.isNullOrBlank()) {
-                    TextButton(onClick = { onSave(null) }) { Text("Remove") }
-                }
+                if (!currentImageUrl.isNullOrBlank()) TextButton(onClick = { onSave(null) }) { Text("Remove") }
                 TextButton(onClick = onDismiss) { Text("Cancel") }
             }
         }
