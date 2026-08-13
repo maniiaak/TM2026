@@ -28,7 +28,7 @@ def init_db():
         cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_handle ON users(handle)')
 
     if os.getenv('ENVIRONMENT', 'development').lower() == 'development':
-        cursor.execute('DELETE FROM users')
+        cursor.execute('DELETE FROM users WHERE firebase_uid IS NULL')
         print('🧹 Development database: deleted existing users.')
 
     cursor.execute('''

@@ -31,4 +31,4 @@ captures
 *.db-wal
 
 # Firebase/Google services config (local)
-/composeApp/google-services.json
+/composeApp/google-services.jsonfirebase-creds.json
