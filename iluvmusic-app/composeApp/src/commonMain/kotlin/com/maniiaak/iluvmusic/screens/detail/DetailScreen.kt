@@ -1,6 +1,5 @@
 package com.maniiaak.iluvmusic.screens.detail
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,6 +32,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -40,11 +41,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +69,7 @@ import kmp_app_template.composeapp.generated.resources.label_type
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun DetailScreen(
@@ -91,15 +93,24 @@ fun DetailScreen(
     val userId by sessionManager.userId.collectAsStateWithLifecycle(initialValue = 0)
 
     var showNoteDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+
+    // Snackbar host state for cross-platform notifications
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    fun showToast(message: String) {
+        scope.launch {
+            snackbarHostState.showSnackbar(message)
+        }
+    }
 
     fun handleSaveNote(note: String, rating: Float?) {
         if (rating == null) {
-            Toast.makeText(context, "Please enter a rating", Toast.LENGTH_SHORT).show()
+            showToast("Please enter a rating")
             return
         }
         if (userId == 0) {
-            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
+            showToast("User not logged in")
             return
         }
         if (viewModel.reviewState.value is ReviewState.Loading) return
@@ -108,7 +119,7 @@ fun DetailScreen(
 
         viewModel.loadReviews(objectId)
 
-        Toast.makeText(context, "Review submitted!", Toast.LENGTH_SHORT).show()
+        showToast("Review submitted!")
         showNoteDialog = false
     }
 
@@ -126,7 +137,8 @@ fun DetailScreen(
             handleSaveNote = ::handleSaveNote,
             totalRatings = totalRatings,
             averageRating = averageRating,
-            navigateToUserProfile = navigateToUserProfile
+            navigateToUserProfile = navigateToUserProfile,
+            snackbarHostState = snackbarHostState
         )
 
 
@@ -156,7 +168,8 @@ private fun ObjectDetails(
     totalRatings: Int,
     averageRating: Double,
     modifier: Modifier = Modifier,
-    navigateToUserProfile: (Int) -> Unit
+    navigateToUserProfile: (Int) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
         topBar = {
@@ -179,6 +192,9 @@ private fun ObjectDetails(
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Note & Rating")
             }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         },
         modifier = modifier.windowInsetsPadding(WindowInsets.systemBars),
     ) { paddingValues ->

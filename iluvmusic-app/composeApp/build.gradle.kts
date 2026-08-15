@@ -37,18 +37,24 @@ kotlin {
         }
     }
 
+    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+    wasmJs {
+        browser()
+        binaries.executable()
+    }
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
 
+            implementation("androidx.datastore:datastore:1.2.1")
             implementation("androidx.datastore:datastore-preferences:1.2.1")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
             implementation("io.ktor:ktor-http:3.1.3")
 
-            // Firebase Auth
             implementation("com.google.firebase:firebase-core:21.1.1")
             implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
             implementation("com.google.firebase:firebase-common-ktx:21.0.0")
@@ -56,6 +62,12 @@ kotlin {
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+        }
+
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.core)
+            //implementation(kotlin("stdlib-wasmjs"))
+            //implementation("org.jetbrains.kotlin:kotlin-dom-api-compat:2.4.10")
         }
 
         commonMain.dependencies {
@@ -80,8 +92,6 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
-
-            implementation("androidx.datastore:datastore-preferences:1.2.1")
         }
     }
 }

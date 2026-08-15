@@ -6,16 +6,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.maniiaak.iluvmusic.auth.AndroidFirebaseAuthManager
+import com.maniiaak.iluvmusic.data.AndroidPreferencesStorage
+import com.maniiaak.iluvmusic.data.PreferencesStorage
 import com.maniiaak.iluvmusic.screens.auth.FirebaseAuthManager
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
-/**
- * Android-specific Koin initializer. Creates a Preferences DataStore and
- * registers it so common code can resolve `DataStore<Preferences>`.
- */
 fun initKoin(application: Application) {
-    // Create Android Preferences DataStore backed by a file named "settings"
     val dataStore: DataStore<Preferences> = PreferenceDataStoreFactory.create(
         produceFile = { application.preferencesDataStoreFile("settings") }
     )
@@ -23,11 +20,14 @@ fun initKoin(application: Application) {
     val androidModule = module {
         single<DataStore<Preferences>> { dataStore }
         single<FirebaseAuthManager> { AndroidFirebaseAuthManager() }
+
+        // Android-specific override for PreferencesStorage
+        single<PreferencesStorage> {
+            AndroidPreferencesStorage(get())
+        }
     }
 
-    // Start Koin and include the Android module so DataStore and Firebase auth are available
     startKoin {
         modules(dataModule, viewModelModule, androidModule)
     }
 }
-
