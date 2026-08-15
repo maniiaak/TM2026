@@ -136,7 +136,7 @@ fun App(
                             },
                             onLogout = {
                                 // Sign out of Firebase as well as clearing the
-                                // local session. Clearing only DataStore leaves
+                                // local session. Clearing only storage leaves
                                 // Firebase's current user alive, which causes
                                 // LoginScreen to show its authenticated/loading state.
                                 firebaseAuthManager.signOut()

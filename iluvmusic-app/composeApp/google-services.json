@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1034501440902",
+    "project_id": "iluvmusic-app-dev",
+    "storage_bucket": "iluvmusic-app-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034501440902:android:137407efcf8e1d4f9a1807",
+        "android_client_info": {
+          "package_name": "com.maniiaak.iluvmusic.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcBBIxTWerVdDgVJmoTLcf8FjwWN9R_3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

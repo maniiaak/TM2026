@@ -6,6 +6,7 @@ coil = "3.2.0"
 compose-multiplatform = "1.8.2"
 koin = "4.1.0"
 kotlin = "2.2.0"
+kotlin-wrappers = "2.4.10"
 ktor = "3.1.3"
 materialIconsCore = "1.7.3"
 navigationCompose = "2.9.0-beta03"
@@ -27,6 +28,8 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleCompose" }
 material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+kotlin-dom-api-compat = { group = "org.jetbrains.kotlin-wrappers", name = "kotlin-dom-api-compat", version.ref = "kotlin-wrappers" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
