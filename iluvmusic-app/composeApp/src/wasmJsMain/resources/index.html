@@ -6,12 +6,31 @@
     <title>IluvMusic</title>
     <style>
         body { margin: 0; padding: 0; }
-        #root { width: 100vw; height: 100vh; }
+        #composeApp { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
-<div id="root"></div>
-<!-- Remove /kotlin/ prefix -->
+<div id="composeApp"></div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "REDACTED",
+      authDomain: "iluvmusic-app-dev.firebaseapp.com",
+      projectId: "iluvmusic-app-dev",
+      appId: "1:1034501440902:web:64d14bbc1687f79e9a1807"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    window.__FIREBASE_AUTH__ = getAuth(app);
+    window.firebaseAuthModule = { createUserWithEmailAndPassword, signInWithEmailAndPassword };
+</script>
 <script type="module" src="/composeApp.js"></script>
 </body>
 </html>
