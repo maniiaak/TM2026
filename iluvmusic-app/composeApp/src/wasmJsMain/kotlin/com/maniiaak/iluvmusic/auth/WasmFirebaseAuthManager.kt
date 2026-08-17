@@ -12,28 +12,32 @@ import kotlin.js.Promise
 // Use Promise<JsAny?> for all Promise returns since external interfaces
 // are not automatically subtypes of JsAny? for type parameter bounds
 
-external interface FirebaseAuth {
+external interface FirebaseAuth : JsAny {
     val currentUser: FirebaseUser?
-    fun signOut(): Promise<kotlin.js.JsAny?>
+    fun signOut(): Promise<JsAny?>
 }
 
-external interface FirebaseUser {
+external interface FirebaseUser : JsAny {
     val uid: String
     val email: String?
-    fun getIdToken(forceRefresh: Boolean): Promise<kotlin.js.JsAny?>
+    fun getIdToken(forceRefresh: Boolean): Promise<JsString?>
 }
 
-external interface FirebaseIdTokenResult {
+external interface FirebaseIdTokenResult : JsAny {
     val token: String
 }
 
-external interface AuthResultJS {
+external interface AuthResultJS : JsAny {
     val user: FirebaseUser?
 }
 
 external interface FirebaseAuthModule {
     fun createUserWithEmailAndPassword(auth: FirebaseAuth, email: String, password: String): Promise<kotlin.js.JsAny?>
     fun signInWithEmailAndPassword(auth: FirebaseAuth, email: String, password: String): Promise<kotlin.js.JsAny?>
+}
+
+external interface UserCredentialJS : JsAny {
+    val user: FirebaseUser?
 }
 
 // Helper to get Firebase Auth instance from global window
@@ -56,19 +60,20 @@ class WasmFirebaseAuthManager : FirebaseAuthManager {
             try {
                 val auth = getFirebaseAuth()
                 val module = getFirebaseAuthModule()
-                val result = module.createUserWithEmailAndPassword(auth, email, password).await() as AuthResultJS
+                val result = module.createUserWithEmailAndPassword(auth, email, password).await<JsAny?>() as AuthResultJS
                 val user = result.user
                 if (user != null) {
                     AuthResult.Success(email = user.email ?: "", userId = user.uid)
                 } else {
                     AuthResult.Error("User creation failed")
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
+                val msg = e.message ?: ""
                 val message = when {
-                    e.message?.contains("auth/email-already-in-use") == true -> "Email already in use"
-                    e.message?.contains("auth/invalid-email") == true -> "Invalid email address"
-                    e.message?.contains("auth/weak-password") == true -> "Password is too weak"
-                    else -> e.message ?: "Sign up failed"
+                    msg.contains("auth/email-already-in-use") -> "Email already in use"
+                    msg.contains("auth/invalid-email") -> "Invalid email address"
+                    msg.contains("auth/weak-password") -> "Password is too weak"
+                    else -> msg.ifBlank { "Sign up failed" }
                 }
                 AuthResult.Error(message)
             }
@@ -80,14 +85,14 @@ class WasmFirebaseAuthManager : FirebaseAuthManager {
             try {
                 val auth = getFirebaseAuth()
                 val module = getFirebaseAuthModule()
-                val result = module.signInWithEmailAndPassword(auth, email, password).await() as AuthResultJS
-                val user = result.user
+                val resultJs = module.signInWithEmailAndPassword(auth, email, password).await<JsAny?>()
+                val user = (resultJs as UserCredentialJS).user
                 if (user != null) {
                     AuthResult.Success(email = user.email ?: "", userId = user.uid)
                 } else {
                     AuthResult.Error("Login failed")
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 val message = when {
                     e.message?.contains("auth/user-not-found") == true -> "No account found with this email"
                     e.message?.contains("auth/wrong-password") == true -> "Incorrect password"
@@ -104,9 +109,10 @@ class WasmFirebaseAuthManager : FirebaseAuthManager {
         withContext(Dispatchers.Default) {
             try {
                 val auth = getFirebaseAuth()
-                auth.signOut().await()
-            } catch (e: Exception) {
-                // Ignore sign out errors
+                auth.signOut().await<JsAny?>()
+            } catch (e: Throwable) {
+                println("Firebase failure: ${e.message}")
+                e.printStackTrace()
             }
         }
     }
@@ -122,7 +128,9 @@ class WasmFirebaseAuthManager : FirebaseAuthManager {
     override fun getCurrentUserEmail(): String? {
         return try {
             getFirebaseAuth().currentUser?.email
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
+            println("Firebase failure: ${e.message}")
+            e.printStackTrace()
             null
         }
     }
@@ -133,12 +141,14 @@ class WasmFirebaseAuthManager : FirebaseAuthManager {
                 val auth = getFirebaseAuth()
                 val user = auth.currentUser
                 if (user != null) {
-                    val result = user.getIdToken(false).await() as FirebaseIdTokenResult
-                    result.token
+                    val token = user.getIdToken(false).await<JsString?>()
+                    token?.toString()
                 } else {
                     null
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
+                println("Firebase failure: ${e.message}")
+                e.printStackTrace()
                 null
             }
         }

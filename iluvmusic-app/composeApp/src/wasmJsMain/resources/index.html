@@ -29,7 +29,20 @@
 
     const app = initializeApp(firebaseConfig);
     window.__FIREBASE_AUTH__ = getAuth(app);
-    window.firebaseAuthModule = { createUserWithEmailAndPassword, signInWithEmailAndPassword };
+    window.firebaseAuthModule = {
+      createUserWithEmailAndPassword: (auth, email, password) =>
+        createUserWithEmailAndPassword(auth, email, password)
+          .catch(err => {
+            console.error("FIREBASE createUser ERROR:", err.code, err.message);
+            throw err;
+          }),
+      signInWithEmailAndPassword: (auth, email, password) =>
+        signInWithEmailAndPassword(auth, email, password)
+          .catch(err => {
+            console.error("FIREBASE signIn ERROR:", err.code, err.message);
+            throw err;
+          })
+    };
 </script>
 <script type="module" src="/composeApp.js"></script>
 </body>
