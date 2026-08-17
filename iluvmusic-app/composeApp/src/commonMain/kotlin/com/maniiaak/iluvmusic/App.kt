@@ -26,7 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.maniiaak.iluvmusic.data.SessionManager
-import com.maniiaak.iluvmusic.screens.auth.FirebaseAuthManager
+import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
 import com.maniiaak.iluvmusic.screens.auth.LoginScreen
 import com.maniiaak.iluvmusic.screens.detail.DetailScreen
 import com.maniiaak.iluvmusic.screens.list.CategoryDetailScreen

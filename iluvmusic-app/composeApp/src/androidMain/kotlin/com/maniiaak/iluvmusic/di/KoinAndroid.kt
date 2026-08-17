@@ -8,7 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.maniiaak.iluvmusic.auth.AndroidFirebaseAuthManager
 import com.maniiaak.iluvmusic.data.AndroidPreferencesStorage
 import com.maniiaak.iluvmusic.data.PreferencesStorage
-import com.maniiaak.iluvmusic.screens.auth.FirebaseAuthManager
+import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 

@@ -7,6 +7,8 @@ import com.maniiaak.iluvmusic.data.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.maniiaak.iluvmusic.auth.AuthResult
+import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
 
 sealed class AuthState {
     object Idle : AuthState()
