@@ -11,9 +11,11 @@ import time
 import firebase_admin
 from firebase_admin import credentials, auth as firebase_auth
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
 DATABASE = 'app_data.db'
+CORS(app, origins=["http://localhost:8080", "http://192.168.1.139:8080"])
 CACHE_TTL = 3600  # 1 hour in seconds
 
 # ===== FIREBASE INITIALIZATION =====
