@@ -1,12 +1,17 @@
 package com.maniiaak.iluvmusic
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -36,6 +41,13 @@ import com.maniiaak.iluvmusic.screens.profile.ProfileViewModel
 import com.maniiaak.iluvmusic.screens.search.SearchScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.Row
+
+val BrandPrimary = Color(0xFFEA42F9)
 
 @Serializable
 object ListDestination
@@ -56,63 +68,109 @@ data class ProfileDestination(val userId: Int? = null)
 data class CategoryDetailDestination(val category: String)
 
 @Composable
+fun CompactBottomBar(
+    currentRoute: String,
+    onHomeClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    onProfileClick: () -> Unit
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(90.dp)
+                .navigationBarsPadding(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onHomeClick) {
+                Icon(
+                    Icons.Default.Home,
+                    contentDescription = "Home",
+                    tint = if (currentRoute.contains("list"))
+                        MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            IconButton(onClick = onSearchClick) {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = if (currentRoute.contains("search"))
+                        MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            IconButton(onClick = onProfileClick) {
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = "Profile",
+                    tint = if (currentRoute.contains("profile"))
+                        MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun App(
     sessionManager: SessionManager = koinInject(),
     firebaseAuthManager: FirebaseAuthManager = koinInject()
 ) {
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        colorScheme = if (isSystemInDarkTheme()) {
+            darkColorScheme(primary = BrandPrimary)
+        } else {
+            lightColorScheme(primary = BrandPrimary)
+        }
     ) {
         Surface {
-            val navController: NavHostController = rememberNavController()
-            val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = false)
+            AppContentContainer {
+                val navController: NavHostController = rememberNavController()
+                val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = false)
 
-            // The login screen is owned by the session state. Once logout clears
-            // the session, this branch is shown immediately and there is no
-            // intermediate authenticated/loading screen.
-            if (!isLoggedIn) {
-                LoginScreen(
-                    onLoginSuccess = { _ ->
-                        navController.navigate(ListDestination) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                inclusive = false
+                // The login screen is owned by the session state. Once logout clears
+                // the session, this branch is shown immediately and there is no
+                // intermediate authenticated/loading screen.
+                if (!isLoggedIn) {
+                    LoginScreen(
+                        onLoginSuccess = { _ ->
+                            navController.navigate(ListDestination) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
                             }
-                            launchSingleTop = true
                         }
-                    }
-                )
-                return@Surface
-            }
+                    )
+                    return@AppContentContainer
+                }
 
-            Scaffold(
-                bottomBar = {
-                    NavigationBar(modifier = Modifier.height(100.dp)) {
+
+                Scaffold(
+                    bottomBar = {
                         val currentRoute = navController.currentBackStackEntryFlow
                             .collectAsState(initial = null).value?.destination?.route ?: ""
                         val currentSessionUserId by sessionManager.userId.collectAsState(initial = 0)
 
-                        NavigationBarItem(
-                            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-                            selected = currentRoute.contains("list"),
-                            onClick = {
+                        CompactBottomBar(
+                            currentRoute = currentRoute,
+                            onHomeClick = {
                                 navController.navigate(ListDestination) {
                                     popUpTo(navController.graph.findStartDestination().id)
                                 }
-                            }
-                        )
-                        NavigationBarItem(
-                            icon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                            selected = currentRoute.contains("search"),
-                            onClick = {
+                            },
+                            onSearchClick = {
                                 navController.navigate(SearchDestination) {
                                     popUpTo(navController.graph.findStartDestination().id)
                                 }
-                            }
-                        )
-                        NavigationBarItem(
-                            icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
-                            selected = currentRoute.contains("profile"),
-                            onClick = {
+                            },
+                            onProfileClick = {
                                 val idForNav = if (currentSessionUserId != 0) currentSessionUserId else null
                                 navController.navigate(ProfileDestination(idForNav)) {
                                     popUpTo(navController.graph.findStartDestination().id)
@@ -120,103 +178,104 @@ fun App(
                             }
                         )
                     }
-                }
-            ) { paddingValues ->
-                NavHost(
-                    navController = navController,
-                    startDestination = ListDestination
-                ) {
-                    composable<ListDestination> {
-                        ListScreen(
-                            navigateToDetails = { id ->
-                                navController.navigate(DetailDestination(id))
-                            },
-                            navigateToCategory = { category ->
-                                navController.navigate(CategoryDetailDestination(category))
-                            },
-                            onLogout = {
-                                // Sign out of Firebase as well as clearing the
-                                // local session. Clearing only storage leaves
-                                // Firebase's current user alive, which causes
-                                // LoginScreen to show its authenticated/loading state.
-                                firebaseAuthManager.signOut()
-                                sessionManager.logout()
-                                navController.popBackStack(
-                                    navController.graph.findStartDestination().id,
-                                    false
-                                )
-                            }
-                        )
-                    }
-
-                    composable<DetailDestination> { backStackEntry ->
-                        val objectId = backStackEntry.toRoute<DetailDestination>().objectId
-                        DetailScreen(
-                            objectId = objectId,
-                            navigateBack = { navController.popBackStack() },
-                            navigateToUserProfile = { userId ->
-                                navController.navigate(ProfileDestination(userId = userId))
-                            }
-                        )
-                    }
-
-                    composable<SearchDestination> {
-                        SearchScreen(
-                            onAlbumFound = { id ->
-                                navController.navigate(DetailDestination(id))
-                            },
-                            onError = { message ->
-                                println("Search Error: $message")
-                            }
-                        )
-                    }
-
-                    // Kept for compatibility with existing navigation calls.
-                    // Normal authentication is rendered directly from the
-                    // session state above.
-                    composable<LoginDestination> {
-                        LoginScreen(
-                            onLoginSuccess = { _ ->
-                                navController.navigate(ListDestination) {
-                                    popUpTo(LoginDestination) { inclusive = true }
+                ) { paddingValues ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = ListDestination,
+                        modifier = Modifier.padding(paddingValues)
+                    ) {
+                        composable<ListDestination> {
+                            ListScreen(
+                                navigateToDetails = { id ->
+                                    navController.navigate(DetailDestination(id))
+                                },
+                                navigateToCategory = { category ->
+                                    navController.navigate(CategoryDetailDestination(category))
+                                },
+                                onLogout = {
+                                    // Sign out of Firebase as well as clearing the
+                                    // local session. Clearing only storage leaves
+                                    // Firebase's current user alive, which causes
+                                    // LoginScreen to show its authenticated/loading state.
+                                    firebaseAuthManager.signOut()
+                                    sessionManager.logout()
+                                    navController.popBackStack(
+                                        navController.graph.findStartDestination().id,
+                                        false
+                                    )
                                 }
-                            }
-                        )
-                    }
-
-                    composable<ProfileDestination> { backStackEntry ->
-                        val currentSessionUserId by sessionManager.userId.collectAsState(initial = 0)
-                        val userId = backStackEntry.toRoute<ProfileDestination>().userId
-                        val isOwnProfile = if (userId != null) {
-                            userId == currentSessionUserId
-                        } else {
-                            true
+                            )
                         }
 
-                        val profileViewModel: ProfileViewModel = org.koin.compose.viewmodel.koinViewModel(
-                            parameters = {
-                                org.koin.core.parameter.parametersOf(userId)
+                        composable<DetailDestination> { backStackEntry ->
+                            val objectId = backStackEntry.toRoute<DetailDestination>().objectId
+                            DetailScreen(
+                                objectId = objectId,
+                                navigateBack = { navController.popBackStack() },
+                                navigateToUserProfile = { userId ->
+                                    navController.navigate(ProfileDestination(userId = userId))
+                                }
+                            )
+                        }
+
+                        composable<SearchDestination> {
+                            SearchScreen(
+                                onAlbumFound = { id ->
+                                    navController.navigate(DetailDestination(id))
+                                },
+                                onError = { message ->
+                                    println("Search Error: $message")
+                                }
+                            )
+                        }
+
+                        // Kept for compatibility with existing navigation calls.
+                        // Normal authentication is rendered directly from the
+                        // session state above.
+                        composable<LoginDestination> {
+                            LoginScreen(
+                                onLoginSuccess = { _ ->
+                                    navController.navigate(ListDestination) {
+                                        popUpTo(LoginDestination) { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+
+                        composable<ProfileDestination> { backStackEntry ->
+                            val currentSessionUserId by sessionManager.userId.collectAsState(initial = 0)
+                            val userId = backStackEntry.toRoute<ProfileDestination>().userId
+                            val isOwnProfile = if (userId != null) {
+                                userId == currentSessionUserId
+                            } else {
+                                true
                             }
-                        )
 
-                        ProfileScreen(
-                            viewModel = profileViewModel,
-                            navigateToAlbum = { albumId ->
-                                navController.navigate(DetailDestination(albumId))
-                            },
-                            isOwnProfile = isOwnProfile
-                        )
-                    }
+                            val profileViewModel: ProfileViewModel = org.koin.compose.viewmodel.koinViewModel(
+                                parameters = {
+                                    org.koin.core.parameter.parametersOf(userId)
+                                }
+                            )
 
-                    composable<CategoryDetailDestination> { backStackEntry ->
-                        val category = backStackEntry.toRoute<CategoryDetailDestination>().category
-                        CategoryDetailScreen(
-                            category = category,
-                            navigateToDetails = { id ->
-                                navController.navigate(DetailDestination(id))
-                            },
-                            navigateBack = { navController.popBackStack() }
-                        )
+                            ProfileScreen(
+                                viewModel = profileViewModel,
+                                navigateToAlbum = { albumId ->
+                                    navController.navigate(DetailDestination(albumId))
+                                },
+                                isOwnProfile = isOwnProfile
+                            )
+                        }
+
+                        composable<CategoryDetailDestination> { backStackEntry ->
+                            val category = backStackEntry.toRoute<CategoryDetailDestination>().category
+                            CategoryDetailScreen(
+                                category = category,
+                                navigateToDetails = { id ->
+                                    navController.navigate(DetailDestination(id))
+                                },
+                                navigateBack = { navController.popBackStack() }
+                            )
+                        }
                     }
                 }
             }
