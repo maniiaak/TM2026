@@ -68,7 +68,7 @@ fun ProfileScreen(viewModel: ProfileViewModel, navigateToAlbum: (Int) -> Unit = 
         )
     }
 
-    LazyColumn(state = listState, modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 100.dp)) {
+    LazyColumn(state = listState, modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
             Card(Modifier.fillMaxWidth().padding(30.dp), shape = RoundedCornerShape(16.dp)) {
                 Column(Modifier.padding(16.dp)) {
