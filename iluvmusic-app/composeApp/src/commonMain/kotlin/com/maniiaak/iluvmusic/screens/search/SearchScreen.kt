@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -40,7 +43,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.maniiaak.iluvmusic.data.SearchResult
 import org.koin.compose.viewmodel.koinViewModel
@@ -54,10 +60,10 @@ fun SearchScreen(
 ) {
 
     var query by remember { mutableStateOf("") }
-
     val uiState by viewModel.state.collectAsState()
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Search Spotify") }
@@ -68,9 +74,16 @@ fun SearchScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(16.dp)
                 .fillMaxSize()
         ) {
+            val keyboardController = LocalSoftwareKeyboardController.current
+
+            fun performSearch() {
+                if (query.isNotBlank()) {
+                    viewModel.searchAlbum(query)
+                }
+                keyboardController?.hide()
+            }
 
             OutlinedTextField(
                 value = query,
@@ -88,17 +101,15 @@ fun SearchScreen(
                         }
                     }
                 },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { performSearch() }),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(16.dp))
 
             Button(
-                onClick = {
-                    if (query.isNotBlank()) {
-                        viewModel.searchAlbum(query)
-                    }
-                },
+                onClick = { performSearch() },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Find Album")
@@ -136,7 +147,7 @@ fun SearchScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         contentPadding = PaddingValues(
                             top = 8.dp,
-                            bottom = 100.dp
+                            bottom = 8.dp
                         )
                     ) {
 
