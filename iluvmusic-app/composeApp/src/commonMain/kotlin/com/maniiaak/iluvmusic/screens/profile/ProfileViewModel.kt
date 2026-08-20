@@ -38,20 +38,28 @@ class ProfileViewModel(
     }
 
     private fun loadUser(userIdParam: Int? = null) {
+        isLoading = true
         viewModelScope.launch {
-            val userId = userIdParam ?: sessionManager.getUserId() ?: return@launch
-            viewingUserId = userId
-            repository.getUserProfile(userId, currentSessionUserId ?: sessionManager.getUserId())
-                .onSuccess { stats ->
-                    _userStats.value = stats
-                    _isFollowing.value = stats.isFollowing
-                }
-            repository.getUserReviews(userId, 1)
-                .onSuccess { reviews ->
-                    _reviews.value = reviews
-                    currentPage = 2
-                    endReached = reviews.size < 10
-                }
+            try {
+                val userId = userIdParam ?: sessionManager.getUserId() ?: return@launch
+                viewingUserId = userId
+                repository.getUserProfile(userId, currentSessionUserId ?: sessionManager.getUserId())
+                    .onSuccess { stats ->
+                        _userStats.value = stats
+                        _isFollowing.value = stats.isFollowing
+                    }
+                    .onFailure { println("ProfileViewModel: getUserProfile FAILED for userId=$userId: ${it.message}") }
+                repository.getUserReviews(userId, 1)
+                    .onSuccess { reviews ->
+                        _reviews.value = reviews
+                        currentPage = 2
+                        endReached = reviews.size < 10
+                        println("ProfileViewModel: initial page 1 loaded, ${reviews.size} reviews, currentPage now=$currentPage, endReached=$endReached")
+                    }
+                    .onFailure { println("ProfileViewModel: initial getUserReviews(page=1) FAILED for userId=$userId: ${it.message}") }
+            } finally {
+                isLoading = false
+            }
         }
     }
 
@@ -71,12 +79,16 @@ class ProfileViewModel(
         val userId = viewingUserId ?: return
         isLoading = true
         _isLoadingMore.value = true
+        val requestedPage = currentPage
+        println("ProfileViewModel: loadMoreReviews() requesting page=$requestedPage")
         viewModelScope.launch {
-            repository.getUserReviews(userId, currentPage)
+            repository.getUserReviews(userId, requestedPage)
                 .onSuccess { nextReviews ->
                     _reviews.value += nextReviews
                     if (nextReviews.size < 10) endReached = true else currentPage++
+                    println("ProfileViewModel: loadMoreReviews() got ${nextReviews.size} reviews for page=$requestedPage, currentPage now=$currentPage, endReached=$endReached")
                 }
+                .onFailure { println("ProfileViewModel: loadMoreReviews() FAILED for page=$requestedPage: ${it.message}") }
             isLoading = false
             _isLoadingMore.value = false
         }

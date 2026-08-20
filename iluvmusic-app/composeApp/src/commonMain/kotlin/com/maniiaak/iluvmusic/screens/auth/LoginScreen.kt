@@ -13,6 +13,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.foundation.Image
+import kmp_app_template.composeapp.generated.resources.Res
+import kmp_app_template.composeapp.generated.resources.iluvmusic_text
+import org.jetbrains.compose.resources.painterResource
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.imePadding
 
 @Composable
 fun LoginScreen(
@@ -45,12 +52,24 @@ fun LoginScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Image(
+            painter = painterResource(Res.drawable.iluvmusic_text),
+            contentDescription = "ILuvMusic logo",
+            modifier = Modifier
+                .fillMaxWidth(1f)
+                .padding(bottom = 36.dp)
+        )
+
         Text(
-            if (authState is AuthState.NeedsProfile) "Set up your profile" else if (isSignUp) "Create Account" else "Sign In",
+            if (authState is AuthState.NeedsProfile) "Set up your profile" else if (isSignUp) "Create Account" else "Welcome back!",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold
         )
@@ -58,8 +77,8 @@ fun LoginScreen(
 
         when (authState) {
             is AuthState.Idle -> {
-                Text(if (isSignUp) "Create a new account to get started" else "Sign in to your account")
-                Spacer(Modifier.height(24.dp))
+                //Text(if (isSignUp) "Create a new account to get started" else "Sign in to your account")
+                //Spacer(Modifier.height(24.dp))
                 OutlinedTextField(email, { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
                 OutlinedTextField(
                     password, { password = it }, label = { Text("Password") },

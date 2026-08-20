@@ -1,22 +1,24 @@
 package com.maniiaak.iluvmusic.screens.list
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,11 +34,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.maniiaak.iluvmusic.data.MuseumObject
+import com.maniiaak.iluvmusic.screens.StarRow
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,6 +75,7 @@ fun CategoryDetailScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text(category.replace("_", " ").replaceFirstChar { it.uppercase() }) },
@@ -112,15 +115,7 @@ fun CategoryDetailScreen(
                 )
             }
         } else {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 16.dp)
-            ) {
+            LazyColumn(state = listState, modifier = Modifier.fillMaxSize().padding(paddingValues), contentPadding = PaddingValues(bottom = 24.dp)) {
                 items(albums) { album ->
                     AlbumGridItem(
                         album = album,
@@ -148,46 +143,42 @@ fun CategoryDetailScreen(
 @Composable
 private fun AlbumGridItem(
     album: MuseumObject,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
-    Row(
-        modifier = modifier
+    Card(
+        modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
-        AsyncImage(
-            model = album.coverImage,
-            contentDescription = album.title,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(8.dp))
-        )
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .align(Alignment.CenterVertically)
+        Row(
+            modifier = Modifier.padding(10.dp)
         ) {
-            Text(
-                text = album.title,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 2
+            AsyncImage(
+                model = album.coverImage,
+                contentDescription = album.title,
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
-            Text(
-                text = album.artistDisplayName ?: "Unknown",
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 1
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = "⭐ ${album.ratings ?: 0.0} (${album.num_of_ratings ?: 0} reviews)",
-                style = MaterialTheme.typography.bodySmall
-            )
+
+            Spacer(Modifier.width(12.dp))
+
+            Column (modifier = Modifier.weight(1f)){
+                StarRow(rating = album.ratings ?: 0.0)
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = album.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 2
+                )
+                Text(
+                    text = album.artistDisplayName ?: "Unknown",
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1
+                )
+            }
         }
     }
 }
-
