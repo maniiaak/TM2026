@@ -17,9 +17,13 @@ fun initKoin(application: Application) {
         produceFile = { application.preferencesDataStoreFile("settings") }
     )
 
+    // Module with FirebaseAuthManager - must be loaded before dataModule
+    val authModule = module {
+        single<FirebaseAuthManager> { AndroidFirebaseAuthManager() }
+    }
+
     val androidModule = module {
         single<DataStore<Preferences>> { dataStore }
-        single<FirebaseAuthManager> { AndroidFirebaseAuthManager() }
 
         // Android-specific override for PreferencesStorage
         single<PreferencesStorage> {
@@ -28,6 +32,6 @@ fun initKoin(application: Application) {
     }
 
     startKoin {
-        modules(dataModule, viewModelModule, androidModule)
+        modules(authModule, dataModule, viewModelModule, androidModule)
     }
 }

@@ -27,7 +27,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,6 +64,7 @@ import coil3.compose.AsyncImage
 import com.maniiaak.iluvmusic.data.MuseumObject
 import com.maniiaak.iluvmusic.data.Review
 import com.maniiaak.iluvmusic.data.SessionManager
+import com.maniiaak.iluvmusic.screens.StarRow
 import kmp_app_template.composeapp.generated.resources.Res
 import kmp_app_template.composeapp.generated.resources.back
 import kmp_app_template.composeapp.generated.resources.label_artist
@@ -443,131 +443,6 @@ private fun RatingSummary(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun StarRow(rating: Double, starSize: androidx.compose.ui.unit.Dp = 18.dp) {
-    val fullStars = rating.roundToInt().coerceIn(0, 5)
-    Row {
-        repeat(5) { index ->
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = null,
-                tint = if (index < fullStars) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.outlineVariant
-                },
-                modifier = Modifier.size(starSize)
-            )
-        }
-    }
-}
-
-@Composable
-fun ReviewsList(reviews: List<Review>, navigateToUserProfile: (Int) -> Unit) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.padding(bottom = 90.dp)
-    ) {
-        reviews.forEach { review ->
-            val cardModifier = Modifier
-                .fillMaxWidth()
-                .clickable(enabled = review.userId != null) { review.userId?.let { navigateToUserProfile(it) } }
-
-            Card(
-                modifier = cardModifier,
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                shape = RoundedCornerShape(14.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ReviewAvatar(username = review.username)
-
-                        Spacer(Modifier.width(10.dp))
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = review.username,
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(
-                                text = review.createdAt,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-
-                        review.rating?.let {
-                            Surface(
-                                shape = RoundedCornerShape(20.dp),
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Star,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(14.dp)
-                                    )
-                                    Spacer(Modifier.width(3.dp))
-                                    Text(
-                                        text = it.toString(),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(Modifier.height(10.dp))
-
-                    Text(
-                        text = review.content,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ReviewAvatar(username: String) {
-    val palette = listOf(
-        Color(0xFFEF6C6C), Color(0xFF6C8CEF), Color(0xFF6CD4A0),
-        Color(0xFFE6B34D), Color(0xFFAE6CEF), Color(0xFF4DC7C7)
-    )
-    val color = palette[(username.hashCode().let { if (it < 0) -it else it }) % palette.size]
-
-    Box(
-        modifier = Modifier
-            .size(36.dp)
-            .clip(CircleShape)
-            .background(color),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = username.take(1).uppercase(),
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 15.sp
-        )
     }
 }
 

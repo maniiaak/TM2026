@@ -4,7 +4,9 @@ import sqlite3
 DB_NAME = 'app_data.db'
 
 def init_db():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_NAME, timeout=30.0)
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA busy_timeout = 30000")
     cursor = conn.cursor()
 
     cursor.execute('''
@@ -52,10 +54,19 @@ def init_db():
             artist_id INT NOT NULL,
             length INTEGER,
             tracks INTEGER,
+            spotify_id VARCHAR(100) UNIQUE,
             CONSTRAINT fk_album_artist FOREIGN KEY(artist_id)
                 REFERENCES artists(id) ON DELETE CASCADE
         )
     ''')
+
+    # Migration: add spotify_id column if missing (for existing databases)
+    cursor.execute('PRAGMA table_info(albums)')
+    columns = {row[1] for row in cursor.fetchall()}
+    if 'spotify_id' not in columns:
+        cursor.execute('ALTER TABLE albums ADD COLUMN spotify_id VARCHAR(100)')
+        cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_albums_spotify_id ON albums(spotify_id) WHERE spotify_id IS NOT NULL')
+        print('📦 Added spotify_id column to albums table')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS reviews (

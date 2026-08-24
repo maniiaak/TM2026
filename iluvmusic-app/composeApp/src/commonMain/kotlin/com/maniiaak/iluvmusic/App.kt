@@ -46,6 +46,28 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Row
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.maniiaak.iluvmusic.screens.settings.SettingsScreen
+import com.maniiaak.iluvmusic.screens.settings.SettingsViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 
 val BrandPrimary = Color(0xFFEA42F9)
 
@@ -67,6 +89,9 @@ data class ProfileDestination(val userId: Int? = null)
 @Serializable
 data class CategoryDetailDestination(val category: String)
 
+@Serializable
+data class SettingsDestination(val userId: Int? = null)
+
 @Composable
 fun CompactBottomBar(
     currentRoute: String,
@@ -86,34 +111,59 @@ fun CompactBottomBar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onHomeClick) {
-                Icon(
-                    Icons.Default.Home,
-                    contentDescription = "Home",
-                    tint = if (currentRoute.contains("list"))
-                        MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            IconButton(onClick = onSearchClick) {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = if (currentRoute.contains("search"))
-                        MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            IconButton(onClick = onProfileClick) {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "Profile",
-                    tint = if (currentRoute.contains("profile"))
-                        MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            BottomBarItem(
+                icon = Icons.Default.Home,
+                contentDescription = "Home",
+                isSelected = currentRoute.contains("list"),
+                onClick = onHomeClick
+            )
+            BottomBarItem(
+                icon = Icons.Default.Search,
+                contentDescription = "Search",
+                isSelected = currentRoute.contains("search"),
+                onClick = onSearchClick
+            )
+            BottomBarItem(
+                icon = Icons.Default.Person,
+                contentDescription = "Profile",
+                isSelected = currentRoute.contains("profile"),
+                onClick = onProfileClick
+            )
         }
+    }
+}
+
+@Composable
+private fun BottomBarItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    contentDescription: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isSelected) {
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.30f)
+    } else {
+        Color.Transparent
+    }
+    val tintColor = if (isSelected) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            icon,
+            contentDescription = contentDescription,
+            tint = tintColor
+        )
     }
 }
 
@@ -207,7 +257,10 @@ fun App(
                             )
                         }
 
-                        composable<DetailDestination> { backStackEntry ->
+                        composable<DetailDestination> (
+                            enterTransition = {slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(450))},
+                            popExitTransition = { slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }, animationSpec = tween(450))}
+                        ){ backStackEntry ->
                             val objectId = backStackEntry.toRoute<DetailDestination>().objectId
                             DetailScreen(
                                 objectId = objectId,
@@ -251,9 +304,9 @@ fun App(
                                 true
                             }
 
-                            val profileViewModel: ProfileViewModel = org.koin.compose.viewmodel.koinViewModel(
+                            val profileViewModel: ProfileViewModel = koinViewModel(
                                 parameters = {
-                                    org.koin.core.parameter.parametersOf(userId)
+                                    parametersOf(userId)
                                 }
                             )
 
@@ -261,6 +314,9 @@ fun App(
                                 viewModel = profileViewModel,
                                 navigateToAlbum = { albumId ->
                                     navController.navigate(DetailDestination(albumId))
+                                },
+                                navigateToSettings = {
+                                    navController.navigate(SettingsDestination(userId = userId))
                                 },
                                 isOwnProfile = isOwnProfile
                             )
@@ -274,6 +330,47 @@ fun App(
                                     navController.navigate(DetailDestination(id))
                                 },
                                 navigateBack = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable<SettingsDestination>(
+                            enterTransition = {
+                                slideInVertically(
+                                    initialOffsetY = { fullHeight -> fullHeight },
+                                    animationSpec = tween(450)
+                                )
+                            },
+                            exitTransition = {
+                                fadeOut(animationSpec = tween(225))
+                            },
+                            popExitTransition = {
+                                slideOutVertically(
+                                    targetOffsetY = { fullHeight -> fullHeight },
+                                    animationSpec = tween(450)
+                                )
+                            },
+                            popEnterTransition = {
+                                fadeIn(animationSpec = tween(225))
+                            }
+                        ) { backStackEntry ->
+                            val userId = backStackEntry.toRoute<SettingsDestination>().userId
+                            val settingsViewModel: SettingsViewModel = koinViewModel(parameters = { parametersOf(userId) })
+
+                            SettingsScreen(
+                                viewModel = settingsViewModel,
+                                navigateBack = { navController.popBackStack() },
+                                onLogout = {
+                                    // Sign out of Firebase as well as clearing the
+                                    // local session. Clearing only storage leaves
+                                    // Firebase's current user alive, which causes
+                                    // LoginScreen to show its authenticated/loading state.
+                                    firebaseAuthManager.signOut()
+                                    sessionManager.logout()
+                                    navController.popBackStack(
+                                        navController.graph.findStartDestination().id,
+                                        false
+                                    )
+                                }
                             )
                         }
                     }

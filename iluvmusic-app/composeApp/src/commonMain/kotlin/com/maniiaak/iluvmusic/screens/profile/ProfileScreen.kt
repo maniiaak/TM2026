@@ -1,6 +1,5 @@
 package com.maniiaak.iluvmusic.screens.profile
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -26,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,10 +33,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -64,6 +60,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     navigateToAlbum: (Int) -> Unit = {},
     isOwnProfile: Boolean = false,
+    navigateToSettings: (() -> Unit)? = null,
     navigateBack: (() -> Unit)? = null
 ) {
     val stats by viewModel.userStats.collectAsState()
@@ -80,7 +77,7 @@ fun ProfileScreen(
     }
 
     if (showSettings && isOwnProfile) {
-        ProfileSettingsDialog(
+        SettingsDialog(
             currentImageUrl = stats!!.profileImageUrl,
             onDismiss = { showSettings = false },
             onSave = { url -> viewModel.updateProfileImage(url); showSettings = false }
@@ -101,7 +98,7 @@ fun ProfileScreen(
                 isOwnProfile = isOwnProfile,
                 isFollowing = isFollowing,
                 isFollowLoading = isFollowLoading,
-                onSettingsClick = { showSettings = true },
+                onSettingsClick = navigateToSettings,
                 onFollowClick = { viewModel.toggleFollow() },
                 onBackClick = navigateBack
             )
@@ -143,7 +140,7 @@ private fun ProfileHeader(
     isOwnProfile: Boolean,
     isFollowing: Boolean,
     isFollowLoading: Boolean,
-    onSettingsClick: () -> Unit,
+    onSettingsClick: (() -> Unit)?,
     onFollowClick: () -> Unit,
     onBackClick: (() -> Unit)?
 ) {
@@ -207,18 +204,20 @@ private fun ProfileHeader(
             }
 
             if (isOwnProfile) {
-                IconButton(
-                    onClick = onSettingsClick,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.Black.copy(alpha = 0.35f),
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(12.dp)
-                        .align(Alignment.TopEnd)
-                ) {
-                    Icon(Icons.Default.Settings, contentDescription = "Profile settings")
+                if (onSettingsClick != null) {
+                    IconButton(
+                        onClick = onSettingsClick,
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Black.copy(alpha = 0.35f),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(12.dp)
+                            .align(Alignment.TopEnd)
+                    ) {
+                        Icon(Icons.Default.Settings, contentDescription = "Profile settings")
+                    }
                 }
             }
         }
@@ -385,37 +384,5 @@ private fun StatDivider() {
             .padding(vertical = 14.dp)
             .height(28.dp)
             .background(MaterialTheme.colorScheme.outlineVariant)
-    )
-}
-
-@Composable
-private fun ProfileSettingsDialog(currentImageUrl: String?, onDismiss: () -> Unit, onSave: (String?) -> Unit) {
-    var imageUrl by remember(currentImageUrl) { mutableStateOf(currentImageUrl.orEmpty()) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Profile settings") },
-        text = {
-            Column {
-                Text("Add a profile picture using an image URL.")
-                Spacer(Modifier.height(12.dp))
-                OutlinedTextField(
-                    value = imageUrl,
-                    onValueChange = { imageUrl = it },
-                    label = { Text("Profile picture URL") },
-                    placeholder = { Text("https://...") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                // NOTE: add a matching "Banner image URL" field here once banner uploads
-                // are wired up on the viewmodel/backend side.
-            }
-        },
-        confirmButton = { TextButton(onClick = { onSave(imageUrl.trim().ifBlank { null }) }) { Text("Save") } },
-        dismissButton = {
-            Row {
-                if (!currentImageUrl.isNullOrBlank()) TextButton(onClick = { onSave(null) }) { Text("Remove") }
-                TextButton(onClick = onDismiss) { Text("Cancel") }
-            }
-        }
     )
 }

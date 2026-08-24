@@ -79,7 +79,7 @@ data class UserReview(
     val title: String,
     @SerialName("artist_name") val artistName: String,
     @SerialName("cover_image_url") val coverImageUrl: String,
-    val rating: Double,
+    val rating: Double? = null,
     val content: String,
     @SerialName("created_at") val createdAt: String
 )

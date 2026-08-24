@@ -1,5 +1,6 @@
 package com.maniiaak.iluvmusic.di
 
+import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
 import com.maniiaak.iluvmusic.data.AuthRepository
 import com.maniiaak.iluvmusic.data.InMemoryMuseumStorage
 import com.maniiaak.iluvmusic.data.KtorMuseumApi
@@ -18,14 +19,15 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import com.maniiaak.iluvmusic.data.PreferencesStorage
 import com.maniiaak.iluvmusic.data.createPreferencesStorage
+import com.maniiaak.iluvmusic.screens.settings.SettingsViewModel
 
 val dataModule = module {
     single {
-        createHttpClient()
+        createHttpClient(get())
     }
 
     single<MuseumApi> {
-        KtorMuseumApi(get())
+        KtorMuseumApi(get(), get())
     }
 
     single<AuthRepository> {
@@ -71,6 +73,10 @@ val viewModelModule = module {
 
     viewModel {
         SearchViewModel(get())
+    }
+
+    viewModel { (initialUserId: Int?) ->
+        SettingsViewModel(get(), get(), initialUserId)
     }
 }
 

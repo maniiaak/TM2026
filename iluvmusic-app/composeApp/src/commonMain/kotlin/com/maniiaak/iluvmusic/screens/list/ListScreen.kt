@@ -74,20 +74,6 @@ fun ListScreen(
                         contentDescription = "iluvmusic",
                         modifier = Modifier.height(21.dp)
                     )
-                },
-                navigationIcon = {
-                    Spacer(modifier = Modifier.width(48.dp))
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                onLogout()
-                            }
-                        }
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Logout")
-                    }
                 }
             )
         }

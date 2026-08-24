@@ -9,12 +9,16 @@ import org.koin.core.context.GlobalContext.startKoin
 import org.koin.dsl.module
 
 fun initKoin() {
-    val wasmModule = module {
-        single<PreferencesStorage> { createPreferencesStorage() }
+    // Module with FirebaseAuthManager - must be loaded before dataModule
+    val authModule = module {
         single<FirebaseAuthManager> { createFirebaseAuthManager() }
     }
 
+    val wasmModule = module {
+        single<PreferencesStorage> { createPreferencesStorage() }
+    }
+
     startKoin {
-        modules(dataModule, viewModelModule, wasmModule)
+        modules(authModule, dataModule, viewModelModule, wasmModule)
     }
 }

@@ -1,5 +1,6 @@
 package com.maniiaak.iluvmusic.data
 
+import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
 import com.maniiaak.iluvmusic.config.ApiConfig
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -31,15 +32,34 @@ data class ReviewResponse(val success: Boolean)
 @Serializable
 data class AlbumReviewsResponse(val reviews: List<Review>, val totalRatings: Int, val rating: Double)
 
-class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
+class KtorMuseumApi(
+    private val client: HttpClient,
+    private val firebaseAuthManager: FirebaseAuthManager
+) : MuseumApi {
     private val baseUrl = ApiConfig.BASE_URL + "/"
 
-    override suspend fun getData(): List<MuseumObject> = client.get(baseUrl + "albums").body()
+    private suspend fun addAuthHeaderIfNeeded(builder: HttpRequestBuilder) {
+        val method = builder.method
+        val isMutatingRequest = method == HttpMethod.Post ||
+                method == HttpMethod.Put ||
+                method == HttpMethod.Delete ||
+                method == HttpMethod.Patch
+
+        if (isMutatingRequest) {
+            val token = firebaseAuthManager.getIdToken()
+            if (token != null && token.isNotBlank()) {
+                builder.header(HttpHeaders.Authorization, "Bearer $token")
+            }
+        }
+    }
+
+    override suspend fun getData(): List<MuseumObject> = client.get(baseUrl + "all_albums").body()
 
     override suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse> = runCatching {
         val response = client.post(baseUrl + "reviews") {
             contentType(ContentType.Application.Json)
             setBody(request)
+            addAuthHeaderIfNeeded(this)
         }
         if (!response.status.isSuccess()) error("Failed to submit review")
         response.body()
@@ -55,6 +75,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         client.post(baseUrl + "spotify/search") {
             contentType(ContentType.Application.Json)
             setBody(SyncRequest(query))
+            addAuthHeaderIfNeeded(this)
         }.body()
     }
 
@@ -62,6 +83,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         val response = client.post(baseUrl + "spotify/import") {
             contentType(ContentType.Application.Json)
             setBody(ImportRequest(spotifyId = query))
+            addAuthHeaderIfNeeded(this)
         }.body<ImportResponse>()
         response.album_id ?: error("Album ID missing")
     }
@@ -81,6 +103,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         val response = client.put(baseUrl + "users/$userId/profile-image") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("profile_image_url" to (imageUrl ?: "")))
+            addAuthHeaderIfNeeded(this)
         }
         if (!response.status.isSuccess()) error("Failed to update profile picture")
         response.body<ProfileImageResponse>().profileImageUrl
@@ -96,6 +119,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         val response = client.post(baseUrl + "users/$userId/follow") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("current_user_id" to currentUserId))
+            addAuthHeaderIfNeeded(this)
         }
         if (!response.status.isSuccess()) error("Failed to follow user")
     }
@@ -104,6 +128,7 @@ class KtorMuseumApi(private val client: HttpClient) : MuseumApi {
         val response = client.post(baseUrl + "users/$userId/unfollow") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("current_user_id" to currentUserId))
+            addAuthHeaderIfNeeded(this)
         }
         if (!response.status.isSuccess()) error("Failed to unfollow user")
     }

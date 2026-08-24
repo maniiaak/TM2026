@@ -38,6 +38,7 @@ class ProfileViewModel(
     }
 
     private fun loadUser(userIdParam: Int? = null) {
+        println("Loading user $userIdParam")
         isLoading = true
         viewModelScope.launch {
             try {
@@ -46,6 +47,7 @@ class ProfileViewModel(
                 repository.getUserProfile(userId, currentSessionUserId ?: sessionManager.getUserId())
                     .onSuccess { stats ->
                         _userStats.value = stats
+                        println(stats)
                         _isFollowing.value = stats.isFollowing
                     }
                     .onFailure { println("ProfileViewModel: getUserProfile FAILED for userId=$userId: ${it.message}") }
