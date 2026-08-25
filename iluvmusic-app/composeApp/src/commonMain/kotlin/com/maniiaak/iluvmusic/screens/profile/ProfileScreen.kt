@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,13 +36,14 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,7 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -70,6 +71,7 @@ fun ProfileScreen(
     val isFollowing by viewModel.isFollowing.collectAsState()
     val isFollowLoading by viewModel.isFollowLoading.collectAsState()
     var showSettings by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     if (stats == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
@@ -111,20 +113,23 @@ fun ProfileScreen(
                 fontWeight = FontWeight.Bold
             )
         }
-        itemsIndexed(reviews, key = { index, review -> "${review.albumId}_$index" }) { _, review ->
+        items(reviews, key = { review -> review.albumId.toString() }) { review ->
             UserReviewCard(review, onReviewClick = navigateToAlbum)
         }
         item { if (isLoadingMore) Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
     }
 
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-            .distinctUntilChanged()
-            .collect { lastVisibleIndex ->
+    DisposableEffect(listState, reviews.size, isLoadingMore) {
+        val job = coroutineScope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(200)
+                val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
                 if (!isLoadingMore && reviews.isNotEmpty() && lastVisibleIndex != null && lastVisibleIndex >= reviews.size - 2) {
                     viewModel.loadMoreReviews()
                 }
             }
+        }
+        onDispose { job.cancel() }
     }
 }
 

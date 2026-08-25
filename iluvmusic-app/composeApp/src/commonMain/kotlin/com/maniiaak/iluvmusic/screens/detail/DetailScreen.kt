@@ -19,11 +19,12 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -195,114 +196,123 @@ private fun ObjectDetails(
             SnackbarHost(hostState = snackbarHostState)
         }
     ) { paddingValues ->
-        Column(
-            Modifier
+        val listState = rememberLazyListState()
+        LazyColumn(
+            modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = paddingValues.calculateBottomPadding())
+                .padding(bottom = paddingValues.calculateBottomPadding()),
+            state = listState,
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(0.dp)
         ) {
             // ---------- HERO HEADER ----------
-            HeroHeader(obj = obj, onBackClick = onBackClick)
+            item { HeroHeader(obj = obj, onBackClick = onBackClick) }
 
             // ---------- CONTENT ----------
-            SelectionContainer {
-                Column(Modifier.padding(horizontal = 20.dp)) {
+            item {
+                SelectionContainer {
+                    Column(Modifier.padding(horizontal = 20.dp)) {
 
-                    Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(16.dp))
 
-                    Text(
-                        text = obj.title,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Spacer(Modifier.height(4.dp))
-
-                    Text(
-                        text = "${obj.artistDisplayName ?: "Unknown artist"} · ${obj.objectDate ?: "Unknown"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(Modifier.height(16.dp))
-
-                    // Info badges row
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        InfoChip(
-                            label = stringResource(Res.string.label_type),
-                            value = obj.type ?: "Album"
+                        Text(
+                            text = obj.title,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
                         )
-                        InfoChip(
-                            label = stringResource(Res.string.label_length),
-                            value = obj.length ?: "0:00"
+
+                        Spacer(Modifier.height(4.dp))
+
+                        Text(
+                            text = "${obj.artistDisplayName ?: "Unknown artist"} · ${obj.objectDate ?: "Unknown"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        InfoChip(
-                            label = stringResource(Res.string.label_tracks),
-                            value = obj.tracks?.toString() ?: "0"
-                        )
-                    }
 
-                    Spacer(Modifier.height(24.dp))
+                        Spacer(Modifier.height(16.dp))
 
-                    // Rating summary card
-                    RatingSummary(
-                        averageRating = averageRating,
-                        totalRatings = totalRatings
-                    )
-
-                    Spacer(Modifier.height(28.dp))
-
-                    Text(
-                        text = "Reviews",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 160.dp) // reserve space
-                    ) {
-                        when {
-                            isLoading -> {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-
-                            reviews.isEmpty() -> {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .padding(vertical = 24.dp),
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        text = "No reviews yet",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    Spacer(Modifier.height(4.dp))
-                                    Text(
-                                        text = "Be the first to review this item!",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            }
-
-                            else -> {
-                                ReviewsList(reviews = reviews, navigateToUserProfile = navigateToUserProfile)
-                            }
+                        // Info badges row
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            InfoChip(
+                                label = stringResource(Res.string.label_type),
+                                value = obj.type ?: "Album"
+                            )
+                            InfoChip(
+                                label = stringResource(Res.string.label_length),
+                                value = obj.length ?: "0:00"
+                            )
+                            InfoChip(
+                                label = stringResource(Res.string.label_tracks),
+                                value = obj.tracks?.toString() ?: "0"
+                            )
                         }
+
+                        Spacer(Modifier.height(24.dp))
+
+                        // Rating summary card
+                        RatingSummary(
+                            averageRating = averageRating,
+                            totalRatings = totalRatings
+                        )
+
+                        Spacer(Modifier.height(28.dp))
+
+                        Text(
+                            text = "Reviews",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
+            }
+
+            // ---------- REVIEWS ----------
+            when {
+                isLoading -> {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+
+                reviews.isEmpty() -> {
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "No reviews yet",
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = "Be the first to review this item!",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+
+                else -> {
+                    items(reviews, key = { "${it.userId}_${it.createdAt}" }) { review ->
+                        ReviewCard(review = review, navigateToUserProfile = navigateToUserProfile)
                     }
                 }
             }
@@ -320,7 +330,7 @@ private fun HeroHeader(
             .fillMaxWidth()
             .height(260.dp)
     ) {
-        // Backdrop image
+        // Backdrop image with crossfade for smooth loading
         AsyncImage(
             model = obj.coverImage,
             contentDescription = obj.title,
@@ -359,7 +369,7 @@ private fun HeroHeader(
             Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(Res.string.back))
         }
 
-        // Overlapping cover thumbnail
+        // Overlapping cover thumbnail - reuse same image URL, Coil will cache it
         Row(
             modifier = Modifier
                 .align(Alignment.BottomStart)

@@ -13,15 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -85,46 +83,50 @@ fun ListScreen(
                     .padding(paddingValues)
             )
         } else {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(8.dp)
-                    .verticalScroll(rememberScrollState())
+                    .padding(8.dp),
+                contentPadding = PaddingValues(0.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Always show popular this week
-                CategoryRow(
-                    title = "Popular this week",
-                    items = popularThisWeek,
-                    onClick = navigateToDetails,
-                    onSeeMore = { navigateToCategory("popular_this_week") }
-                )
-                Spacer(Modifier.height(12.dp))
+                item {
+                    CategoryRow(
+                        title = "Popular this week",
+                        items = popularThisWeek,
+                        onClick = navigateToDetails,
+                        onSeeMore = { navigateToCategory("popular_this_week") }
+                    )
+                }
 
                 // Show newly reviewed by friends only if user has friends
                 if (newlyByFriends.isNotEmpty()) {
-                    CategoryRow(
-                        title = "Newly reviewed by friends",
-                        items = newlyByFriends,
-                        onClick = navigateToDetails,
-                        onSeeMore = { navigateToCategory("newly_reviewed_by_friends") }
-                    )
-                    Spacer(Modifier.height(12.dp))
+                    item {
+                        CategoryRow(
+                            title = "Newly reviewed by friends",
+                            items = newlyByFriends,
+                            onClick = navigateToDetails,
+                            onSeeMore = { navigateToCategory("newly_reviewed_by_friends") }
+                        )
+                    }
                 } else {
-                    EmptyFriendCategoryPlaceholder()
-                    Spacer(Modifier.height(12.dp))
+                    item { EmptyFriendCategoryPlaceholder() }
                 }
 
                 // Show popular with friends only if user has friends
                 if (popularWithFriends.isNotEmpty()) {
-                    CategoryRow(
-                        title = "Popular with friends",
-                        items = popularWithFriends,
-                        onClick = navigateToDetails,
-                        onSeeMore = { navigateToCategory("popular_with_friends") }
-                    )
+                    item {
+                        CategoryRow(
+                            title = "Popular with friends",
+                            items = popularWithFriends,
+                            onClick = navigateToDetails,
+                            onSeeMore = { navigateToCategory("popular_with_friends") }
+                        )
+                    }
                 } else {
-                    EmptyFriendCategoryPlaceholder()
+                    item { EmptyFriendCategoryPlaceholder() }
                 }
             }
         }
@@ -146,10 +148,9 @@ private fun ObjectFrame(
             model = obj.coverImage,
             contentDescription = obj.title,
             contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-            modifier = Modifier
+                        modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                //.background(androidx.compose.ui.graphics.Color.LightGray)
                 .clip(RoundedCornerShape(8.dp))
         )
         Spacer(Modifier.height(2.dp))
@@ -176,7 +177,7 @@ private fun HorizontalAlbumItem(
             model = obj.coverImage,
             contentDescription = obj.title,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
+                        modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp))
@@ -217,7 +218,7 @@ private fun CategoryRow(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp)
             ) {
-                items(items) { item ->
+                items(items, key = { it.objectID.toString() }) { item ->
                     HorizontalAlbumItem(obj = item, itemWidth = itemWidth, onClick = { onClick(item.objectID) })
                 }
             }
