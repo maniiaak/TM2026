@@ -1,8 +1,6 @@
 package com.maniiaak.iluvmusic.auth
 
 import com.google.firebase.auth.FirebaseAuth
-import com.maniiaak.iluvmusic.auth.AuthResult
-import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
 import kotlinx.coroutines.tasks.await
 
 class AndroidFirebaseAuthManager : FirebaseAuthManager {

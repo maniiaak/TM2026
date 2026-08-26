@@ -34,7 +34,7 @@ def init_db():
 
     if os.getenv('ENVIRONMENT', 'development').lower() == 'development':
         cursor.execute('DELETE FROM users WHERE firebase_uid IS NULL')
-        print('🧹 Development database: deleted legacy users without Firebase identities.')
+        print('Development database: deleted legacy users without Firebase identities.')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS artists (
@@ -66,7 +66,7 @@ def init_db():
     if 'spotify_id' not in columns:
         cursor.execute('ALTER TABLE albums ADD COLUMN spotify_id VARCHAR(100)')
         cursor.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_albums_spotify_id ON albums(spotify_id) WHERE spotify_id IS NOT NULL')
-        print('📦 Added spotify_id column to albums table')
+        print('Added spotify_id column to albums table')
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS reviews (
@@ -97,7 +97,7 @@ def init_db():
 
     conn.commit()
     conn.close()
-    print(f"✅ Database '{DB_NAME}' initialized successfully.")
+    print(f"Database '{DB_NAME}' initialized successfully.")
 
 if __name__ == '__main__':
     init_db()

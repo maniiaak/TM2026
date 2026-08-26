@@ -37,7 +37,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -113,7 +112,7 @@ fun ProfileScreen(
                 fontWeight = FontWeight.Bold
             )
         }
-        items(reviews, key = { review -> review.albumId.toString() }) { review ->
+        items(reviews, key = { review -> review.id.toString() }) { review ->
             UserReviewCard(review, onReviewClick = navigateToAlbum)
         }
         item { if (isLoadingMore) Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }

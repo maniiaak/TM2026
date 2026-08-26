@@ -12,23 +12,12 @@
 </head>
 <body>
 <div id="composeApp"></div>
-
+<script src="/firebase-config.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "REDACTED",
-      authDomain: "iluvmusic-app-dev.firebaseapp.com",
-      projectId: "iluvmusic-app-dev",
-      appId: "1:1034501440902:web:64d14bbc1687f79e9a1807"
-    };
-
-    const app = initializeApp(firebaseConfig);
+    const app = initializeApp(window.__FIREBASE_CONFIG__);
     window.__FIREBASE_AUTH__ = getAuth(app);
     window.firebaseAuthModule = {
       createUserWithEmailAndPassword: (auth, email, password) =>

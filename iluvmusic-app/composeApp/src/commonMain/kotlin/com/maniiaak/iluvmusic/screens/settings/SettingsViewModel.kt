@@ -23,10 +23,6 @@ class SettingsViewModel (
 
     private var currentSessionUserId: Int? = null
 
-//    val sceneRoot = someLayoutElement as ViewGroup
-//    val viewHierarchy = someOtherLayoutElement as ViewGroup
-//    val scene: Scene = Scene(sceneRoot, viewHierarchy)
-
     init {
         viewModelScope.launch { currentSessionUserId = sessionManager.getUserId() }
         loadUser(initialUserId)

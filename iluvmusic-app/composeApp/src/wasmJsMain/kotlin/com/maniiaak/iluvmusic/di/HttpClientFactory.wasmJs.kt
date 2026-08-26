@@ -8,7 +8,6 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
-import com.maniiaak.iluvmusic.data.configureAuthInterceptor
 
 actual fun createHttpClient(firebaseAuthManager: FirebaseAuthManager): HttpClient {
     val json = Json {

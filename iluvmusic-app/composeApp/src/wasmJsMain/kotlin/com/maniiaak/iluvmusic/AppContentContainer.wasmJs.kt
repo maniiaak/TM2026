@@ -15,7 +15,7 @@ import kotlinx.browser.window
 @Composable
 actual fun AppContentContainer(content: @Composable () -> Unit) {
     val screenWidth = window.innerWidth
-    val contentWidth = if (screenWidth < 650) screenWidth.dp else 650.dp
+    val contentWidth = if (screenWidth < 750) screenWidth.dp else 750.dp
 
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),

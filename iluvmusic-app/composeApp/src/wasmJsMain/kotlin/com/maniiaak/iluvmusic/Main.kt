@@ -13,7 +13,7 @@ fun main() {
     try {
         initKoin()
         // Use device pixel ratio for proper scaling, fallback to 1.0
-        val density = (window.devicePixelRatio ?: 1.0).coerceIn(1.0, 2.0)
+        val density = (window.devicePixelRatio ?: 1.0).coerceIn(1.0, 2.0).toFloat()
         ComposeViewport("composeApp") {
             CompositionLocalProvider(LocalDensity provides Density(density = density)) {
                 App()

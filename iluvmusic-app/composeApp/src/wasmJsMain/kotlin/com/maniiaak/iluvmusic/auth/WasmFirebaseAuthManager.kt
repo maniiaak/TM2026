@@ -1,7 +1,5 @@
 package com.maniiaak.iluvmusic.auth
 
-import com.maniiaak.iluvmusic.auth.AuthResult
-import com.maniiaak.iluvmusic.auth.FirebaseAuthManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.await

@@ -32,3 +32,4 @@ captures
 
 # Firebase/Google services config (local)
 /composeApp/google-services.jsonfirebase-creds.json
+/composeApp/src/wasmJsMain/resources/firebase-config.js
