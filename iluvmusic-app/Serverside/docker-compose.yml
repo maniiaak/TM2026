@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  api-dev:
+    build: .
+    container_name: api-dev
+    ports:
+      - "5000:5000"
+    environment:
+      - SPOTIPY_CLIENT_ID=${SPOTIPY_CLIENT_ID}
+      - SPOTIPY_CLIENT_SECRET=${SPOTIPY_CLIENT_SECRET}
+      - FIREBASE_CREDENTIALS_PATH=/app/firebase-creds.json
+      - ENVIRONMENT=development
+    volumes:
+      - ./app_data_dev.db:/app/app_data.db:rw
+      - ./firebase-creds.json:/app/firebase-creds.json:ro
+    networks:
+      - app-network
+
+  api-prod:
+    build: .
+    container_name: api-prod
+    ports:
+      - "5001:5000"
+    environment:
+      - SPOTIPY_CLIENT_ID=${SPOTIPY_CLIENT_ID}
+      - SPOTIPY_CLIENT_SECRET=${SPOTIPY_CLIENT_SECRET}
+      - FIREBASE_CREDENTIALS_PATH=/app/firebase-creds.json
+      - ENVIRONMENT=production
+    volumes:
+      - ./app_data_prod.db:/app/app_data.db:rw
+      - ./firebase-creds.json:/app/firebase-creds.json:ro
+    networks:
+      - app-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - api-prod
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
