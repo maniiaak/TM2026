@@ -21,7 +21,7 @@ services:
     build: .
     container_name: api-prod
     ports:
-      - "5001:5000"
+      - "127.0.0.1:5001:5000"
     environment:
       - SPOTIPY_CLIENT_ID=${SPOTIPY_CLIENT_ID}
       - SPOTIPY_CLIENT_SECRET=${SPOTIPY_CLIENT_SECRET}
