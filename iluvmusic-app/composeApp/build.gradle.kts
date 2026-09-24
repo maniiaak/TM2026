@@ -66,8 +66,6 @@ kotlin {
 
         wasmJsMain.dependencies {
             implementation(libs.ktor.client.core)
-            //implementation(kotlin("stdlib-wasmjs"))
-            //implementation("org.jetbrains.kotlin:kotlin-dom-api-compat:2.4.10")
         }
 
         commonMain.dependencies {
@@ -107,20 +105,39 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("../release-test.jks")
+            storePassword = "testpass123"
+            keyAlias = "iluvmusic-test"
+            keyPassword = "testpass123"
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            buildConfigField("String", "API_BASE_URL", "\"http://192.168.1.139:5000\"")
         }
         getByName("release") {
             isMinifyEnabled = false
+            buildConfigField("String", "API_BASE_URL", "\"https://api.iluvmusic.space\"")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -129,9 +146,5 @@ android {
 
 dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
-    //implementation("io.ktor:ktor-client-core:2.3.7")
-    //implementation("io.ktor:ktor-client-cio:2.3.7")
-    //implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
-    //implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
     implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.17.0"))
 }

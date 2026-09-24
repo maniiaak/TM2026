@@ -20,7 +20,7 @@ SPOTIPY_CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
 SPOTIFY_REDIRECT_URI = "com.maniiaak.iluvmusic://callback"
 
 # ===== Firebase Configuration =====
-FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "firebase-creds.json")
+FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "firebase-creds.dev.json")
 
 # ===== Database Connection Settings =====
 DB_TIMEOUT = 30.0  # seconds

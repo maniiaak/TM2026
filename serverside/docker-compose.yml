@@ -9,11 +9,11 @@ services:
     environment:
       - SPOTIPY_CLIENT_ID=${SPOTIPY_CLIENT_ID}
       - SPOTIPY_CLIENT_SECRET=${SPOTIPY_CLIENT_SECRET}
-      - FIREBASE_CREDENTIALS_PATH=/app/firebase-creds.json
+      - FIREBASE_CREDENTIALS_PATH=/app/firebase-creds.dev.json
       - ENVIRONMENT=development
     volumes:
       - ./app_data_dev.db:/app/app_data.db:rw
-      - ./firebase-creds.json:/app/firebase-creds.json:ro
+      - ./firebase-creds.dev.json:/app/firebase-creds.dev.json:ro
     networks:
       - app-network
 
@@ -25,11 +25,11 @@ services:
     environment:
       - SPOTIPY_CLIENT_ID=${SPOTIPY_CLIENT_ID}
       - SPOTIPY_CLIENT_SECRET=${SPOTIPY_CLIENT_SECRET}
-      - FIREBASE_CREDENTIALS_PATH=/app/firebase-creds.json
+      - FIREBASE_CREDENTIALS_PATH=/app/firebase-creds.prod.json
       - ENVIRONMENT=production
     volumes:
       - ./app_data_prod.db:/app/app_data.db:rw
-      - ./firebase-creds.json:/app/firebase-creds.json:ro
+      - ./firebase-creds.prod.json:/app/firebase-creds.prod.json:ro
     networks:
       - app-network
 

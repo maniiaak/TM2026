@@ -1,7 +1,8 @@
 """
 Application factory - Creates and configures the Flask application.
 """
-from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
+from flask import Flask, request
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -22,12 +23,20 @@ def create_app():
     """Create and configure the Flask application."""
     app = Flask(__name__)
 
+    # Add ProxyFix to handle X-Forwarded-For headers
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1)
+
     # Configure CORS
     CORS(app, origins=CORS_ORIGINS)
 
-    # Initialize Flask-Limiter
+    # Custom key function for Cloudflare tunnels
+    def get_cloudflare_remote_address():
+        # Use CF-Connecting-IP if available, otherwise fall back to request.remote_addr
+        return request.headers.get("CF-Connecting-IP", request.remote_addr)
+
+    # Initialize Flask-Limiter with Cloudflare-aware key function
     limiter = Limiter(
-        get_remote_address,
+        get_cloudflare_remote_address,
         app=app,
         default_limits=["200 per minute", "50 per second"],
         storage_uri="memory://",
