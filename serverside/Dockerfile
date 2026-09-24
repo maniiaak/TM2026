@@ -15,4 +15,4 @@ ENV PATH=/root/.local/bin:$PATH \
     PYTHONUNBUFFERED=1 \
     FLASK_APP=server.py
 EXPOSE 5000
-CMD ["sh", "-c", "python init.py && python server.py"]
+CMD ["python", "-m", "gunicorn", "-w", "1", "--threads", "4", "-b", "0.0.0.0:5000", "server:app"]

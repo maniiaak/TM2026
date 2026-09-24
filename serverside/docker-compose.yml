@@ -32,6 +32,7 @@ services:
       - ./firebase-creds.prod.json:/app/firebase-creds.prod.json:ro
     networks:
       - app-network
+    restart: unless-stopped
 
   cloudflared:
     image: cloudflare/cloudflared:latest
