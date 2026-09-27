@@ -58,6 +58,8 @@ kotlin {
             implementation("com.google.firebase:firebase-core:21.1.1")
             implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
             implementation("com.google.firebase:firebase-common-ktx:21.0.0")
+
+            implementation("androidx.core:core-splashscreen:1.0.1")
         }
 
         iosMain.dependencies {

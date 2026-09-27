@@ -15,7 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.foundation.Image
 import kmp_app_template.composeapp.generated.resources.Res
-import kmp_app_template.composeapp.generated.resources.iluvmusic_text
+import kmp_app_template.composeapp.generated.resources.iluvmusic_banner
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -61,7 +61,7 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Image(
-            painter = painterResource(Res.drawable.iluvmusic_text),
+            painter = painterResource(Res.drawable.iluvmusic_banner),
             contentDescription = "ILuvMusic logo",
             modifier = Modifier
                 .fillMaxWidth(1f)

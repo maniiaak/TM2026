@@ -10,7 +10,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 interface MuseumApi {
-    suspend fun getData(): List<MuseumObject>
+    suspend fun getData(): Result<List<MuseumObject>>
     suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse>
     suspend fun getUserReviews(userId: Int, page: Int, limit: Int = 10): Result<List<UserReview>>
     suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse>
@@ -53,7 +53,9 @@ class KtorMuseumApi(
         }
     }
 
-    override suspend fun getData(): List<MuseumObject> = client.get(baseUrl + "all_albums").body()
+    override suspend fun getData(): Result<List<MuseumObject>> = runCatching {
+        client.get(baseUrl + "all_albums").body()
+    }
 
     override suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse> = runCatching {
         val response = client.post(baseUrl + "reviews") {

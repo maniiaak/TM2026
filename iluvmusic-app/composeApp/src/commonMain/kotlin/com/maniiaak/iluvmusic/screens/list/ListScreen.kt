@@ -40,7 +40,7 @@ import com.maniiaak.iluvmusic.categoryRowVisibleItemCount
 import com.maniiaak.iluvmusic.data.MuseumObject
 import com.maniiaak.iluvmusic.screens.EmptyScreenContent
 import kmp_app_template.composeapp.generated.resources.Res
-import kmp_app_template.composeapp.generated.resources.iluvmusic_text
+import kmp_app_template.composeapp.generated.resources.iluvmusic_banner
 import org.koin.compose.viewmodel.koinViewModel
 import org.jetbrains.compose.resources.painterResource
 
@@ -63,7 +63,7 @@ fun ListScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Image(
-                        painter = painterResource(Res.drawable.iluvmusic_text),
+                        painter = painterResource(Res.drawable.iluvmusic_banner),
                         contentDescription = "iluvmusic",
                         modifier = Modifier.height(21.dp)
                     )

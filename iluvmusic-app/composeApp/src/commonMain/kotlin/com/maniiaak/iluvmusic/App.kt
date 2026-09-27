@@ -1,6 +1,5 @@
 package com.maniiaak.iluvmusic
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -163,11 +161,7 @@ fun App(
     firebaseAuthManager: FirebaseAuthManager = koinInject()
 ) {
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) {
-            darkColorScheme(primary = BrandPrimary)
-        } else {
-            lightColorScheme(primary = BrandPrimary)
-        }
+        colorScheme = darkColorScheme(primary = BrandPrimary)
     ) {
         Surface {
             AppContentContainer {

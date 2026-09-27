@@ -15,7 +15,8 @@
         <activity
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
-            android:name="com.maniiaak.iluvmusic.MainActivity">
+            android:name="com.maniiaak.iluvmusic.MainActivity"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

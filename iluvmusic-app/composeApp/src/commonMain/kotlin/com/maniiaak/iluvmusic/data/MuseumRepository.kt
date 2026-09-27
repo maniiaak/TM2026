@@ -11,8 +11,19 @@ class MuseumRepository(
 ) {
     private val scope = CoroutineScope(SupervisorJob())
 
-    fun initialize() { scope.launch { refresh() } }
-    suspend fun refresh() { museumStorage.saveObjects(museumApi.getData()) }
+    fun initialize() { 
+        scope.launch { 
+            try {
+                refresh()
+            } catch (e: Exception) {
+                println("MuseumRepository: Failed to initialize data from API: ${e.message}")
+                // App continues gracefully without initial data
+            }
+        }
+    }
+    suspend fun refresh() { 
+        museumApi.getData().onSuccess { museumStorage.saveObjects(it) }
+    }
     fun getObjects(): Flow<List<MuseumObject>> = museumStorage.getObjects()
     fun getObjectById(objectId: Int): Flow<MuseumObject?> = museumStorage.getObjectById(objectId)
 
