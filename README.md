@@ -55,7 +55,7 @@ Before you start, install:
 
 - **Git**
 - **Docker Desktop** (includes Docker Compose)
-- **Android Studio** (recommended — it bundles the Android SDK and a JDK) *or*, at minimum, a JDK 17+ and the [Android command-line tools](https://developer.android.com/tools/releases/platform-tools)
+- **Android Studio** or **IntelleJ IDEA** (recommended — it bundles the Android SDK and a JDK) *or*, at minimum, a JDK 17+ and the [Android command-line tools](https://developer.android.com/tools/releases/platform-tools)
 - A physical Android phone with a USB cable (or on the same Wi‑Fi network as your computer)
 
 You'll also need accounts on:
