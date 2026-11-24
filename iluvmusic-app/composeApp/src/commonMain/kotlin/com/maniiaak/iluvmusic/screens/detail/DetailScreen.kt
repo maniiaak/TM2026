@@ -83,6 +83,7 @@ fun DetailScreen(
 
     LaunchedEffect(objectId) {
         println("LaunchedEffect triggered for Album ID: $objectId")
+        viewModel.loadObject(objectId)
         viewModel.loadReviews(objectId)
     }
 
@@ -124,7 +125,7 @@ fun DetailScreen(
     }
 
     // Get the album object
-    val obj by viewModel.getObject(objectId).collectAsStateWithLifecycle(initialValue = null)
+    val obj by viewModel.albumObject.collectAsStateWithLifecycle(initialValue = null)
 
     // RENDER LOGIC
     if (obj != null) {

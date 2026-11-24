@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 
 interface MuseumApi {
     suspend fun getData(): Result<List<MuseumObject>>
+    suspend fun getAlbum(albumId: Int): Result<MuseumObject>
     suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse>
     suspend fun getUserReviews(userId: Int, page: Int, limit: Int = 10): Result<List<UserReview>>
     suspend fun getReviews(albumId: Int): Result<AlbumReviewsResponse>
@@ -55,6 +56,12 @@ class KtorMuseumApi(
 
     override suspend fun getData(): Result<List<MuseumObject>> = runCatching {
         client.get(baseUrl + "all_albums").body()
+    }
+
+    override suspend fun getAlbum(albumId: Int): Result<MuseumObject> = runCatching {
+        val response = client.get(baseUrl + "albums/$albumId")
+        if (!response.status.isSuccess()) error("Failed to fetch album")
+        response.body()
     }
 
     override suspend fun submitReview(request: ReviewRequest): Result<ReviewResponse> = runCatching {

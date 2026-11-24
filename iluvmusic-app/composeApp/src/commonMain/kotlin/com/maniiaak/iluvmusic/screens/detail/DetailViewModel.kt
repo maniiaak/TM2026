@@ -30,14 +30,20 @@ class DetailViewModel(
     private val _isLoadingReviews = MutableStateFlow(false)
     val isLoadingReviews: StateFlow<Boolean> = _isLoadingReviews
 
-    fun getObject(objectId: Int): StateFlow<MuseumObject?> {
-        val flow = MutableStateFlow<MuseumObject?>(null)
+    private val _object = MutableStateFlow<MuseumObject?>(null)
+    val albumObject: StateFlow<MuseumObject?> = _object
+
+    fun loadObject(objectId: Int) {
+        _object.value = null
         viewModelScope.launch {
-            repository.getObjectById(objectId).collect { obj ->
-                flow.value = obj
+            repository.getAlbumById(objectId).onSuccess { album ->
+                _object.value = album
+            }.onFailure {
+                repository.getObjectById(objectId).collect { obj ->
+                    if (_object.value == null) _object.value = obj
+                }
             }
         }
-        return flow
     }
 
     fun loadReviews(albumId: Int) {
