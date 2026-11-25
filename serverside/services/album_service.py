@@ -20,6 +20,9 @@ def format_album_for_list(row: sqlite3.Row) -> Dict[str, Any]:
     if not row:
         return None
 
+    if isinstance(row, sqlite3.Row):
+        row = dict(row)
+
     # Extract known columns
     album_id = row['id']
     title = row['title']
@@ -28,14 +31,14 @@ def format_album_for_list(row: sqlite3.Row) -> Dict[str, Any]:
     artist_name = row['artist_name']
 
     # Handle missing columns with defaults
-    length = row.get('length') if 'length' in row.keys() else None
+    length = row.get('length')
     if not length:
-        length = row.get('duration', '0:00') if 'duration' in row.keys() else '0:00'
+        length = row.get('duration', '0:00')
 
-    tracks = row.get('track_count') if 'track_count' in row.keys() else None
+    tracks = row.get('track_count')
     if tracks is None:
-        tracks = row.get('tracks', 0) if 'tracks' in row.keys() else 0
-    album_type = row.get('album_type', 'Album') if 'album_type' in row.keys() else 'Album'
+        tracks = row.get('tracks', 0)
+    album_type = row.get('album_type', 'Album')
 
     # Generate a URL based on the ID
     generated_url = f"https://www.metmuseum.org/art/collection/search/{album_id}"

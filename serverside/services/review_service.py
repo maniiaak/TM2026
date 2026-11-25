@@ -86,6 +86,9 @@ def submit_review(rating: float, content: str, user_id: int, album_id: int) -> D
             conn.commit()
             review_id = cursor.lastrowid
 
+            from services.notification_service import notify_followers_of_review
+            notify_followers_of_review(user_id, album_id)
+
             return {
                 "success": True,
                 "review_id": review_id,

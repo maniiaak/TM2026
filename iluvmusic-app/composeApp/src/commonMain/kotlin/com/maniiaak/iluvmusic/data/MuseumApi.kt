@@ -22,6 +22,7 @@ interface MuseumApi {
     suspend fun updateProfileImage(userId: Int, imageUrl: String?): Result<String?>
     suspend fun followUser(userId: Int, currentUserId: Int): Result<Unit>
     suspend fun unfollowUser(userId: Int, currentUserId: Int): Result<Unit>
+    suspend fun registerPushToken(token: String, platform: String = "android"): Result<Unit>
     suspend fun getHome(currentUserId: Int? = null): Result<HomeResponse>
     suspend fun getCategoryAlbums(category: String, page: Int, currentUserId: Int? = null): Result<CategoryResponse>
 }
@@ -140,6 +141,15 @@ class KtorMuseumApi(
             addAuthHeaderIfNeeded(this)
         }
         if (!response.status.isSuccess()) error("Failed to unfollow user")
+    }
+
+    override suspend fun registerPushToken(token: String, platform: String): Result<Unit> = runCatching {
+        val response = client.post(baseUrl + "push/register") {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("token" to token, "platform" to platform))
+            addAuthHeaderIfNeeded(this)
+        }
+        if (!response.status.isSuccess()) error("Failed to register push token")
     }
 
     override suspend fun getHome(currentUserId: Int?): Result<HomeResponse> = runCatching {
