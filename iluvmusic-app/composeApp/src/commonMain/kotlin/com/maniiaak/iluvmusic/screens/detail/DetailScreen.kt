@@ -171,6 +171,7 @@ private fun ObjectDetails(
     navigateToUserProfile: (Int) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
+    println("[UI] obj=${obj.objectID} length=${obj.length} tracks=${obj.tracks}")
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         floatingActionButton = {
@@ -233,11 +234,11 @@ private fun ObjectDetails(
                             )
                             InfoChip(
                                 label = stringResource(Res.string.label_length),
-                                value = obj.length ?: "0:00"
+                                value = obj.length?.takeIf { it != "0:00" } ?: "—"
                             )
                             InfoChip(
                                 label = stringResource(Res.string.label_tracks),
-                                value = obj.tracks?.toString() ?: "0"
+                                value = obj.tracks?.takeIf { it > 0 }?.toString() ?: "—"
                             )
                         }
 

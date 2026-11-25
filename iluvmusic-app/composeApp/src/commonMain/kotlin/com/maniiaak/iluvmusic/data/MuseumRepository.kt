@@ -21,8 +21,11 @@ class MuseumRepository(
             }
         }
     }
-    suspend fun refresh() { 
-        museumApi.getData().onSuccess { museumStorage.saveObjects(it) }
+    suspend fun refresh() {
+        museumApi.getData().onSuccess { list ->
+            println("[refresh] 48 -> ${list.find { it.objectID == 48 }}")
+            museumStorage.saveObjects(list)
+        }
     }
     fun getObjects(): Flow<List<MuseumObject>> = museumStorage.getObjects()
     fun getObjectById(objectId: Int): Flow<MuseumObject?> = museumStorage.getObjectById(objectId)

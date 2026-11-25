@@ -34,6 +34,7 @@ class DetailViewModel(
         val flow = MutableStateFlow<MuseumObject?>(null)
         viewModelScope.launch {
             repository.getObjectById(objectId).collect { obj ->
+                println("[Detail] id=$objectId length=${obj?.length} tracks=${obj?.tracks}")
                 flow.value = obj
             }
         }

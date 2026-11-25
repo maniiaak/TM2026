@@ -31,17 +31,14 @@ def format_album_for_list(row: sqlite3.Row) -> Dict[str, Any]:
     artist_name = row['artist_name']
 
     # Handle missing columns with defaults
-    length = row.get('length') or row.get('duration') or '0:00'
+    length = row.get('length')
+    if not length:
+        length = row.get('duration', '0:00')
 
     tracks = row.get('track_count')
     if tracks is None:
-        tracks = row.get('tracks')
-    if tracks is None:
-        tracks = 0
+        tracks = row.get('tracks', 0)
     album_type = row.get('album_type', 'Album')
-    
-    # Format tracks as string
-    tracks_str = str(tracks)
 
     # Generate a URL based on the ID
     generated_url = f"https://www.metmuseum.org/art/collection/search/{album_id}"
@@ -54,7 +51,7 @@ def format_album_for_list(row: sqlite3.Row) -> Dict[str, Any]:
         "objectID": album_id,
         "objectURL": generated_url,
         "title": title,
-        "tracks": tracks_str,
+        "tracks": tracks,
         "type": album_type
     }
 
@@ -119,6 +116,7 @@ def get_all_albums_with_stats() -> List[Dict[str, Any]]:
         cursor = conn.cursor()
         cursor.execute('''
             SELECT a.id, a.title, a.release_date, a.cover_image_url,
+                   a.length, a.tracks,
                    ar.name as artist_name,
                    COALESCE(AVG(r.rating), 0) as avg_rating,
                    COUNT(r.id) as num_of_ratings
