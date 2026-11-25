@@ -20,6 +20,9 @@ def format_album_for_list(row: sqlite3.Row) -> Dict[str, Any]:
     if not row:
         return None
 
+    if isinstance(row, sqlite3.Row):
+        row = dict(row)
+
     # Extract known columns
     album_id = row['id']
     title = row['title']
@@ -28,10 +31,15 @@ def format_album_for_list(row: sqlite3.Row) -> Dict[str, Any]:
     artist_name = row['artist_name']
 
     # Handle missing columns with defaults
-    length = row.get('duration', '0:00') if 'duration' in row.keys() else '0:00'
-    tracks = row.get('track_count', 0) if 'track_count' in row.keys() else 0
-    album_type = row.get('album_type', 'Album') if 'album_type' in row.keys() else 'Album'
+    length = row.get('length') or row.get('duration') or '0:00'
 
+    tracks = row.get('track_count')
+    if tracks is None:
+        tracks = row.get('tracks')
+    if tracks is None:
+        tracks = 0
+    album_type = row.get('album_type', 'Album')
+    
     # Format tracks as string
     tracks_str = str(tracks)
 

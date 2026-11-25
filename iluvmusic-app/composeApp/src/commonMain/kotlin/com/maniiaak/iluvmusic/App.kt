@@ -35,6 +35,9 @@ import com.maniiaak.iluvmusic.screens.profile.ProfileScreen
 import com.maniiaak.iluvmusic.screens.profile.ProfileViewModel
 import com.maniiaak.iluvmusic.screens.search.SearchScreen
 import kotlinx.serialization.Serializable
+import androidx.compose.runtime.LaunchedEffect
+import com.maniiaak.iluvmusic.data.MuseumApi
+import com.maniiaak.iluvmusic.push.registerPushNotifications
 import org.koin.compose.koinInject
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -157,8 +160,10 @@ private fun BottomBarItem(
 
 @Composable
 fun App(
+    initialAlbumId: Int? = null,
     sessionManager: SessionManager = koinInject(),
-    firebaseAuthManager: FirebaseAuthManager = koinInject()
+    firebaseAuthManager: FirebaseAuthManager = koinInject(),
+    museumApi: MuseumApi = koinInject()
 ) {
     MaterialTheme(
         colorScheme = darkColorScheme(primary = BrandPrimary)
@@ -167,6 +172,16 @@ fun App(
             AppContentContainer {
                 val navController: NavHostController = rememberNavController()
                 val isLoggedIn by sessionManager.isLoggedIn.collectAsState(initial = false)
+
+                LaunchedEffect(isLoggedIn) {
+                    if (isLoggedIn) registerPushNotifications(museumApi)
+                }
+
+                LaunchedEffect(isLoggedIn, initialAlbumId) {
+                    if (isLoggedIn && initialAlbumId != null) {
+                        navController.navigate(DetailDestination(initialAlbumId))
+                    }
+                }
 
                 // The login screen is owned by the session state. Once logout clears
                 // the session, this branch is shown immediately and there is no

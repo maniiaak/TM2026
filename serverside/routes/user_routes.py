@@ -5,6 +5,7 @@ from flask import Blueprint, jsonify, request, g
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from services import get_user_stats, get_user_reviews, update_profile_image
+from services.notification_service import register_push_token
 from auth import require_auth, optional_auth
 
 user_bp = Blueprint('users', __name__, url_prefix='/api')
@@ -31,6 +32,20 @@ def get_user(user_id):
         return jsonify(result), 404
 
     return jsonify(result)
+
+
+@user_bp.route('/push/register', methods=['POST'])
+@require_auth
+@write_limiter.limit("20 per minute")
+def register_push_token_endpoint():
+    data = request.get_json(silent=True) or {}
+    token = str(data.get("token", "")).strip()
+    platform = str(data.get("platform", "android")).strip().lower()
+    if not token:
+        return jsonify({"success": False, "error": "Push token is required"}), 400
+
+    result = register_push_token(g.user_id, token, platform)
+    return jsonify(result), 200 if result["success"] else 400
 
 
 @user_bp.route('/users/<int:user_id>/reviews', methods=['GET'])

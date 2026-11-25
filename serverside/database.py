@@ -75,4 +75,16 @@ def check_tables():
                 UNIQUE(user_id, following_id)
             )
         """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS push_tokens (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                token TEXT NOT NULL,
+                platform TEXT NOT NULL DEFAULT 'android',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+                UNIQUE(user_id, token)
+            )
+        """)
         conn.commit()
